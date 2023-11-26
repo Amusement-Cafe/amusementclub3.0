@@ -94,14 +94,15 @@ bot.on('error', async (err, sh) => {
     process.send({error: {message: err.message, stack: err.stack}})
 })
 
-cmd('balance', async (ctx, user, args) => await testFunction(ctx, user, args))
+cmd('balance', async (ctx, user, args) => await testFunction(ctx, user, args), {ephemeral: true})
+cmd('daily', async (ctx, user, args) => await testFunction(ctx, user, args))
+
 
 
 
 const testFunction = async (one, two, three) => {
-    one.interaction.defer()
-    await one.interaction.createFollowup({content: 'You did a balance!'})
-    console.log(one)
-    console.log(two)
-    console.log(three)
+    await one.interaction.createFollowup({content: 'You did a command!'})
+    // console.log(one)
+    // console.log(two)
+    // console.log(three)
 }

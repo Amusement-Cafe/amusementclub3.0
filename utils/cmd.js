@@ -49,6 +49,11 @@ const mapArgs = (cursor, args, callback) => {
 }
 
 const buildTree = (args, perm) => {
+    let options
+    if (args[args.length - 1].constructor.name !== 'AsyncFunction' ) {
+        options = args.pop()
+    }
+    console.log(options)
     const callback = args.pop()
     const cursors = []
 
@@ -69,6 +74,9 @@ const buildTree = (args, perm) => {
         if(perm)
             cursor._perm = perm
 
+        if(options)
+            cursor._options = options
+
         cursors.push(cursor)
     })
 
@@ -86,6 +94,7 @@ const buildTree = (args, perm) => {
 
 const trigger = async (type, ctx, user, args) => {
     let cursor = tree[type]
+    let modal, ephemeral
 
     while (cursor.hasOwnProperty(args[0])) {
         cursor = cursor[args[0]]
@@ -94,24 +103,38 @@ const trigger = async (type, ctx, user, args) => {
         //     ctx.capitalMsg.shift()
     }
 
-    // if (type === 'cmd') {
-    //     if (!cursor.hasOwnProperty('_callback')) {
-    //         await ctx.interaction.defer()
-    //         return ctx.reply(user, `unknown command. Please check your spelling or use help`, 'red')
-    //     }
-    //
-    //     if (cursor._perm) {
-    //         if(!user.roles || !cursor._perm.find(x => user.roles.some(y => x === y))) {
-    //             await ctx.interaction.defer()
-    //             return ctx.reply(user,`only users with roles **[${cursor._perm}]** can execute this command`, 'red')
-    //         }
-    //     }
-    //
-    //     if(!ctx.guild && cursor._access != 'dm') {
-    //         await ctx.interaction.defer()
-    //         return ctx.reply(user, `this command is possible only in guild (server) channel`, 'red')
-    //     }
-    // }
+    if (cursor._options) {
+        if (cursor._options.modal) {
+            modal = true
+        }
+
+        if (cursor._options.ephemeral) {
+            await ctx.interaction.defer(64)
+            ephemeral = true
+        }
+    }
+
+    if (type === 'cmd') {
+        if (!modal && !ephemeral) {
+            await ctx.interaction.defer()
+        }
+        // if (!cursor.hasOwnProperty('_callback')) {
+        //     await ctx.interaction.defer()
+        //     return ctx.reply(user, `unknown command. Please check your spelling or use help`, 'red')
+        // }
+        //
+        // if (cursor._perm) {
+        //     if(!user.roles || !cursor._perm.find(x => user.roles.some(y => x === y))) {
+        //         await ctx.interaction.defer()
+        //         return ctx.reply(user,`only users with roles **[${cursor._perm}]** can execute this command`, 'red')
+        //     }
+        // }
+        //
+        // if(!ctx.guild && cursor._access != 'dm') {
+        //     await ctx.interaction.defer()
+        //     return ctx.reply(user, `this command is possible only in guild (server) channel`, 'red')
+        // }
+    }
     
     if (!cursor.hasOwnProperty('_callback'))
         return
