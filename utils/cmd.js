@@ -14,32 +14,31 @@ const rct = (...args) => {
     const callback = args.pop()
     const cursor = tree.rct
 
-    args.map(alias => {
-        if (!cursor.hasOwnProperty(alias)) {
-            cursor[alias] = {}
-        }
-
-        cursor[alias]._callback = callback
-    })
+    mapArgs(cursor, args, callback)
 }
 
 const con = (...args) => {
     const callback = args.pop()
     const cursor = tree.con
 
-    args.map(alias => {
-        if (!cursor.hasOwnProperty(alias)) {
-            cursor[alias] = {}
-        }
-
-        cursor[alias]._callback = callback
-    })
+    mapArgs(cursor, args, callback)
 }
 
 const mod = (...args) => {
     const callback = args.pop()
     const cursor = tree.mod
 
+    mapArgs(cursor, args, callback)
+}
+
+const itm = (...args) => {
+    const callback = args.pop()
+    const cursor = tree.itm
+
+    mapArgs(cursor, args, callback)
+}
+
+const mapArgs = (cursor, args, callback) => {
     args.map(alias => {
         if (!cursor.hasOwnProperty(alias)) {
             cursor[alias] = {}
@@ -134,6 +133,7 @@ module.exports = {
     rct,
     con,
     mod,
+    itm,
     trigger,
 }
 
