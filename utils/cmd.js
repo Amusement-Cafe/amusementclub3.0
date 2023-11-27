@@ -53,7 +53,7 @@ const buildTree = (args, perm) => {
     if (args[args.length - 1].constructor.name !== 'AsyncFunction' ) {
         options = args.pop()
     }
-    console.log(options)
+
     const callback = args.pop()
     const cursors = []
 
@@ -94,7 +94,7 @@ const buildTree = (args, perm) => {
 
 const trigger = async (type, ctx, user, args) => {
     let cursor = tree[type]
-    let modal, ephemeral
+    let deferless, ephemeral
 
     while (cursor.hasOwnProperty(args[0])) {
         cursor = cursor[args[0]]
@@ -104,8 +104,8 @@ const trigger = async (type, ctx, user, args) => {
     }
 
     if (cursor._options) {
-        if (cursor._options.modal) {
-            modal = true
+        if (cursor._options.deferless) {
+            deferless = true
         }
 
         if (cursor._options.ephemeral) {
@@ -115,7 +115,7 @@ const trigger = async (type, ctx, user, args) => {
     }
 
     if (type === 'cmd') {
-        if (!modal && !ephemeral) {
+        if (!deferless && !ephemeral) {
             await ctx.interaction.defer()
         }
         // if (!cursor.hasOwnProperty('_callback')) {

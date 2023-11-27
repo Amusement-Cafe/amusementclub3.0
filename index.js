@@ -2,6 +2,7 @@ const Oceanic   = require('oceanic.js')
 const _         = require("lodash")
 const Filter    = require("bad-words")
 const mongoose  = require("mongoose")
+const commands  = require('./commands')
 
 const {
     trigger,
@@ -93,16 +94,3 @@ bot.on('interactionCreate', async (interaction) => {
 bot.on('error', async (err, sh) => {
     process.send({error: {message: err.message, stack: err.stack}})
 })
-
-cmd('balance', async (ctx, user, args) => await testFunction(ctx, user, args), {ephemeral: true})
-cmd('daily', async (ctx, user, args) => await testFunction(ctx, user, args))
-
-
-
-
-const testFunction = async (one, two, three) => {
-    await one.interaction.createFollowup({content: 'You did a command!'})
-    // console.log(one)
-    // console.log(two)
-    // console.log(three)
-}

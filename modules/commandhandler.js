@@ -39,12 +39,11 @@ const commandInteractionHandler = async (ctx, interaction) => {
     let capitalMsg = base
     let msg = base.map(x => x.toLowerCase())
     const isolatedCtx = Object.assign({}, ctx, {
-        msg, /* current icoming msg object */
+        msg, /* lowercase slash command args */
         capitalMsg,
         // reply, /* quick reply function to the channel */
         globals: {}, /* global parameters */
         discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */
-        prefix: '/', /* current prefix */
         interaction: interaction,
         options,
         interactionUser
