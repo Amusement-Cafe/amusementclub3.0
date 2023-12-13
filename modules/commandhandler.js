@@ -13,12 +13,15 @@ const {
 } = require("../utils/tools")
 
 const {
+    permissions
+} = require('../utils/globalarrays')
+
+const {
     send
 } = require('./messages')
 
 const userq = []
 const pastSelects = []
-const permissions = []
 
 const toObj = (user, str, clr) => {
     if(typeof str === 'object') {
