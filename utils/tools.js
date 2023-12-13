@@ -6,34 +6,34 @@ const addTime = (date, count, units) => {
     switch (units) {
         case 'year':
         case 'years':
-            newDate = newDate.setFullYear(newDate.getFullYear() + count)
+            newDate.setFullYear(newDate.getFullYear() + count)
             break;
         case 'month':
         case 'months':
-            newDate = newDate.setMonth(newDate.getMonth() + count)
+            newDate.setMonth(newDate.getMonth() + count)
             break;
         case 'day':
         case 'days':
-            newDate = newDate.setDate(newDate.getDate() + count)
+            newDate.setDate(newDate.getDate() + count)
             break;
         case 'hour':
         case 'hours':
-            newDate = newDate.setHours(newDate.getHours() + count)
+            newDate.setHours(newDate.getHours() + count)
             break;
         case 'minute':
         case 'minutes':
-            newDate = newDate.setMinutes(newDate.getMinutes() + count)
+            newDate.setMinutes(newDate.getMinutes() + count)
             break;
         case 'second':
         case 'seconds':
-            newDate = newDate.setSeconds(newDate.getSeconds() + count)
+            newDate.setSeconds(newDate.getSeconds() + count)
             break;
         case 'millisecond':
         case 'milliseconds':
-            newDate = newDate.setMilliseconds(newDate.getMilliseconds() + count)
+            newDate.setMilliseconds(newDate.getMilliseconds() + count)
             break;
     }
-    return new Date(newDate)
+    return newDate
 }
 
 /*
@@ -44,34 +44,34 @@ const subTime = (date, count, units) => {
     switch (units) {
         case 'year':
         case 'years':
-            newDate = newDate.setFullYear(newDate.getFullYear() - count)
+            newDate.setFullYear(newDate.getFullYear() - count)
             break;
         case 'month':
         case 'months':
-            newDate = newDate.setMonth(newDate.getMonth() - count)
+            newDate.setMonth(newDate.getMonth() - count)
             break;
         case 'day':
         case 'days':
-            newDate = newDate.setDate(newDate.getDate() - count)
+            newDate.setDate(newDate.getDate() - count)
             break;
         case 'hour':
         case 'hours':
-            newDate = newDate.setHours(newDate.getHours() - count)
+            newDate.setHours(newDate.getHours() - count)
             break;
         case 'minute':
         case 'minutes':
-            newDate = newDate.setMinutes(newDate.getMinutes() - count)
+            newDate.setMinutes(newDate.getMinutes() - count)
             break;
         case 'second':
         case 'seconds':
-            newDate = newDate.setSeconds(newDate.getSeconds() - count)
+            newDate.setSeconds(newDate.getSeconds() - count)
             break;
         case 'millisecond':
         case 'milliseconds':
-            newDate = newDate.setMilliseconds(newDate.getMilliseconds() - count)
+            newDate.setMilliseconds(newDate.getMilliseconds() - count)
             break;
     }
-    return new Date(newDate)
+    return newDate
 }
 
 module.exports = {
