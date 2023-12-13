@@ -1,6 +1,6 @@
 # Amusement Club 3.0 is under heavy rewrite work, this repo is not meant to be used for normal play until this notice is removed
 
-**Amusement Club** is a global gacha game for Discord with thousands of cute and fancy cards made by the bot's community. You can get started on any server by typing `/claim cards` in a bot channel. 
+**Amusement Club** is a global card collecting game for Discord with thousands of cute and fancy cards made by the bot's community. You can get started on any server by typing `/claim cards` in a bot channel. 
 
 Each claim will cost you more 🍅 tomatoes (in-game currency), using `/daily` will reset your claim cost and give you extra tomatoes.
 
@@ -33,4 +33,4 @@ Before starting, please do all starting steps from **contributing** stage.
 Make sure you are not violating anything in the **LICENSE** when you are hosting. You **must** mention that parts of your bot are licensed under **MPL-2.0** on the help/info page of your bot like this:
 > Parts of the project are licensed under the MPL-2.0 and can be obtained here: https://github.com/Amusement-Cafe/amusementclub3.0/
 
-To host your bot on a small amount of servers, you can just run bot in development mode. However if you need sharding, vote webhooks, and card management support, consider using [Ayano](https://github.com/Amusement-Cafe/ayano).
+To host your bot on a small amount of servers, you can just run bot in development mode. However, if you need sharding, vote webhooks, and card management support, consider using [Ayano](https://github.com/Amusement-Cafe/ayano).

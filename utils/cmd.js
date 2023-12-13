@@ -94,7 +94,7 @@ const buildTree = (args, perm) => {
 
 const trigger = async (type, ctx, user, args) => {
     let cursor = tree[type]
-    let deferless, ephemeral
+    let deferless, ephemeral, deferred
 
     while (cursor.hasOwnProperty(args[0])) {
         cursor = cursor[args[0]]
@@ -117,6 +117,7 @@ const trigger = async (type, ctx, user, args) => {
     if (type === 'cmd') {
         if (!deferless && !ephemeral) {
             await ctx.interaction.defer()
+            deferred = true
         }
         // if (!cursor.hasOwnProperty('_callback')) {
         //     await ctx.interaction.defer()

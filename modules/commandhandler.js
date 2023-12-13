@@ -1,8 +1,17 @@
+const _ = require('lodash')
+
 const {
     trigger,
 } = require('../utils/cmd')
 
+const {
+    fetchOrCreateUser
+} = require('./user')
+
 const userq = []
+const pastSelects = []
+const permissions = []
+
 
 const commandInteractionHandler = async (ctx, interaction) => {
     if (interaction.applicationID !== ctx.bot.application.id)
@@ -14,11 +23,13 @@ const commandInteractionHandler = async (ctx, interaction) => {
 
     // const reply = (user, str, clr = 'default', edit) => send(interaction, toObj(user, str, clr), user.discord_id, [], edit)
     // let botUser = await user.fetchOnly(interactionUser.id)
+    let botuser = await fetchOrCreateUser(ctx, interactionUser)
+    console.log(botuser)
 
 
     // const curguild = await guild.fetchGuildById(interaction.guildID)
 
-    let base = [interaction.data.name]
+    let base = [interaction.data.name.substring(2)]
     let options = []
 
     let cursor = interaction.data
@@ -53,10 +64,11 @@ const commandInteractionHandler = async (ctx, interaction) => {
     // usr.username = usr.username.replace(/\*/gi, '')
     const cntnt = msg.map(x => x.trim()).join(' ').split(/ +/)
 
-    // if (userq.some(x => x.id === interactionUser.id)) {
-    //     await interaction.defer(64)
-    //     return reply(botUser, 'you are currently on a command cooldown. These last only 5 seconds from your last command, please wait a moment and try your command again!', 'red')
-    // }
+    if (userq.some(x => x.id === interactionUser.id)) {
+        await interaction.defer(64)
+        return
+        // return reply(botUser, 'you are currently on a command cooldown. These last only 5 seconds from your last command, please wait a moment and try your command again!', 'red')
+    }
 
     // userq.push({id: interactionUser.id, expires: asdate.add(new Date(), 5, 'seconds')})
 
@@ -84,13 +96,40 @@ const commandInteractionHandler = async (ctx, interaction) => {
     //     guild: isolatedCtx.guild ? isolatedCtx.guild.id : 'direct',
     //     options: options
     // })
-    let usr = {discord_id: '123456'}
-    await trigger('cmd', isolatedCtx, usr, cntnt)
-    interaction.channel.createMessage({content: `This is a command interaction response, but it just responds to any command....`})
+    await trigger('cmd', isolatedCtx, botuser, cntnt)
 }
 
 const componentInteractionHandler = async (ctx, interaction) => {
-    interaction.channel.createMessage({content: `This is a component interaction response, but it just responds to any component....`})
+    let idsplit = interaction.data.customID.split('_')
+    let selection
+    if (interaction.data.componentType === 3) {
+        idsplit = [interaction.data.customID, interaction.data.values.raw[0]]
+        if (permissions.find(x => x.msgid === interaction.message.id)?.permissions?.select?.indexOf(interaction.user.id) < 0) {
+            interaction.defer()
+            return interaction.createFollowup({content: 'You are not allowed to interact with this menu.'})
+        }
+        console.log(pastSelects)
+        _.remove(pastSelects, (x) => x.msgid === interaction.message.id)
+        pastSelects.push({discord_id: interaction.user.id, selection: interaction.data.values.raw[0], msgid: interaction.message.id})
+        console.log(pastSelects)
+    } else {
+        if (permissions.find(x => x.msgid === interaction.message.id)?.permissions?.interact?.indexOf(interaction.user.id) < 0) {
+            interaction.defer()
+            return interaction.createFollowup({content: 'You are not allowed to interact with this message.'})
+        }
+        selection = pastSelects.find(x => x.msgid === interaction.message.id)
+    }
+
+    console.log(selection)
+    const isolatedCtx = Object.assign({}, ctx, {
+        discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */
+        interaction,
+        id: idsplit.splice(1),
+        selection
+    })
+    console.log(isolatedCtx.selection)
+
+    await trigger('rct', isolatedCtx, interaction.user, [idsplit.shift()])
 
 }
 
@@ -102,4 +141,6 @@ module.exports = {
     commandInteractionHandler,
     componentInteractionHandler,
     modalInteractionHandler,
+    pastSelects,
+    permissions
 }

@@ -18,7 +18,7 @@ const {
 
 const bot = new Oceanic.Client({ auth: 'Bot ' + process.env.token})
 const shards = new Oceanic.ShardManager(bot, {maxShards: parseInt(process.env.shards) })
-let ctx, config, mcn, started
+let ctx, config, started
 
 const filter = new Filter()
 
@@ -29,12 +29,12 @@ process.on('message', async (message) => {
 
 con('startup', async (data) => {
     config = data.startup
-    mcn = await mongoose.connect(config.bot.database)
+    await mongoose.connect(config.bot.database)
     filter.addWords(...config.data.bannedwords)
 
     /* create our context */
     ctx = {
-        bot, /* created and connected Eris bot instance */
+        bot, /* created and connected Oceanic bot instance */
         cards: config.data.cards, /* data with cards */
         collections: config.data.collections, /* data with collections */
         adminGuildID: config.bot.adminGuildID,
