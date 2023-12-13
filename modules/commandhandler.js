@@ -8,9 +8,27 @@ const {
     fetchOrCreateUser
 } = require('./user')
 
+const {
+    addTime
+} = require("../utils/tools")
+
+const {
+    send
+} = require('./messages')
+
 const userq = []
 const pastSelects = []
 const permissions = []
+
+const toObj = (user, str, clr) => {
+    if(typeof str === 'object') {
+        str.description = `**${user.username}**, ${str.description}`
+        str.color = 10002
+        return str
+    }
+
+    return { description: `**${user.username}**, ${str}`, color: 10002 }
+}
 
 
 const commandInteractionHandler = async (ctx, interaction) => {
@@ -24,7 +42,7 @@ const commandInteractionHandler = async (ctx, interaction) => {
     // const reply = (user, str, clr = 'default', edit) => send(interaction, toObj(user, str, clr), user.discord_id, [], edit)
     // let botUser = await user.fetchOnly(interactionUser.id)
     let botuser = await fetchOrCreateUser(ctx, interactionUser)
-    console.log(botuser)
+    const reply = (user, str, clr = 'default', edit) => send(isolatedCtx, user, {embed: toObj(user, str, 10005)})
 
 
     // const curguild = await guild.fetchGuildById(interaction.guildID)
@@ -52,7 +70,7 @@ const commandInteractionHandler = async (ctx, interaction) => {
     const isolatedCtx = Object.assign({}, ctx, {
         msg, /* lowercase slash command args */
         capitalMsg,
-        // reply, /* quick reply function to the channel */
+        reply, /* quick reply function to the channel */
         globals: {}, /* global parameters */
         discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */
         interaction: interaction,
@@ -70,7 +88,7 @@ const commandInteractionHandler = async (ctx, interaction) => {
         // return reply(botUser, 'you are currently on a command cooldown. These last only 5 seconds from your last command, please wait a moment and try your command again!', 'red')
     }
 
-    // userq.push({id: interactionUser.id, expires: asdate.add(new Date(), 5, 'seconds')})
+    // userq.push({id: interactionUser.id, expires: addTime(new Date(), 5, 'seconds')})
 
     // if (ctx.settings.wip && !usr.roles.includes('admin') && !usr.roles.includes('mod')) {
     //     await interaction.defer()

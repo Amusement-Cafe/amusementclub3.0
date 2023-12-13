@@ -18,7 +18,7 @@ const {
 
 cmd('daily', async (ctx, user, args) => await daily(ctx, user, args))
 
-cmd('cards', async (ctx, user, args) => await defaultFunction(ctx, user, args))
+cmd('cards', async (ctx, user, args) => await cards(ctx, user, args))
 
 cmd('balance', async (ctx, user, args) => await defaultFunction(ctx, user, args))
 
@@ -57,6 +57,11 @@ rct('stringy', async (ctx, user, args) => await selectFunction(ctx, user, args))
 const daily = async (ctx, user, args) => {
     console.log(user)
     await sendMessageThing(ctx, user, `Your last listed daily is ${user.lastdaily}!\nYou can do your next daily at ${addTime(user.lastdaily, 20, 'hours')}`)
+    console.log(user.lastdaily)
+}
+
+const cards = async (ctx, user, args) => {
+    await ctx.reply(user, `this is a test of reply!`)
 }
 
 const defaultFunction = async (ctx, user, args) => {
