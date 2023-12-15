@@ -1,7 +1,5 @@
 const Users = require('../collections/user')
-// const {
-//     Users
-// } = require('../collections')
+
 
 const fetchOrCreateUser = async (ctx, interactionuser) => {
     let user = await Users.findOne({userid: interactionuser.id})
