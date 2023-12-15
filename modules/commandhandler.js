@@ -74,7 +74,8 @@ const commandInteractionHandler = async (ctx, interaction) => {
         discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */
         interaction: interaction,
         options,
-        interactionUser
+        interactionUser,
+        send
     })
 
     // let usr = await user.fetchOrCreate(isolatedCtx, interactionUser.id, interactionUser.globalName || interactionUser.username)
@@ -142,7 +143,8 @@ const componentInteractionHandler = async (ctx, interaction) => {
         discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */
         interaction,
         id: idsplit.splice(1),
-        selection
+        selection,
+        send
     })
     console.log(isolatedCtx.selection)
 
