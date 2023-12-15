@@ -24,7 +24,13 @@ const send = async (ctx, user, args) => {
         throw Error('Too Many Action Rows in message')
     }
 
-    const response = await ctx.interaction.createFollowup({content: args.content || '', embeds: args.embed? [args.embed]: [] , components: components})
+    let response
+
+    if (args.edit) {
+        response = await ctx.interaction.editOriginal({content: args.content || '', embeds: args.embed? [args.embed]: [] , components: components})
+    } else {
+        response = await ctx.interaction.createFollowup({content: args.content || '', embeds: args.embed? [args.embed]: [] , components: components})
+    }
 
     if (args.permissions) {
         permissions.push({permissions: args.permissions, msgid: response.id})
