@@ -28,6 +28,8 @@ const send = async (ctx, user, args) => {
 
     if (args.edit) {
         response = await ctx.interaction.editOriginal({content: args.content || '', embeds: args.embed? [args.embed]: [] , components: components})
+    } else if (args.parent) {
+        response = await ctx.interaction.editParent({content: args.content || '', embeds: args.embed? [args.embed]: [] , components: components})
     } else {
         response = await ctx.interaction.createFollowup({content: args.content || '', embeds: args.embed? [args.embed]: [] , components: components})
     }
