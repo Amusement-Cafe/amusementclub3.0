@@ -20,7 +20,7 @@ cmd('daily', async (ctx, user, args) => await daily(ctx, user, args))
 
 cmd('cards', async (ctx, user, args) => await cards(ctx, user, args))
 
-cmd('balance', async (ctx, user, args) => await defaultFunction(ctx, user, args))
+cmd('balance', async (ctx, user, args) => await balance(ctx, user, args))
 
 cmd('profile', async (ctx, user, args) => await defaultFunction(ctx, user, args))
 
@@ -55,22 +55,28 @@ rct('green', async (ctx, user, args) => await buttonFunction(ctx, user, args))
 rct('stringy', async (ctx, user, args) => await selectFunction(ctx, user, args))
 
 const daily = async (ctx, user, args) => {
-    console.log(user)
-    await send(ctx, user, `Your last listed daily is ${user.lastdaily}!\nYou can do your next daily at ${addTime(user.lastdaily, 20, 'hours')}`)
-    console.log(user.lastdaily)
+    if (user.lastdaily > subTime(new Date(), 20, 'hours')) {
+        return ctx.reply(user, `your daily is not ready yet! You can claim your daily <t:${Math.floor(new Date(addTime(user.lastdaily, 20, 'hours')).getTime() / 1000)}:R>`, 'red')
+    }
+    user.lastdaily = new Date()
+    user.tomatoes += 1
+    await user.save()
+
+    await ctx.reply(user, `you claimed daily and got a tomato!`, 'green')
 }
 
 const cards = async (ctx, user, args) => {
     await ctx.reply(user, `this is a test of reply!`)
 }
 
+const balance = async (ctx, user, args) => {
+    return ctx.reply(user, `you have **${Math.round(user.tomatoes)}** ${ctx.symbols.tomato}, **${Math.round(user.vials)}** ${ctx.symbols.vial} and **${Math.round(user.lemons)}** ${ctx.symbols.lemon}`, 'green')
+}
 const defaultFunction = async (ctx, user, args) => {
     const btn = new Button('red_test_id').setLabel('Test Label').setStyle(4)
     const btn2 = new Button('green_anotherid').setLabel('Lol Label').setStyle(3)
     const select = {type:3, customID: 'stringy', options: [{description: 'option description', label: 'label 1', value: 'value1'}, {description: 'option description', label: 'label 2', value: 'value2'}]}
     await send(ctx, user, {select: [select], buttons: [btn, btn2], permissions: {interact: [ctx.interaction.user.id], select: [ctx.interaction.user.id]}, content: 'Buttons!'})
-
-    // await ctx.interaction.createFollowup({content: 'user command', components: [{type: 1, components: [select]}, {type: 1, components: [btn, btn2]}]})
 }
 
 const buttonFunction = async (ctx, user, args) => {
