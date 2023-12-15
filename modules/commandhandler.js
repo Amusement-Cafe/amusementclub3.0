@@ -9,10 +9,6 @@ const {
 } = require('./user')
 
 const {
-    addTime
-} = require("../utils/tools")
-
-const {
     permissions
 } = require('../utils/globalarrays')
 
@@ -23,14 +19,14 @@ const {
 const userq = []
 const pastSelects = []
 
-const toObj = (user, str, clr) => {
+const toObj = (user, str, clr = 2067276) => {
     if(typeof str === 'object') {
         str.description = `**${user.username}**, ${str.description}`
-        str.color = 10002
+        str.color = clr
         return str
     }
 
-    return { description: `**${user.username}**, ${str}`, color: 10002 }
+    return { description: `**${user.username}**, ${str}`, color: clr }
 }
 
 
@@ -45,7 +41,7 @@ const commandInteractionHandler = async (ctx, interaction) => {
     // const reply = (user, str, clr = 'default', edit) => send(interaction, toObj(user, str, clr), user.discord_id, [], edit)
     // let botUser = await user.fetchOnly(interactionUser.id)
     let botuser = await fetchOrCreateUser(ctx, interactionUser)
-    const reply = (user, str, clr = 'default', edit) => send(isolatedCtx, user, {embed: toObj(user, str, 10005)})
+    const reply = (user, str, clr = 'default', edit = false) => send(isolatedCtx, user, {embed: toObj(user, str, ctx.colors[clr]), edit: edit})
 
 
     // const curguild = await guild.fetchGuildById(interaction.guildID)

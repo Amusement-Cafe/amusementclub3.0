@@ -7,7 +7,6 @@ const commands  = require('./commands')
 const {
     trigger,
     con,
-    cmd,
 } = require('./utils/cmd')
 
 const {
@@ -52,6 +51,7 @@ con('startup', async (data) => {
         eval: config.evals,
         cafe: 'https://discord.gg/xQAxThF', /* support server invite */
         config,
+        colors: config.colors,
         rng: config.rng,
         guildLogChannel: config.channels.guildLog,
         reportChannel: config.channels.report,
@@ -94,3 +94,7 @@ bot.on('interactionCreate', async (interaction) => {
 bot.on('error', async (err, sh) => {
     process.send({error: {message: err.message, stack: err.stack}})
 })
+
+
+module.exports.schemas = require('./collections')
+module.exports.modules = require('./modules')
