@@ -71,6 +71,33 @@ const schema = new Schema({
 
     joined:             { type: Date },
 
+    prefs:              {
+        notify:  {
+            aucbidme:   { type: Boolean, default: true  },
+            aucoutbid:  { type: Boolean, default: true  },
+            aucnewbid:  { type: Boolean, default: false },
+            aucend:     { type: Boolean, default: true  },
+            announce:   { type: Boolean, default: false },
+            daily:      { type: Boolean, default: false },
+            vote:       { type: Boolean, default: false },
+            completed:  { type: Boolean, default: true  },
+            effectend:  { type: Boolean, default: false },
+        },
+        interact:   {
+            canhas:     { type: Boolean, default: true  },
+            candiff:    { type: Boolean, default: true  },
+            cansell:    { type: Boolean, default: true  },
+        },
+        profile:        {
+            bio:        { type: String, default: 'This user has not set a bio' },
+            title:      { type: String, default: '' },
+            color:      { type: String, default: '16756480' },
+            card:       { type: String, default: '' },
+            favcomplete:{ type: String, default: '' },
+            favclout:   { type: String, default: '' },
+        }
+    },
+
     premium: {
         active: { type: Boolean, default: false },
         tier: { type: Number },

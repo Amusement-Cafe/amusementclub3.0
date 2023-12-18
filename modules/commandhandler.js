@@ -12,36 +12,25 @@ const {
     permissions
 } = require('../utils/globalarrays')
 
-const {
-    send
-} = require('./messages')
-
 const userq = []
 const pastSelects = []
 
-const toObj = (user, str, clr = 2067276) => {
-    if(typeof str === 'object') {
-        str.description = `**${user.username}**, ${str.description}`
-        str.color = clr
-        return str
-    }
 
-    return { description: `**${user.username}**, ${str}`, color: clr }
-}
-
-
-const commandInteractionHandler = async (ctx, interaction) => {
+const commandInteractionHandler = async (ctx, interaction, user) => {
     if (interaction.applicationID !== ctx.bot.application.id)
         return
 
-    const interactionUser = interaction.user || interaction.member.user
-    if (interactionUser.bot)
-        return
 
     // const reply = (user, str, clr = 'default', edit) => send(interaction, toObj(user, str, clr), user.discord_id, [], edit)
     // let botUser = await user.fetchOnly(interactionUser.id)
-    let botuser = await fetchOrCreateUser(ctx, interactionUser)
-    const reply = (user, str, clr = 'default', edit = false) => send(isolatedCtx, user, {embed: toObj(user, str, ctx.colors[clr]), edit: edit})
+    const reply = (user, str, clr = 'default', edit = false) => ctx.send(isolatedCtx, user, {
+        embed: ctx.toObj(user, str, ctx.colors[clr]),
+        edit: options.edit || false,
+        parent: options.parent || false,
+        buttons: options.buttons || [],
+        select: options.select || [],
+        permissions: {interact: [user.userid], select: [user.userid]}
+    })
 
 
     // const curguild = await guild.fetchGuildById(interaction.guildID)
@@ -73,16 +62,14 @@ const commandInteractionHandler = async (ctx, interaction) => {
         globals: {}, /* global parameters */
         discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */
         interaction: interaction,
-        options,
-        interactionUser,
-        send
+        options
     })
 
     // let usr = await user.fetchOrCreate(isolatedCtx, interactionUser.id, interactionUser.globalName || interactionUser.username)
     // usr.username = usr.username.replace(/\*/gi, '')
     const cntnt = msg.map(x => x.trim()).join(' ').split(/ +/)
 
-    if (userq.some(x => x.id === interactionUser.id)) {
+    if (userq.some(x => x.id === user.userid)) {
         await interaction.defer(64)
         return
         // return reply(botUser, 'you are currently on a command cooldown. These last only 5 seconds from your last command, please wait a moment and try your command again!', 'red')
@@ -114,7 +101,7 @@ const commandInteractionHandler = async (ctx, interaction) => {
     //     guild: isolatedCtx.guild ? isolatedCtx.guild.id : 'direct',
     //     options: options
     // })
-    await trigger('cmd', isolatedCtx, botuser, cntnt)
+    await trigger('cmd', isolatedCtx, user, cntnt)
 }
 
 const componentInteractionHandler = async (ctx, interaction) => {
@@ -123,32 +110,39 @@ const componentInteractionHandler = async (ctx, interaction) => {
     if (interaction.data.componentType === 3) {
         idsplit = [interaction.data.customID, interaction.data.values.raw[0]]
         if (permissions.find(x => x.msgid === interaction.message.id)?.permissions?.select?.indexOf(interaction.user.id) < 0) {
-            interaction.defer()
+            await interaction.defer(64)
             return interaction.createFollowup({content: 'You are not allowed to interact with this menu.'})
         }
-        console.log(pastSelects)
         _.remove(pastSelects, (x) => x.msgid === interaction.message.id)
         pastSelects.push({discord_id: interaction.user.id, selection: interaction.data.values.raw[0], msgid: interaction.message.id})
-        console.log(pastSelects)
     } else {
         if (permissions.find(x => x.msgid === interaction.message.id)?.permissions?.interact?.indexOf(interaction.user.id) < 0) {
-            interaction.defer()
+            await interaction.defer(64)
             return interaction.createFollowup({content: 'You are not allowed to interact with this message.'})
         }
         selection = pastSelects.find(x => x.msgid === interaction.message.id)
     }
 
-    console.log(selection)
+    let interactionUser = interaction.user || interaction.member.user
+    let botuser = await fetchOrCreateUser(ctx, interactionUser)
+    const reply = (user, str, clr = 'default', options) => ctx.send(isolatedCtx, user,
+        {
+            embed: ctx.toObj(user, str, ctx.colors[clr]),
+            edit: options.edit || false,
+            parent: options.parent || false,
+            buttons: options.buttons || [],
+            select: options.select || [],
+            permissions: {interact: [interactionUser.id], select: [interactionUser.id]}
+        })
     const isolatedCtx = Object.assign({}, ctx, {
         discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */
         interaction,
         id: idsplit.splice(1),
         selection,
-        send
+        reply
     })
-    console.log(isolatedCtx.selection)
 
-    await trigger('rct', isolatedCtx, interaction.user, [idsplit.shift()])
+    await trigger('rct', isolatedCtx, botuser, [idsplit.shift()])
 
 }
 
@@ -161,5 +155,5 @@ module.exports = {
     componentInteractionHandler,
     modalInteractionHandler,
     pastSelects,
-    permissions
+    permissions,
 }

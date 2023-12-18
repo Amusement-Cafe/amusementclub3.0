@@ -1,8 +1,12 @@
 const {
+    confirmations,
+    interactions,
+    paginations,
     permissions
 } = require('../utils/globalarrays')
 
-const _ = require("lodash");
+
+const _ = require("lodash")
 
 const send = async (ctx, user, args) => {
     let components = []
@@ -35,10 +39,25 @@ const send = async (ctx, user, args) => {
     }
 
     if (args.permissions) {
-        permissions.push({permissions: args.permissions, msgid: response.id})
+        permissions.push({permissions: args.permissions, msgid: response? response.id: ctx.interaction.message.id})
     }
 }
 
+const sendPagination = async (ctx, user, args) => {
+
+}
+
+const sendConfirmation = async (ctx, user, args) => {
+
+}
+
+const sendModal = async (ctx, user, args) => {
+
+}
+
 module.exports = {
-    send
+    send,
+    sendPagination,
+    sendConfirmation,
+    sendModal
 }
