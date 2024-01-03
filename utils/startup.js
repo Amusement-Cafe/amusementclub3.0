@@ -2,8 +2,7 @@ const Filter = require("bad-words")
 
 const {
     send,
-    sendConfirmation,
-    sendPagination,
+    sendInteraction,
     sendModal,
 } = require('../modules/messages')
 
@@ -23,7 +22,7 @@ const toObj = (user, str, clr = 2067276) => {
 
 const direct = async (ctx, user, str, clr = 'default') => {
     try {
-        const ch = await ctx.bot.rest.users.createDM(user.userid)
+        const ch = await ctx.bot.rest.users.createDM(user.userID)
         return ch.createMessage({embeds: [toObj(user, str, ctx.colors[clr])]}).catch(e => console.log(e))
     } catch (e) {console.log(e)}
 }
@@ -135,8 +134,7 @@ const startup = async (config) => {
         send,
         cardInfos,
         sauce,
-        sendConfirmation,
-        sendPagination,
+        sendInteraction,
         sendModal,
         toObj,
         mixpanel

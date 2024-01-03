@@ -1,25 +1,25 @@
 const {model, Schema} = require('mongoose')
 
 const schema = new Schema({
-    userid:             { type: String, index: true },
+    userID:             { type: String, index: true },
     username:           { type: String },
 
     tomatoes:           { type: Number, default: 0, index: true },
     vials:              { type: Number, default: 0, index: true },
     lemons:             { type: Number, default: 0, index: true },
-    promobal:           { type: Number, default: 0, index: true },
+    promoBal:           { type: Number, default: 0, index: true },
     xp:                 { type: Number, default: 0, index: true },
 
     streaks: {
         effects: {
-            memoryval:  { type: Number, default: 0 },
-            memorybday: { type: Number, default: 0 },
-            memoryhall: { type: Number, default: 0 },
-            memoryxmas: { type: Number, default: 0 },
-            xmasspace:      {type: Boolean, default: false},
-            hallspace:      {type: Boolean, default: false},
-            bdayspace:      {type: Boolean, default: false},
-            valspace:       {type: Boolean, default: false},
+            memoryVal:  { type: Number, default: 0 },
+            memoryBday: { type: Number, default: 0 },
+            memoryHall: { type: Number, default: 0 },
+            memoryXmas: { type: Number, default: 0 },
+            xmasSpace:      {type: Boolean, default: false},
+            hallSpace:      {type: Boolean, default: false},
+            bdaySpace:      {type: Boolean, default: false},
+            valSpace:       {type: Boolean, default: false},
         },
         votes: {
             topgg:      { type: Number, default: 0 },
@@ -27,7 +27,7 @@ const schema = new Schema({
         },
         daily: {
             count: { type: Number, default: 0 },
-            lastreset: { type: Date, default: new Date() }
+            lastReset: { type: Date, default: new Date() }
         },
         donations: {
             kofi: {
@@ -48,23 +48,23 @@ const schema = new Schema({
         tags:           {type: Number},
     },
 
-    completedcols:      { type: Array, default: [] },
-    cloutedcols:        { type: Array, default: [] },
+    completedCols:      { type: Array, default: [] },
+    cloutedCols:        { type: Array, default: [] },
     achievements:       { type: Array, default: [] },
     wishlist:           { type: Array, default: [] },
 
-    lastdaily:          { type: Date, default: new Date() },
-    lastvote:           { type: Date, default: new Date() },
-    lastannounce:       { type: Date, default: new Date() },
-    lastmsg:            { type: String },
-    lastcard:           { type: Number, default: -1 },
+    lastDaily:          { type: Date, default: new Date() },
+    lastVote:           { type: Date, default: new Date() },
+    lastAnnounce:       { type: Date, default: new Date() },
+    lastMsg:            { type: String },
+    lastCard:           { type: Number, default: -1 },
 
-    dailynotified:      { type: Boolean, default: true },
-    votenotified:       { type: Boolean, default: false },
+    dailyNotified:      { type: Boolean, default: true },
+    voteNotified:       { type: Boolean, default: false },
 
     hero:               { type: String },
-    herochanged:        { type: Date },
-    herosubmits:        { type: Number, default: 0 },
+    heroChanged:        { type: Date },
+    heroSubmits:        { type: Number, default: 0 },
 
     roles:              { type: Array, default: [] },
 
@@ -73,28 +73,28 @@ const schema = new Schema({
 
     prefs:              {
         notify:  {
-            aucbidme:   { type: Boolean, default: true  },
-            aucoutbid:  { type: Boolean, default: true  },
-            aucnewbid:  { type: Boolean, default: false },
-            aucend:     { type: Boolean, default: true  },
+            aucBidMe:   { type: Boolean, default: true  },
+            aucOutbid:  { type: Boolean, default: true  },
+            aucNewBid:  { type: Boolean, default: false },
+            aucEnd:     { type: Boolean, default: true  },
             announce:   { type: Boolean, default: false },
             daily:      { type: Boolean, default: false },
             vote:       { type: Boolean, default: false },
             completed:  { type: Boolean, default: true  },
-            effectend:  { type: Boolean, default: false },
+            effectEnd:  { type: Boolean, default: false },
         },
         interact:   {
-            canhas:     { type: Boolean, default: true  },
-            candiff:    { type: Boolean, default: true  },
-            cansell:    { type: Boolean, default: true  },
+            canHas:     { type: Boolean, default: true  },
+            canDiff:    { type: Boolean, default: true  },
+            canSell:    { type: Boolean, default: true  },
         },
         profile:        {
             bio:        { type: String, default: 'This user has not set a bio' },
             title:      { type: String, default: '' },
             color:      { type: String, default: '16756480' },
             card:       { type: String, default: '' },
-            favcomplete:{ type: String, default: '' },
-            favclout:   { type: String, default: '' },
+            favComplete:{ type: String, default: '' },
+            favClout:   { type: String, default: '' },
         }
     },
 

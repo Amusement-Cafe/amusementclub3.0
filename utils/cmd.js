@@ -94,13 +94,13 @@ const buildTree = (args, perm) => {
 
 const trigger = async (type, ctx, user, args) => {
     let cursor = tree[type]
-    let deferless, ephemeral, deferred
+    let deferless, ephemeral
 
     while (cursor.hasOwnProperty(args[0])) {
         cursor = cursor[args[0]]
         args.shift()
-        // if (type === 'cmd')
-        //     ctx.capitalMsg.shift()
+        if (type === 'cmd')
+            ctx.capitalMsg.shift()
     }
 
     if (cursor._options) {
@@ -115,26 +115,26 @@ const trigger = async (type, ctx, user, args) => {
     }
 
     if (type === 'cmd') {
-        if (!deferless && !ephemeral) {
+        if (!cursor.hasOwnProperty('_callback')) {
             await ctx.interaction.defer()
-            deferred = true
+            return ctx.reply(user, `unknown command. Please check your spelling or use help`, 'red')
         }
-        // if (!cursor.hasOwnProperty('_callback')) {
-        //     await ctx.interaction.defer()
-        //     return ctx.reply(user, `unknown command. Please check your spelling or use help`, 'red')
-        // }
-        //
-        // if (cursor._perm) {
-        //     if(!user.roles || !cursor._perm.find(x => user.roles.some(y => x === y))) {
-        //         await ctx.interaction.defer()
-        //         return ctx.reply(user,`only users with roles **[${cursor._perm}]** can execute this command`, 'red')
-        //     }
-        // }
-        //
+
+        if (cursor._perm) {
+            if(!user.roles || !cursor._perm.find(x => user.roles.some(y => x === y))) {
+                await ctx.interaction.defer()
+                return ctx.reply(user,`only users with roles **[${cursor._perm}]** can execute this command`, 'red')
+            }
+        }
+
         // if(!ctx.guild && cursor._access != 'dm') {
         //     await ctx.interaction.defer()
         //     return ctx.reply(user, `this command is possible only in guild (server) channel`, 'red')
         // }
+
+        if (!deferless && !ephemeral) {
+            await ctx.interaction.defer()
+        }
     }
     
     if (!cursor.hasOwnProperty('_callback'))

@@ -1,0 +1,115 @@
+{
+  "all": [
+    {
+      "description": "Display All Notification Preferences",
+      "label": "Notification Preferences",
+      "value": "notify"
+    },
+    {
+      "description": "Display All Interaction Preferences",
+      "label": "Interaction Preferences",
+      "value": "interact"
+    },
+    {
+      "description": "Display All Profile Preferences",
+      "label": "Profile Preferences",
+      "value": "profile"
+    }
+  ],
+  "interact": [
+    {
+      "description": "",
+      "label": "Can Has",
+      "value": "interact_canHas"
+    },
+    {
+      "description": "",
+      "label": "Can Diff",
+      "value": "interact_canDiff"
+    },
+    {
+      "description": "",
+      "label": "Can Sell",
+      "value": "interact_canSell"
+    }
+  ],
+  "notify": [
+    {
+      "description": "",
+      "label": "First Bid On Your Auctions",
+      "value": "notify_aucBidMe"
+    },
+    {
+      "description": "",
+      "label": "Outbid On Auction Notification",
+      "value": "notify_aucOutbid"
+    },
+    {
+      "description": "",
+      "label": "New Bid On Auction Notification",
+      "value": "notify_aucNewBid"
+    },
+    {
+      "description": "",
+      "label": "Auction End Notification",
+      "value": "notify_aucEnd"
+    },
+    {
+      "description": "",
+      "label": "New Bot Announcements",
+      "value": "notify_announce"
+    },
+    {
+      "description": "",
+      "label": "Daily Ready Notifications",
+      "value": "notify_daily"
+    },
+    {
+      "description": "",
+      "label": "Vote Ready Notifications",
+      "value": "notify_vote"
+    },
+    {
+      "description": "",
+      "label": "Collection Completion Status Notifications",
+      "value": "notify_completed"
+    },
+    {
+      "description": "",
+      "label": "Effect Expires Or Comes Off Cooldown",
+      "value": "notify_effectEnd"
+    }
+  ],
+  "profile": [
+    {
+      "description": "",
+      "label": "Set a custom bio",
+      "value": "profile_bio"
+    },
+    {
+      "description": "",
+      "label": "Choose a custom title",
+      "value": "profile_title"
+    },
+    {
+      "description": "",
+      "label": "Set a custom color",
+      "value": "profile_color"
+    },
+    {
+      "description": "",
+      "label": "Display your favorite card",
+      "value": "profile_card"
+    },
+    {
+      "description": "",
+      "label": "Set your favorite completed collection",
+      "value": "profile_favComplete"
+    },
+    {
+      "description": "",
+      "label": "Set your favorite clouted collection",
+      "value": "profile_favClout"
+    }
+  ]
+}

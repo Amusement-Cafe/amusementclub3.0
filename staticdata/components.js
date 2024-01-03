@@ -1,46 +1,4 @@
 module.exports = {
-    first: {
-        type: 2,
-        label: "First",
-        style: 1,
-        customID: "⏪"
-    },
-    back: {
-        type: 2,
-        label: "Back",
-        style: 1,
-        customID: "⬅"
-    },
-    forward: {
-        type: 2,
-        label: "Next",
-        style: 1,
-        customID: "➡"
-    },
-    last: {
-        type: 2,
-        label: "Last",
-        style: 1,
-        customID: "⏩"
-    },
-    close: {
-        type: 2,
-        label: "Delete",
-        style: 4,
-        customID: "🚫"
-    },
-    confirm: {
-        type: 2,
-        label: "Confirm",
-        style: 3,
-        customID: "✅"
-    },
-    decline: {
-        type: 2,
-        label: "Decline",
-        style: 4,
-        customID: "❌"
-    },
     /*
     Button Class
     Requires an id to be passed upon creation

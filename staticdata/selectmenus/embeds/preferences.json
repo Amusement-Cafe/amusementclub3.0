@@ -1,0 +1,86 @@
+{
+  "aucBidMe": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "aucOutbid": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "aucNewBid": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "aucEnd": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "announce": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "daily": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "vote": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "completed": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "effectEnd": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "canHas": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "canDiff": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "canSell": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "bio": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "title": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "color": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "card": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "favComplete": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "favClout": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "notify": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "interact": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  },
+  "profile": {
+    "title": "Auction Bid Notice",
+    "description": "Auction Bid Description"
+  }
+}

@@ -2,12 +2,12 @@ const Users = require('../collections/user')
 
 
 const fetchOrCreateUser = async (ctx, interactionuser) => {
-    let user = await Users.findOne({userid: interactionuser.id})
+    let user = await Users.findOne({userID: interactionuser.id})
     let display = interactionuser.globalName || interactionuser.username
 
     if (!user) {
         user = await new Users()
-        user.userid = interactionuser.id
+        user.userID = interactionuser.id
         user.username = display
         user.tomatoes = 1
         user.joined = new Date()

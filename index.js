@@ -1,6 +1,5 @@
 const Oceanic   = require('oceanic.js')
 const _         = require("lodash")
-const Filter    = require("bad-words")
 const mongoose  = require("mongoose")
 const commands  = require('./commands')
 
@@ -25,7 +24,7 @@ const {
 } = require('./utils/startup')
 
 const bot = new Oceanic.Client({ auth: 'Bot ' + process.env.token})
-const shards = new Oceanic.ShardManager(bot, {maxShards: parseInt(process.env.shards) })
+const shards = new Oceanic.ShardManager(bot)
 let ctx, config, started
 
 
@@ -68,7 +67,7 @@ con('updateCards', async (carddata) => {
 con('updateCols', (coldata) => ctx.collections = coldata.updateCols)
 con('updatePromos', (promodata) => ctx.promos = promodata.updatePromos.map( x => Object.assign({}, x, {starts: Date.parse(x.starts), expires: Date.parse(x.expires)})))
 con('updateBoosts', (boostdata) => ctx.boosts = boostdata.updateBoosts.map( x => Object.assign({}, x, {starts: Date.parse(x.starts), expires: Date.parse(x.expires)})))
-con('updateWords', (wordsdata) => filter.addWords(...wordsdata.updateWords))
+con('updateWords', (wordsdata) => ctx.filter.addWords(...wordsdata.updateWords))
 
 
 bot.once('ready', () => {
