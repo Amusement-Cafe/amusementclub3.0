@@ -1,3 +1,6 @@
+const _ = require('lodash')
+
+
 const {
     cmd,
     rct,
@@ -13,16 +16,25 @@ const {
 } = require('../staticdata/components')
 
 const {
+    withCards,
+    formatCard,
+} = require("../modules/card")
+
+const {
     send
 } = require('../modules/messages')
 
-cmd('daily', async (ctx, user, args) => await daily(ctx, user, args))
+const nodeHtmlToImage = require('node-html-to-image')
+const htmlProfile = require('../staticdata/profile')
+
+
+cmd('daily', async (ctx, user) => await daily(ctx, user))
 
 cmd('cards', async (ctx, user, args) => await cards(ctx, user, args))
 
 cmd('balance', async (ctx, user, args) => await balance(ctx, user, args))
 
-cmd('profile', async (ctx, user, args) => await defaultFunction(ctx, user, args))
+cmd('profile', async (ctx, user, args) => await profile(ctx, user, args))
 
 cmd('has', async (ctx, user, args) => await defaultFunction(ctx, user, args))
 
@@ -54,24 +66,53 @@ rct('red', async (ctx, user, args) => await buttonFunction(ctx, user, args))
 rct('green', async (ctx, user, args) => await buttonFunction(ctx, user, args))
 rct('stringy', async (ctx, user, args) => await selectFunction(ctx, user, args))
 
-const daily = async (ctx, user, args) => {
-    if (user.lastdaily > subTime(new Date(), 20, 'hours')) {
-        return ctx.reply(user, `your daily is not ready yet! You can claim your daily <t:${Math.floor(new Date(addTime(user.lastdaily, 20, 'hours')).getTime() / 1000)}:R>`, 'red')
+const daily = async (ctx, user) => {
+    if (user.lastDaily > subTime(new Date(), 20, 'hours')) {
+        return ctx.reply(user, `your daily is not ready yet! You can claim your daily <t:${Math.floor(new Date(addTime(user.lastDaily, 20, 'hours')).getTime() / 1000)}:R>`, 'red')
     }
-    user.lastdaily = new Date()
+    user.lastDaily = new Date()
     user.tomatoes += 1
     await user.save()
 
     await ctx.reply(user, `you claimed daily and got a tomato!`, 'green')
 }
 
-const cards = async (ctx, user, args) => {
-    await ctx.reply(user, `this is a test of reply!`)
-}
+const cards = withCards(async (ctx, user, args, cards) => {
+    let cardstr = cards.map(x => `${formatCard(ctx, x)}`)
+    let pages = ctx.makePages(cardstr, 20)
+
+    await ctx.sendInteraction(ctx, user, {
+        pages,
+        buttons: ['first', 'last', 'next', 'back'],
+        embed: { author: { name: `${user.username}, your cards (${cards.length} results)` } }
+    })
+})
 
 const balance = async (ctx, user, args) => {
     return ctx.reply(user, `you have **${Math.round(user.tomatoes)}** ${ctx.symbols.tomato}, **${Math.round(user.vials)}** ${ctx.symbols.vial} and **${Math.round(user.lemons)}** ${ctx.symbols.lemon}`, 'green')
 }
+
+const profile = async (ctx, user, args) => {
+    await ctx.reply(user, `your profile image is currently being generated. Please wait a moment until it completes`, 'yellow')
+    const thing = await nodeHtmlToImage({
+        html: htmlProfile,
+        puppeteerArgs: {
+            args: [
+                "--disable-gpu",
+                "--disable-dev-shm-usage",
+                "--disable-setuid-sandbox",
+                "--no-sandbox"
+            ]
+        },
+        transparent: true,
+        content: {
+            avatar: ctx.interaction.user.avatarURL('png', 128),
+            username: user.username
+        }
+    })
+    return send(ctx, user, {embed: {image: {url: `attachment://profile.png`}, color: ctx.colors.blue}, files: [ {name: 'profile.png', contents: thing}], edit: true})
+}
+
 const defaultFunction = async (ctx, user, args) => {
     const btn = new Button('red_test_id').setLabel('Test Label').setStyle(4)
     const btn2 = new Button('green_anotherid').setLabel('Lol Label').setStyle(3)

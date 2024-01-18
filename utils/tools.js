@@ -74,7 +74,27 @@ const subTime = (date, count, units) => {
     return newDate
 }
 
+const makePages = (array, split = 10, maxCharacters = 4096) => {
+    let count = 0, page = 0
+    const pages = [""]
+    array.map(x => {
+        const entry = `${x}\n`
+
+        if(count >= split || pages[page].length + entry.length > maxCharacters) {
+            page++
+            count = 1
+            pages[page] = entry
+        } else {
+            count++
+            pages[page] += entry
+        }
+    })
+
+    return pages
+}
+
 module.exports = {
     addTime,
+    makePages,
     subTime,
 }

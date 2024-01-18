@@ -20,15 +20,21 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
     if (interaction.applicationID !== ctx.bot.application.id)
         return
 
-
-    // const reply = (user, str, clr = 'default', edit) => send(interaction, toObj(user, str, clr), user.discord_id, [], edit)
-    const reply = (user, str, clr = 'default', edit = false) => ctx.send(isolatedCtx, user, {
+    /**
+     *
+     * @param user
+     * @param str
+     * @param clr
+     * @param args
+     * @returns {*}
+     */
+    const reply = (user, str, clr = 'default', args) => ctx.send(isolatedCtx, user, {
         embed: ctx.toObj(user, str, ctx.colors[clr]),
-        edit: options.edit || false,
-        parent: options.parent || false,
-        buttons: options.buttons || [],
-        select: options.select || [],
-        permissions: {interact: [user.userid], select: [user.userid]}
+        edit: args?.edit || false,
+        parent: args?.parent || false,
+        buttons: args?.buttons || [],
+        select: args?.select || [],
+        perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]},
     })
 
 
@@ -48,7 +54,7 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
             } else if ((x.name === 'global' && x.value) || (x.name === 'local' && x.value)) {
                 base.push(x.name)
             } else {
-                options.push(x)
+                options.push({[x.name]: x.value})
             }
         })
     }
@@ -62,7 +68,7 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
         globals: {}, /* global parameters */
         discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */
         interaction: interaction,
-        options
+        options: _.assign({}, ...options)
     })
 
     // usr.username = usr.username.replace(/\*/gi, '')
@@ -90,6 +96,14 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
     // usr.vials = Math.min(usr.vials, 10 ** 6)
     //
     console.log(`${new Date().toLocaleTimeString()} [${user.username}]: ${cntnt.join(' ')}`)
+    ctx.analytics.capture({
+        distinctId: user.userID,
+        event: "command",
+        properties: {
+            main: base.join(" "),
+            options: isolatedCtx.options
+        }
+    })
     // if (isolatedCtx.discord_guild)
     //     isolatedCtx.guild = curguild || await guild.fetchOrCreate(isolatedCtx, usr, interaction.member.guild)
     //
@@ -132,14 +146,22 @@ const componentInteractionHandler = async (ctx, interaction) => {
 
     let interactionUser = interaction.user || interaction.member.user
     let botUser = await fetchOrCreateUser(ctx, interactionUser)
-    const reply = (user, str, clr = 'default', options) => ctx.send(isolatedCtx, user,
+    /**
+     *
+     * @param user
+     * @param str
+     * @param clr
+     * @param args
+     * @returns {*}
+     */
+    const reply = (user, str, clr = 'default', args) => ctx.send(isolatedCtx, user,
         {
             embed: ctx.toObj(user, str, ctx.colors[clr]),
-            edit: options.edit || false,
-            parent: options.parent || false,
-            buttons: options.buttons || [],
-            select: options.select || [],
-            perms: {interact: [interactionUser.id], select: [interactionUser.id]}
+            edit: args.edit || false,
+            parent: args.parent || false,
+            buttons: args.buttons || [],
+            select: args.select || [],
+            perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]},
         })
     const isolatedCtx = Object.assign({}, ctx, {
         discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */

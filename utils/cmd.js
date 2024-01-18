@@ -1,3 +1,7 @@
+const {
+    parseArgs
+} = require("../modules/interactions")
+
 const tree = {
     cmd: {},
     rct: {},
@@ -94,7 +98,7 @@ const buildTree = (args, perm) => {
 
 const trigger = async (type, ctx, user, args) => {
     let cursor = tree[type]
-    let deferless, ephemeral
+    let deferless, ephemeral, parsedArgs
 
     while (cursor.hasOwnProperty(args[0])) {
         cursor = cursor[args[0]]
@@ -135,13 +139,14 @@ const trigger = async (type, ctx, user, args) => {
         if (!deferless && !ephemeral) {
             await ctx.interaction.defer()
         }
+        parsedArgs = parseArgs(ctx, user, ctx.options)
     }
     
     if (!cursor.hasOwnProperty('_callback'))
         return
 
 
-    const newArgs = [ctx, user || { }].concat(args)
+    const newArgs = [ctx, user, parsedArgs || { }].concat(args)
 
     try {
         return await cursor._callback.apply({}, newArgs)

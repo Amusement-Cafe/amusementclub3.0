@@ -1,10 +1,18 @@
-const Filter = require("bad-words")
+const Filter    = require("bad-words")
+
+const {
+    PostHog
+} = require('posthog-node')
 
 const {
     send,
     sendInteraction,
     sendModal,
 } = require('../modules/messages')
+
+const {
+    makePages
+} = require('./tools')
 
 const filter = new Filter()
 const cardInfos = []
@@ -75,9 +83,25 @@ const startup = async (config) => {
     config.cards = fillCardData(config.data.cards, config)
     // await fillCardOwnerCount(cards)
 
-    let mixpanel = {
-        track: () => { }
+    let analytics = {
+        capture: () => { }
     }
+
+
+    if (config.analytics.posthog.key)
+        analytics = new PostHog(config.analytics.posthog.key, {host: config.analytics.posthog.url})
+
+    analytics.capture({
+        distinctId: 'system',
+        event: 'startup',
+        properties: {
+            startup_time: new Date(),
+            extra: "Something extra",
+            number: 1234,
+            array: ["Array", "of", "Items"],
+            object: {item: "object Item"}
+        }
+    })
 
     // if(config.sourcing.sauceNaoToken) {
     //     sauce = sagiri(config.sourcing.sauceNaoToken, {
@@ -137,7 +161,8 @@ const startup = async (config) => {
         sendInteraction,
         sendModal,
         toObj,
-        mixpanel
+        makePages,
+        analytics
     }
 
 }

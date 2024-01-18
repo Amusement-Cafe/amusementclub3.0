@@ -9,6 +9,13 @@ const {
 
 const _ = require("lodash")
 
+/**
+ *
+ * @param ctx
+ * @param user
+ * @param args
+ * @returns {Promise<void>}
+ */
 const send = async (ctx, user, args) => {
     let components = []
 
@@ -40,7 +47,7 @@ const send = async (ctx, user, args) => {
     }
 
     if (args.permissions) {
-            interactions.push({perms: args.permissions, msgID: response? response.id: ctx.interaction.message.id})
+        interactions.push({perms: args.permissions, msgID: response? response.id: ctx.interaction.message.id})
     } else {
         interactions.push({perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]}, msgID: response? response.id: ctx.interaction.message.id, userID: user.userID})
     }
@@ -93,6 +100,13 @@ const cfmResolve = async (ctx, confirm) => {
         _.pull(interactions, data)
 }
 
+/**
+ *
+ * @param ctx - Base context object
+ * @param user - Bot user object
+ * @param args - The basic response args (e.g. buttons/pages/perms/onConfirm/onDecline/etc)
+ * @returns {Promise<void>}
+ */
 const sendInteraction = async (ctx, user, args) => {
     let interaction = Object.assign({}, {
         userID: user.userID,
@@ -116,15 +130,17 @@ const sendInteraction = async (ctx, user, args) => {
         interaction.selection.map(x => interaction.components.push({type: 1, components: [x]}))
     }
 
-    if (interaction.pages?.length > 1) {
+    if (interaction.pages)
         interaction.switchPage(interaction)
+
+    if (interaction.pages?.length > 1) {
         interaction.embed.footer = interaction.embed.footer || { text: `Page 1/${interaction.pages.length}`}
         let pgnButtons = interaction.customPgnButtons? interaction.customPgnButtons: []
-        if (interaction.buttons?.includes('first')) pgnButtons.push({type: 2, label: 'First', style: 1, customID: 'pgn_first'})
-        if (interaction.buttons?.includes('back')) pgnButtons.push({type: 2, label: 'Back', style: 1, customID: 'pgn_back'})
-        if (interaction.buttons?.includes('next')) pgnButtons.push({type: 2, label: 'Next', style: 1, customID: 'pgn_next'})
-        if (interaction.buttons?.includes('last')) pgnButtons.push({type: 2, label: 'Last', style: 1, customID: 'pgn_last'})
-        if (interaction.buttons?.includes('close')) pgnButtons.push({type: 2, label: 'End', style: 4, customID: 'pgn_end'})
+        if (interaction.buttons?.includes('first') && !interaction.customPgnButtons) pgnButtons.push({type: 2, label: 'First', style: 1, customID: 'pgn_first'})
+        if (interaction.buttons?.includes('back')  && !interaction.customPgnButtons) pgnButtons.push({type: 2, label: 'Back', style: 1, customID: 'pgn_back'})
+        if (interaction.buttons?.includes('next')  && !interaction.customPgnButtons) pgnButtons.push({type: 2, label: 'Next', style: 1, customID: 'pgn_next'})
+        if (interaction.buttons?.includes('last')  && !interaction.customPgnButtons) pgnButtons.push({type: 2, label: 'Last', style: 1, customID: 'pgn_last'})
+        if (interaction.buttons?.includes('close') && !interaction.customPgnButtons) pgnButtons.push({type: 2, label: 'End', style: 4, customID: 'pgn_end'})
         interaction.components.push({ type: 1, components: pgnButtons })
     }
 

@@ -16,7 +16,7 @@ module.exports = {
     // Tags: require('./tag'),
     // Transactions: require('./transaction'),
     Users: require('./user'),
-    // UserCards: require('./usercard'),
+    UserCards: require('./usercard'),
     // UserEffects: require('./usereffect'),
     // UserInventory: require('./userinventory'),
     // UserQuests: require('./userquest'),
