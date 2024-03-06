@@ -1,5 +1,6 @@
 const _ = require('lodash')
-
+const nodeHtmlToImage = require('node-html-to-image')
+const htmlProfile = require('../staticdata/profile')
 
 const {
     cmd,
@@ -16,21 +17,11 @@ const {
 } = require('../staticdata/components')
 
 const {
-    withCards,
-    formatCard,
-} = require("../modules/card")
-
-const {
     send
 } = require('../modules/messages')
 
-const nodeHtmlToImage = require('node-html-to-image')
-const htmlProfile = require('../staticdata/profile')
-
 
 cmd('daily', async (ctx, user) => await daily(ctx, user))
-
-cmd('cards', async (ctx, user, args) => await cards(ctx, user, args))
 
 cmd('balance', async (ctx, user, args) => await balance(ctx, user, args))
 
@@ -76,17 +67,6 @@ const daily = async (ctx, user) => {
 
     await ctx.reply(user, `you claimed daily and got a tomato!`, 'green')
 }
-
-const cards = withCards(async (ctx, user, args, cards) => {
-    let cardstr = cards.map(x => `${formatCard(ctx, x)}`)
-    let pages = ctx.makePages(cardstr, 20)
-
-    await ctx.sendInteraction(ctx, user, {
-        pages,
-        buttons: ['first', 'last', 'next', 'back'],
-        embed: { author: { name: `${user.username}, your cards (${cards.length} results)` } }
-    })
-})
 
 const balance = async (ctx, user, args) => {
     return ctx.reply(user, `you have **${Math.round(user.tomatoes)}** ${ctx.symbols.tomato}, **${Math.round(user.vials)}** ${ctx.symbols.vial} and **${Math.round(user.lemons)}** ${ctx.symbols.lemon}`, 'green')

@@ -42,10 +42,10 @@ const schema = new Schema({
     },
 
     ban: {
-        full:           {type: Boolean},
-        embargo:        {type: Boolean},
-        report:         {type: Boolean},
-        tags:           {type: Number},
+        full:           {type: Boolean, default: false},
+        embargo:        {type: Boolean, default: false},
+        report:         {type: Boolean, default: false},
+        tags:           {type: Number,  default: 0},
     },
 
     completedCols:      { type: Array, default: [] },

@@ -47,13 +47,13 @@ const send = async (ctx, user, args) => {
     }
 
     if (args.permissions) {
-        interactions.push({perms: args.permissions, msgID: response? response.id: ctx.interaction.message.id})
+        interactions.push({perms: args.permissions, msgID: response? response.message? response.message.id: response.id: ctx.interaction.message.id})
     } else {
-        interactions.push({perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]}, msgID: response? response.id: ctx.interaction.message.id, userID: user.userID})
+        interactions.push({perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]}, msgID: response? response.message? response.message.id: response.id: ctx.interaction.message.id, userID: user.userID})
     }
-}
 
-const sendModal = async (ctx, user, args) => {}
+    return response
+}
 
 const switchPage = async (ctx, newPage) => {
     const userID = ctx.interaction.member? ctx.interaction.member.id: ctx.interaction.user.id
@@ -90,7 +90,7 @@ const cfmResolve = async (ctx, confirm) => {
     if(!confirm)
         await data.onDecline(ctx.interaction)
 
-    if(data.check && await data.check())
+    if(data.checks && await data.checks())
         return await data.onError(ctx.interaction)
 
     if(confirm)
@@ -112,7 +112,7 @@ const sendInteraction = async (ctx, user, args) => {
         userID: user.userID,
         perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]},
         components: [],
-        buttons: ['first', 'back', 'forward', 'last'],
+        buttons: ['first', 'back', 'next', 'last'],
         pageNum: 0,
         interaction: ctx.interaction,
         embed: { title: 'Default Interaction Response Title' },
@@ -152,11 +152,14 @@ const sendInteraction = async (ctx, user, args) => {
         interaction.components.push({ type: 1, components: buttons })
     }
 
+    if(interaction.checks && await interaction.checks())
+        return await interaction.onError(ctx.interaction)
+
     await invalidateOld(ctx, user)
 
     const followup = await ctx.interaction.createFollowup({embeds: [interaction.embed], components: interaction.components})
-    interaction.msgID = followup.id
-    interaction.channelID = followup.channelID
+    interaction.msgID = followup.message.id
+    interaction.channelID = followup.message.channelID
 
     if (interaction.components.length > 0)
         interactions.push(interaction)
@@ -178,6 +181,7 @@ rct('pgn', async (ctx) => {
     if (type === 'back') await switchPage(ctx, cur => cur - 1)
     // if (type === 'end')
 })
+
 rct('cfm', async (ctx, user, args) => {
     ctx.id.pop() === 'cfm'? await cfmResolve(ctx, true): await cfmResolve(ctx, false)
 })
@@ -186,5 +190,4 @@ rct('cfm', async (ctx, user, args) => {
 module.exports = {
     send,
     sendInteraction,
-    sendModal
 }

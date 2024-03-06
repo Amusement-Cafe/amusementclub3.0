@@ -1,4 +1,4 @@
-const Filter    = require("bad-words")
+const Filter = require("bad-words")
 
 const {
     PostHog
@@ -7,7 +7,6 @@ const {
 const {
     send,
     sendInteraction,
-    sendModal,
 } = require('../modules/messages')
 
 const {
@@ -142,7 +141,7 @@ const startup = async (config) => {
         reportChannel: config.channels.report,
         settings: {
             wip: config.bot.maintenance,
-            wipMsg: 'bot is currently under maintenance. Please check again later |ω･)ﾉ',
+            wipMsg: 'the bot is currently starting up. Please check again later |ω･)ﾉ',
             aucLock: config.auction.lock
         },
         // help: require('../staticdata/help'),
@@ -151,15 +150,14 @@ const startup = async (config) => {
         // achievements: require('../staticdata/achievements'),
         // quests: require('../staticdata/quests'),
         // effects: require('../staticdata/effects'),
-        // slashCmd: require('../staticdata/slashcommands'),
-        // adminCmd: require('../staticdata/adminslashcommands'),
+        slashCmd: require('../slashcommands/commands.json'),
+        adminCmd: require('../slashcommands/admincommands.json'),
         distribution: calculateDistribution(config.cards, config.data.collections),
         direct,
         send,
         cardInfos,
         sauce,
         sendInteraction,
-        sendModal,
         toObj,
         makePages,
         analytics

@@ -5,10 +5,6 @@ const {
 } = require('../utils/cmd')
 
 const {
-    fetchOrCreateUser
-} = require('./user')
-
-const {
     interactions
 } = require('../utils/globalarrays')
 
@@ -40,8 +36,7 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
 
     // const curguild = await guild.fetchGuildById(interaction.guildID)
 
-    let substring = interaction.data.name === 'sudo'? interaction.data.name: interaction.data.name.substring(2)
-    let base = [substring]
+    let base = [interaction.data.name]
     let options = []
 
     let cursor = interaction.data
@@ -68,11 +63,11 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
         globals: {}, /* global parameters */
         discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */
         interaction: interaction,
-        options: _.assign({}, ...options)
+        options: _.assign({}, ...options),
+        command: msg.map(x => x.trim()).join(' ').split(/ +/)
     })
 
     // usr.username = usr.username.replace(/\*/gi, '')
-    const cntnt = msg.map(x => x.trim()).join(' ').split(/ +/)
 
     if (userq.some(x => x.id === user.userid)) {
         await interaction.defer(64)
@@ -95,7 +90,7 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
     // usr.exp = Math.min(usr.exp, 10 ** 7)
     // usr.vials = Math.min(usr.vials, 10 ** 6)
     //
-    console.log(`${new Date().toLocaleTimeString()} [${user.username}]: ${cntnt.join(' ')}`)
+    console.log(`${new Date().toLocaleTimeString()} [${user.username}]: ${isolatedCtx.command.join(' ')}`)
     ctx.analytics.capture({
         distinctId: user.userID,
         event: "command",
@@ -113,10 +108,10 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
     //     guild: isolatedCtx.guild ? isolatedCtx.guild.id : 'direct',
     //     options: options
     // })
-    await trigger('cmd', isolatedCtx, user, cntnt)
+    await trigger('cmd', isolatedCtx, user, isolatedCtx.command)
 }
 
-const componentInteractionHandler = async (ctx, interaction) => {
+const componentInteractionHandler = async (ctx, interaction, user) => {
     let idsplit = interaction.data.customID.split('_')
     let selection
     let activeInteraction = interactions.find(x => x.msgID === interaction.message.id)
@@ -144,8 +139,6 @@ const componentInteractionHandler = async (ctx, interaction) => {
         selection = pastSelects.find(x => x.msgID === interaction.message.id)
     }
 
-    let interactionUser = interaction.user || interaction.member.user
-    let botUser = await fetchOrCreateUser(ctx, interactionUser)
     /**
      *
      * @param user
@@ -171,7 +164,7 @@ const componentInteractionHandler = async (ctx, interaction) => {
         reply
     })
 
-    await trigger('rct', isolatedCtx, botUser, [idsplit.shift()])
+    await trigger('rct', isolatedCtx, user, [idsplit.shift()])
 
 }
 

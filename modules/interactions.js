@@ -1,12 +1,16 @@
 const {
-    firstBy
+    firstBy,
 } = require("thenby")
 
-const parseArgs = (ctx, user, options) => {
-    const cardOption = options.card_query || options.card_query1 || options.card_query2
-    const cardArgs = cardOption? cardOption.split(' ').map(x => x.toLowerCase()): []
+const {
+    bestColMatch,
+} = require('./collection')
 
-    let sort
+const {
+    evalSort
+} = require('../utils/tools')
+
+const parseArgs = (ctx, user, options) => {
     let query = {
         cols: [],
         tags: [],
@@ -24,7 +28,7 @@ const parseArgs = (ctx, user, options) => {
         switch (name) {
             case 'amount': query.amount = value; break;
             case 'anilist_link': query.anilistLink = value; break;
-            case 'auction_id': query.aucID = value; break;
+            case 'auction_id': query.auctionID = value; break;
             case 'auctions': query.auctions = value; break;
             case 'author_id': query.author = value; break;
             case 'bid': query.bid = value; break;
@@ -32,13 +36,12 @@ const parseArgs = (ctx, user, options) => {
             case 'booru_id': query.booruID = value; break;
             case 'building': query.building = value; break;
             case 'card_id': query.cardID = value; break;
-            case 'card_query': query.cardQuery = parseCardArgs(user, value); break;
-            case 'card_query_1': forgeArgs1 = parseArgs(user, value); query.cardQuery1 = value; break;
-            case 'card_query_2': forgeArgs2 = parseArgs(user, value); query.cardQuery2 = value; break;
+            case 'card_query': query.cardQuery = parseCardArgs(ctx, user, value); break;
+            case 'card_query_1': forgeArgs1 = parseCardArgs(ctx, user, value); query.cardQuery1 = value; break;
+            case 'card_query_2': forgeArgs2 = parseCardArgs(ctx, user, value); query.cardQuery2 = value; break;
             case 'claim_id': query.claimID = value; break;
             case 'clouted': query.clouted = value; break;
-            // case 'collection': query.cols.push(value.split(' ').map(y => bestColMatchMulti(ctx, y.replace('-', '')))); query.colQuery = value; break;
-            case 'collection': query.cols.push(value.split(' ').map(y => y.replace('-', ''))); query.colQuery = value; break;
+            case 'collection': query.cols.push(value.split(' ').map(y => bestColMatch(ctx, y.replace('-', '')))); query.colQuery = value; break;
             case 'completed': query.completed = value; break;
             case 'count': query.count = value; break;
             case 'effect_name': query.effect = value; break;
@@ -47,7 +50,7 @@ const parseArgs = (ctx, user, options) => {
             case 'guild_id': query.guildID = value; break;
             case 'hero': query.hero = value; break;
             case 'interact_option': query.option = value; break;
-            case 'inventory_item': query.invItem = value; break;
+            case 'inventory_item': query.inventoryItem = value; break;
             case 'item_id': query.itemID = value; break;
             case 'lift': query.lift = value; break;
             case 'me': query.me = value; break;
@@ -62,7 +65,8 @@ const parseArgs = (ctx, user, options) => {
             case 'quest_number': query.questNum = value; break;
             case 'rating': query.rating = value; break;
             case 'received': query.received = value; break;
-            case 'role': query.role = value; break;
+            case 'role':
+            case 'roles': query.roles = value; break;
             case 'slot_number': query.slot = value; break;
             case 'sort_completion': query.sortComplete = value; break;
             case 'source': query.source = value; break;
@@ -72,7 +76,7 @@ const parseArgs = (ctx, user, options) => {
             case 'time_length': query.timeLength = value; break;
             case 'title': query.title = value; break;
             case 'to': query.to = value; break;
-            case 'transaction_id': query.transID = value; break;
+            case 'transaction_id': query.transactionID = value; break;
             case 'unlocked': query.any = value; break;
             case 'user_ids': query.users = value; break;
             default:
@@ -85,7 +89,7 @@ const parseArgs = (ctx, user, options) => {
     return query
 }
 
-const parseCardArgs = (user, cardArgs) => {
+const parseCardArgs = (ctx, user, cardArgs) => {
     let query = {
         antiCols: [],
         antiLevels: [],
@@ -102,7 +106,7 @@ const parseCardArgs = (user, cardArgs) => {
     let sort
 
     args.map(x => {
-        const subStr = x.substring(1)
+        let subStr = x.substring(1)
         const start = x[0]
 
         if (x === '.') {
@@ -128,12 +132,21 @@ const parseCardArgs = (user, cardArgs) => {
                     sort = sortBuilder((a, b) => a.col - b.col, lessThan, sort)
                     break;
                 case 'eval':
-                    // sort = sortBuilder(, lessThan, sort)
+                    sort = sortBuilder((a, b) => evalSort(ctx, a, b), lessThan, sort)
                     break;
                 case 'rating':
                     sort = sortBuilder((a, b) => (a.rating || 0) - (b.rating || 0), lessThan, sort)
                     break;
                 default:
+                    const isEquals = x[1] === '='
+                    if (isEquals)
+                        subStr = x.substring(2)
+                    switch(start) {
+                        case '>' : query.filters.push(c => isEquals? c.amount >= subStr: c.amount > subStr); query.userQuery = true; break
+                        case '<' : query.filters.push(c => isEquals? c.amount <= subStr: c.amount < subStr); query.userQuery = true; break
+                        case '=' : query.filters.push(c => c.amount == subStr); query.userQuery = true; break
+                    }
+
             }
         }
         else if (start.match(/(-|!)/)) {
@@ -169,16 +182,23 @@ const parseCardArgs = (user, cardArgs) => {
                         query.userQuery = true
                         break;
                     case 'wish':
-                        // query.filters.push()
+                        query.wish = flag? 1: 2
                         break;
                     case 'promo':
-                        // query.filters.push()
+                        const promoCols = bestColMatch(ctx, subStr)
+                        flag? promoCols.map(x => query.cols.push(x.id)): promoCols.map(x => query.antiCols.push(x.id))
                         break;
                     case 'diff':
                     case 'miss':
                         query.diff = flag? 1: 2
                         break;
                     default:
+                        const parsedInt = parseInt(subStr)
+                        if (!isNaN(parsedInt))
+                            flag? query.levels.push(parsedInt): query.antiLevels.push(parsedInt)
+                        else
+                            flag? query.cols.push(bestColMatch(ctx, subStr)[0].id): query.antiCols.push(bestColMatch(ctx, subStr)[0].id)
+
                 }
             }
         }
@@ -197,6 +217,8 @@ const parseCardArgs = (user, cardArgs) => {
     if(query.levels.length > 0) query.filters.push(c => query.levels.includes(c.level))
     if(query.antiCols.length > 0) query.filters.push(c => !query.antiCols.includes(c.col))
     if(query.antiLevels.length > 0) query.filters.push(c => !query.antiLevels.includes(c.level))
+    if(query.keywords.length > 0)
+        query.filters.push(c => (new RegExp(`(_|^)${query.keywords.map(k => k.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('.*')}`, 'gi')).test(c.name))
 
     if (!sort)
         query.sort = firstBy((a, b) => b.level - a.level).thenBy("col").thenBy("name")

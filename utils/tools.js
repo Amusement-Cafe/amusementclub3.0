@@ -1,3 +1,7 @@
+const {
+    evalCard
+} = require('../modules/eval')
+
 /*
 Returns a new Date with the specified addition required, without mutating the given date
  */
@@ -93,8 +97,39 @@ const makePages = (array, split = 10, maxCharacters = 4096) => {
     return pages
 }
 
+const propertySort = (itemA, itemB, property = "name") => {
+    if(itemA[property] < itemB[property])
+        return -1
+    if(itemA[property] > itemB[property])
+        return 1
+    return 0
+}
+
+const evalSort = (ctx, a, b) => {
+    if(evalCard(ctx, a) > evalCard(ctx, b))return 1
+    if(evalCard(ctx, a) < evalCard(ctx, b))return -1
+    return 0
+}
+
+const formatDateLong= (date) => {
+    return `<t:${Math.floor(date.getTime() / 1000)}:D>`
+}
+
+const formatDateTimeLong= (date) => {
+    return `<t:${Math.floor(date.getTime() / 1000)}:F>`
+}
+
+const formatDateTimeRelative = (date) => {
+    return `<t:${Math.floor(date.getTime() / 1000)}:R>`
+}
+
 module.exports = {
     addTime,
+    evalSort,
+    formatDateLong,
+    formatDateTimeLong,
+    formatDateTimeRelative,
     makePages,
+    propertySort,
     subTime,
 }

@@ -1,12 +1,12 @@
 module.exports = {
     // Announcements: require('./announcement'),
-    // Auctions: require('./auction'),
+    Auctions: require('./auction'),
     // Audits: require('./audit'),
     // AuditAucSells: require('./auditaucsell'),
     // AuditTags: require('./audittag'),
     // CardInfo: require('./cardinfo'),
-    // Claims: require('./claim'),
-    // Guilds: require('./guild'),
+    Claims: require('./claim'),
+    Guilds: require('./guild'),
     // GuildBuilding: require('./guildbuilding'),
     // GuildUser: require('./guilduser'),
     // Heroes: require('./hero'),
@@ -14,7 +14,7 @@ module.exports = {
     // Plots: require('./plot'),
     // Promos: require('./promo'),
     // Tags: require('./tag'),
-    // Transactions: require('./transaction'),
+    Transactions: require('./transaction'),
     Users: require('./user'),
     UserCards: require('./usercard'),
     // UserEffects: require('./usereffect'),
@@ -22,4 +22,5 @@ module.exports = {
     // UserQuests: require('./userquest'),
     // UserSlots: require('./userslot'),
     // UserStats: require('./userstats'),
+    UserWishlist: require('./userwishlist')
 }
