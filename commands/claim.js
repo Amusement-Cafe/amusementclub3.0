@@ -5,6 +5,10 @@ const {
 } = require("../utils/cmd")
 
 const {
+    Claims,
+} = require('../collections')
+
+const {
     withCards,
     formatCard,
 } = require("../modules/card")
@@ -13,6 +17,10 @@ const {
     addUserCards,
 } = require("../modules/usercards")
 
+const {
+    formatDateTimeRelative,
+} = require("../utils/tools")
+
 
 cmd(['claim', 'cards'], async (ctx, user, args) => await claimCards(ctx, user, args))
 
@@ -20,6 +28,7 @@ cmd(['claim', 'history'], async (ctx, user, args) => await claimHistory(ctx, use
 
 cmd(['claim', 'info'], async (ctx, user, args) => await claimInfo(ctx, user, args))
 
+// To-do re-write
 const claimCards = withCards(async (ctx, user, args, cardstuff) => {
     const cards = []
     const now = new Date()
@@ -93,13 +102,59 @@ const claimCards = withCards(async (ctx, user, args, cardstuff) => {
 }, {allowEmpty: true})
 
 const claimHistory = withCards(async (ctx, user, args, cards) => {
+    const query = {userID: user.userID}
 
+    if (args.cardQuery) {
+        query.cards = {$in: cards.map(x => x.id)}
+    }
+
+    const claimHistory = await Claims.find(query, {cards: 1, date: 1, claimID: 1}, {sort: { date: -1 }}).lean()
+
+    const claims = []
+    claimHistory.map(x => {
+        x.cards.map(cardID => claims.push({ date: x.date, card: cardID, claimID: x.claimID}))
+    })
+
+    if (claims.length === 0)
+        return ctx.reply(user, `no matching claims found!`, 'red')
+
+    return ctx.sendInteraction(ctx, user, {
+        pages: ctx.makePages(claims.map(x => `\`${x.claimID}\` ${formatDateTimeRelative(x.date)} ${formatCard(ctx, ctx.cards[x.card])}`), 15),
+        embed: {
+            author: { name: `Matched ${claims.length} card(s) from ${claimHistory.length} claim(s)`}
+        }
+    })
 }, {global: true})
 
 const claimInfo = async (ctx, user, args) => {
+    const claim = await Claims.findOne({ userID: user.userID, claimID: args.claimID })
 
-}
+    if (!claim)
+        return ctx.reply(user, `claim with the ID \`${args.claimID}\` was not found!`, 'red')
 
-const defaultFunction = async (ctx, user, args) => {
-    await ctx.interaction.createFollowup({content: 'claim command'})
+    const guild = ctx.bot.guilds.get(claim.guild)
+    const response = [
+        `Cards: **${claim.cards.length}**`,
+        `Price: **${claim.cost}** ${ctx.symbols.tomato}`,
+    ]
+
+    if (guild)
+        response.push(`Guild: **${guild.name}`)
+
+    if (claim.lock)
+        response.push(`With lock to: **${claim.lock}**`)
+
+    response.push(formatDateTimeRelative(claim.date))
+
+    return ctx.sendInteraction(ctx, user, {
+        embed: {
+            author: { name: `Claim [${claim.id}] by ${user.username}` },
+            description: response.join('\n'),
+            color: ctx.colors.blue,
+            fields: [{
+                name: "Cards",
+                value: claim.cards.map(c => formatCard(ctx, ctx.cards[c])).join('\n')
+            }]
+        }
+    })
 }

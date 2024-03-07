@@ -32,12 +32,16 @@ const summon = withCards(async (ctx, user, args, cards) => {
     })
 })
 
+
+// To-Do Eval Query Display
 const cards = withCards(async (ctx, user, args, cards) => {
-    let cardStr = cards.map(x => `${formatCard(ctx, x)}${x.amount > 1? ` (x${x.amount})`: ''}`)
-    let pages = ctx.makePages(cardStr, 20)
+    let cardStr = cards.map(x => {
+        const isNew = x.obtained > (user.lastDaily || new Date())
+        return `${isNew? '**[new]** ': ''}${formatCard(ctx, x)}${x.amount > 1? ` (x${x.amount})`: ''}${x.rating? `[${x.rating}/10] ` : ''}`
+    })
 
     await ctx.sendInteraction(ctx, user, {
-        pages,
+        pages: ctx.makePages(cardStr, 20),
         buttons: ['first', 'last', 'next', 'back'],
         embed: { author: { name: `${user.username}, your cards (${cards.length} results)` } }
     })

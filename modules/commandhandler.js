@@ -46,7 +46,7 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
             if (x.type === 1 || x.type === 2) {
                 base.push(x.name)
                 cursor = x
-            } else if ((x.name === 'global' && x.value) || (x.name === 'local' && x.value)) {
+            } else if (x.name === 'global' && x.value) {
                 base.push(x.name)
             } else {
                 options.push({[x.name]: x.value})
@@ -61,10 +61,11 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
         capitalMsg,
         reply, /* quick reply function to the channel */
         globals: {}, /* global parameters */
-        discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */
+        discordGuild: interaction.member?.guildID? await ctx.bot.guilds.get(interaction.member.guildID) : false,  /* current discord guild */
         interaction: interaction,
         options: _.assign({}, ...options),
-        command: msg.map(x => x.trim()).join(' ').split(/ +/)
+        command: msg.map(x => x.trim()).join(' ').split(/ +/),
+        warnDM: () => reply(user, `this command can only be used in a discord guild!`, 'red')
     })
 
     // usr.username = usr.username.replace(/\*/gi, '')
@@ -108,6 +109,7 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
     //     guild: isolatedCtx.guild ? isolatedCtx.guild.id : 'direct',
     //     options: options
     // })
+
     await trigger('cmd', isolatedCtx, user, isolatedCtx.command)
 }
 

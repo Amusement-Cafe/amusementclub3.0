@@ -11,7 +11,7 @@ module.exports = {
     // GuildUser: require('./guilduser'),
     // Heroes: require('./hero'),
     // Kofis: require('./kofi'),
-    // Plots: require('./plot'),
+    Plots: require('./plot'),
     // Promos: require('./promo'),
     // Tags: require('./tag'),
     Transactions: require('./transaction'),

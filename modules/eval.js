@@ -8,7 +8,7 @@ const getEval = (ctx, card) => {
     return 5
 }
 
-const getVialCost = (ctx, card) => {
+const getVialCost = (ctx, card, price) => {
     return 1
 }
 
