@@ -17,10 +17,10 @@ module.exports = {
     Transactions: require('./transaction'),
     Users: require('./user'),
     UserCards: require('./usercard'),
-    // UserEffects: require('./usereffect'),
+    UserEffects: require('./usereffect'),
     // UserInventory: require('./userinventory'),
     // UserQuests: require('./userquest'),
     // UserSlots: require('./userslot'),
-    // UserStats: require('./userstats'),
+    UserStats: require('./userstats'),
     UserWishlist: require('./userwishlist')
 }

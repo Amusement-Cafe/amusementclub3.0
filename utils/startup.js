@@ -10,6 +10,10 @@ const {
 } = require('../modules/messages')
 
 const {
+    saveStatsAndCheck,
+} = require('../modules/userstats')
+
+const {
     makePages
 } = require('./tools')
 
@@ -149,7 +153,7 @@ const startup = async (config) => {
         // items: require('../staticdata/items'),
         // achievements: require('../staticdata/achievements'),
         // quests: require('../staticdata/quests'),
-        // effects: require('../staticdata/effects'),
+        effects: require('../staticdata/effects'),
         slashCmd: require('../slashcommands/commands.json'),
         adminCmd: require('../slashcommands/admincommands.json'),
         distribution: calculateDistribution(config.cards, config.data.collections),
@@ -160,7 +164,9 @@ const startup = async (config) => {
         sendInteraction,
         toObj,
         makePages,
-        analytics
+        saveStatsAndCheck,
+        analytics,
+        numFmt: (number) => number.toLocaleString('en-US')
     }
 
 }

@@ -6,7 +6,7 @@ const fetchOrCreateUser = async (ctx, interactionUser) => {
     let display = interactionUser.globalName || interactionUser.username
 
     if (!user) {
-        user = await new Users()
+        user = new Users()
         user.userID = interactionUser.id
         user.username = display
         user.tomatoes = 1

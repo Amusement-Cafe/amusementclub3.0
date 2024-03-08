@@ -26,7 +26,8 @@ const schema = new Schema({
             dbl:        { type: Number, default: 0 },
         },
         daily: {
-            count: { type: Number, default: 0 },
+            count:     { type: Number, default: 0 },
+            lastCount: { type: Number, default: 0 },
             lastReset: { type: Date, default: new Date() }
         },
         donations: {

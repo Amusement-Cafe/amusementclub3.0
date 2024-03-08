@@ -123,8 +123,21 @@ const formatDateTimeRelative = (date) => {
     return `<t:${Math.floor(date.getTime() / 1000)}:R>`
 }
 
+const claimCostCalculator = (cost, amount, totalClaims = 0, tax = 0) => {
+    let total = 0
+    let claims = totalClaims
+
+    for (let i = 0; i < amount; i++) {
+        claims++
+        total += claims * cost
+    }
+
+    return Math.round(total + (total * tax))
+}
+
 module.exports = {
     addTime,
+    claimCostCalculator,
     evalSort,
     formatDateLong,
     formatDateTimeLong,

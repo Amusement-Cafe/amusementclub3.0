@@ -8,6 +8,10 @@ const {
     interactions
 } = require('../utils/globalarrays')
 
+const {
+    getOrCreateGuild,
+} = require('./guild')
+
 const userq = []
 const pastSelects = []
 
@@ -92,6 +96,7 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
     // usr.vials = Math.min(usr.vials, 10 ** 6)
     //
     console.log(`${new Date().toLocaleTimeString()} [${user.username}]: ${isolatedCtx.command.join(' ')}`)
+
     ctx.analytics.capture({
         distinctId: user.userID,
         event: "command",
@@ -100,8 +105,11 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
             options: isolatedCtx.options
         }
     })
-    // if (isolatedCtx.discord_guild)
-    //     isolatedCtx.guild = curguild || await guild.fetchOrCreate(isolatedCtx, usr, interaction.member.guild)
+    if (isolatedCtx.discordGuild)
+        isolatedCtx.botGuild = await getOrCreateGuild(isolatedCtx, user, isolatedCtx.discordGuild, true)
+
+    if (isolatedCtx.discordGuild === null)
+        return
     //
     // ctx.mixpanel.track('Command', {
     //     distinct_id: usr.discord_id,
