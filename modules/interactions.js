@@ -15,13 +15,10 @@ const parseArgs = (ctx, user, options) => {
         cols: [],
         tags: [],
         userIDs: [],
+        cardQuery: {
+            sort: firstBy((a, b) => b.level - a.level).thenBy("col").thenBy("name")
+        }
     }
-
-    if (options.user_id)
-        query.userIDs.push(options.user_id)
-
-    if (options.tag)
-        query.tags.push(options.tag.replace(/\W/gi, '_'))
 
     let forgeArgs1, forgeArgs2
     Object.entries(options).forEach(([name, value]) => {
@@ -72,12 +69,14 @@ const parseArgs = (ctx, user, options) => {
             case 'source': query.source = value; break;
             case 'sourced': query.sourced = value; break;
             case 'store_number': query.store = value; break;
+            case 'tag': query.tags.push(value.replace(/\W/gi, '_')); break;
             case 'tax_percentage': query.tax = value; break;
             case 'time_length': query.timeLength = value; break;
             case 'title': query.title = value; break;
             case 'to': query.to = value; break;
             case 'transaction_id': query.transactionID = value; break;
             case 'unlocked': query.any = value; break;
+            case 'user_id': query.userIDs.push(value); break;
             case 'user_ids': query.users = value; break;
             default:
                 break

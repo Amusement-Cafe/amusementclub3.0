@@ -72,7 +72,7 @@ const schema = new Schema({
 
     joined:             { type: Date },
 
-    prefs:              {
+    preferences:        {
         notify:  {
             aucBidMe:   { type: Boolean, default: true  },
             aucOutbid:  { type: Boolean, default: true  },

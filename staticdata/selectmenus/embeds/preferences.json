@@ -1,86 +1,90 @@
 {
+  "mainMenu": {
+    "title": "Main Menu Title",
+    "description": "Select A Preference Menu Below"
+  },
   "aucBidMe": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Auction First Bid Notification",
+    "description": "Receive a DM notification when one of your auctions receives an initial bid."
   },
   "aucOutbid": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Auction Outbid Notification",
+    "description": "Receive a DM notification when you are outbid on an auction."
   },
   "aucNewBid": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Auction New High Bid Notification",
+    "description": "Receive a DM notification when your previously bid on auction receives a new higher bid."
   },
   "aucEnd": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Auction End Notification",
+    "description": "Receive a DM notification when one of your auctions ends."
   },
   "announce": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Bot Announcement Notification",
+    "description": "Receive a DM notification when there is a new bot announcement or notice."
   },
   "daily": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Daily Ready Notification",
+    "description": "Receive a DM notification when you can claim your `/daily`"
   },
   "vote": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Vote Ready Notification",
+    "description": "Receive a DM notification when you can vote for the bot."
   },
   "completed": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Collection Completion/Incomplete Notification",
+    "description": "Receive a DM notification when you collect all the cards for a collection, as well as when you lose completion for a collection."
   },
   "effectEnd": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Effect Expires/Comes Off Cooldown Notification",
+    "description": "Receive a DM notification when an effect of yours has expired or comes off cooldown."
   },
   "canHas": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Allow Others To Use /has On You",
+    "description": "Enable or disable the ability for other users to use the `/has` command on you."
   },
   "canDiff": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Allow Others To Use /diff On You",
+    "description": "Enable or disable the ability for other users to use the `/diff` command on you."
   },
   "canSell": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Allow Others To Sell You Cards",
+    "description": "Enable or disable the ability for other users to sell you cards via `/sell`"
   },
   "bio": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "",
+    "description": "Receive a DM notification when"
   },
   "title": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "",
+    "description": "Receive a DM notification when"
   },
   "color": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "",
+    "description": "Receive a DM notification when"
   },
   "card": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "",
+    "description": "Receive a DM notification when"
   },
   "favComplete": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "",
+    "description": "Receive a DM notification when"
   },
   "favClout": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "",
+    "description": "Receive a DM notification when"
   },
   "notify": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "Idk",
+    "description": "Receive a DM notification when"
   },
   "interact": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "idk",
+    "description": "Receive a DM notification when"
   },
   "profile": {
-    "title": "Auction Bid Notice",
-    "description": "Auction Bid Description"
+    "title": "idK",
+    "description": "Receive a DM notification when"
   }
 }

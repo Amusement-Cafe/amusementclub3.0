@@ -17,19 +17,21 @@ const _ = require("lodash")
  * @returns {Promise<void>}
  */
 const send = async (ctx, user, args) => {
-    let components = []
+    let components = args.components || []
 
     if (typeof args === 'string') {
         args = {embed: {description: args}}
     }
 
-    if (args.selection) {
-        args.selection.map(x => components.push({type: 1, components: [x]}))
-    }
+    if (!args.components) {
+        if (args.selection) {
+            args.selection.map(x => components.push({type: 1, components: [x]}))
+        }
 
-    if (args.buttons) {
-        let chunk = _.chunk(args.buttons, 5)
-        chunk.map(x => components.push({type: 1, components: x}))
+        if (args.buttons) {
+            let chunk = _.chunk(args.buttons, 5)
+            chunk.map(x => components.push({type: 1, components: x}))
+        }
     }
 
     if (components.length > 5) {
@@ -46,18 +48,20 @@ const send = async (ctx, user, args) => {
         response = await ctx.interaction.createFollowup({content: args.content || '', embeds: args.embed? [args.embed]: [] , components: components, files: args.files || []})
     }
 
-    if (args.permissions) {
-        interactions.push({perms: args.permissions, msgID: response? response.message? response.message.id: response.id: ctx.interaction.message.id})
-    } else {
-        interactions.push({perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]}, msgID: response? response.message? response.message.id: response.id: ctx.interaction.message.id, userID: user.userID})
-    }
+
+    args.msgID = response? response.message? response.message.id: response.id: ctx.interaction.message.id
+    args.channelID = response? response.message? response.message.channelID: ctx.interaction.message.channelID: ctx.interaction.message.channelID
+
+
+    if ((args.buttons || args.selection) && args.permissions)
+        interactions.push(args)
 
     return response
 }
 
 const switchPage = async (ctx, newPage) => {
     const userID = ctx.interaction.member? ctx.interaction.member.id: ctx.interaction.user.id
-    const pgn = interactions.filter(x => x.msgID === ctx.interaction.message.id && x.perms.pages.includes(userID))[0]
+    const pgn = interactions.filter(x => x.msgID === ctx.interaction.message.id && x.permissions.pages.includes(userID))[0]
     if (!pgn) return
 
     const max = pgn.pages.length - 1
@@ -79,10 +83,10 @@ const cfmResolve = async (ctx, confirm) => {
     let data
     const userID = ctx.interaction.member? ctx.interaction.member.id: ctx.interaction.user.id
     if(confirm)
-        data = interactions.filter(x => x.msgID === ctx.interaction.message.id && x.perms.cfm.includes(userID))[0]
+        data = interactions.filter(x => x.msgID === ctx.interaction.message.id && x.permissions.cfm.includes(userID))[0]
 
     if(!confirm)
-        data = interactions.filter(x => x.msgID === ctx.interaction.message.id && x.perms.dcl.includes(userID))[0]
+        data = interactions.filter(x => x.msgID === ctx.interaction.message.id && x.permissions.dcl.includes(userID))[0]
 
     if(!data) return
 
@@ -110,7 +114,7 @@ const cfmResolve = async (ctx, confirm) => {
 const sendInteraction = async (ctx, user, args) => {
     let interaction = Object.assign({}, {
         userID: user.userID,
-        perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]},
+        permissions: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]},
         components: [],
         buttons: ['first', 'back', 'next', 'last'],
         pageNum: 0,
@@ -152,17 +156,15 @@ const sendInteraction = async (ctx, user, args) => {
         interaction.components.push({ type: 1, components: buttons })
     }
 
+    if (interaction.customButtons)
+        interaction.components.push({ type: 1, components: interaction.customButtons})
+
     if(interaction.checks && await interaction.checks())
         return await interaction.onError(ctx.interaction)
 
     await invalidateOld(ctx, user)
 
-    const followup = await ctx.interaction.createFollowup({embeds: [interaction.embed], components: interaction.components})
-    interaction.msgID = followup.message.id
-    interaction.channelID = followup.message.channelID
-
-    if (interaction.components.length > 0)
-        interactions.push(interaction)
+    return send(ctx, user, interaction)
 }
 
 const invalidateOld = async (ctx, user) => {

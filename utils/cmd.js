@@ -14,45 +14,15 @@ const cmd = (...args) => buildTree(args)
 
 const pcmd = (perm, ...args) => buildTree(args, perm)
 
-const rct = (...args) => {
-    const callback = args.pop()
-    const cursor = tree.rct
+const rct = (...args) => buildTree(args, false, 'rct')
 
-    mapArgs(cursor, args, callback)
-}
+const con = (...args) => buildTree(args, false, 'con')
 
-const con = (...args) => {
-    const callback = args.pop()
-    const cursor = tree.con
+const mod = (...args) => buildTree(args, false, 'mod')
 
-    mapArgs(cursor, args, callback)
-}
+const itm = (...args) => buildTree(args, false, 'itm')
 
-const mod = (...args) => {
-    const callback = args.pop()
-    const cursor = tree.mod
-
-    mapArgs(cursor, args, callback)
-}
-
-const itm = (...args) => {
-    const callback = args.pop()
-    const cursor = tree.itm
-
-    mapArgs(cursor, args, callback)
-}
-
-const mapArgs = (cursor, args, callback) => {
-    args.map(alias => {
-        if (!cursor.hasOwnProperty(alias)) {
-            cursor[alias] = {}
-        }
-
-        cursor[alias]._callback = callback
-    })
-}
-
-const buildTree = (args, perm) => {
+const buildTree = (args, perm = false, type = 'cmd') => {
     let options
     if (args[args.length - 1].constructor.name !== 'AsyncFunction' ) {
         options = args.pop()
@@ -63,7 +33,7 @@ const buildTree = (args, perm) => {
 
     args.map(alias => {
         let sequence = Array.isArray(alias) ? alias : [alias]
-        let cursor = tree.cmd
+        let cursor = tree[type]
 
         sequence.map(arg => {
             if (!cursor.hasOwnProperty(arg)) {

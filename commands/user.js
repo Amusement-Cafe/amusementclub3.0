@@ -26,6 +26,19 @@ const {
     checkEffect
 } = require('../modules/effect')
 
+const {
+    formatCard,
+    withCards,
+} = require("../modules/card")
+
+const {
+    fetchUser
+} = require("../modules/user")
+
+const {
+    getAllUserCards
+} = require("../modules/usercards")
+
 
 cmd('daily', async (ctx, user) => await daily(ctx, user))
 
@@ -33,9 +46,9 @@ cmd('balance', async (ctx, user, args) => await balance(ctx, user, args))
 
 cmd('profile', async (ctx, user, args) => await profile(ctx, user, args))
 
-cmd('has', async (ctx, user, args) => await defaultFunction(ctx, user, args))
+cmd('has', async (ctx, user, args) => await has(ctx, user, args))
 
-cmd('miss', async (ctx, user, args) => await defaultFunction(ctx, user, args))
+cmd('miss', async (ctx, user, args) => await miss(ctx, user, args))
 
 cmd('stats', async (ctx, user, args) => await defaultFunction(ctx, user, args))
 
@@ -158,18 +171,55 @@ const profile = async (ctx, user, args) => {
     return ctx.send(ctx, user, {embed: {image: {url: `attachment://profile.png`}, color: ctx.colors.blue}, files: [ {name: 'profile.png', contents: thing}], edit: true})
 }
 
+const has = withCards(async (ctx, user, args, cards) => {
+    if (args.userIDs[0] === user.userID)
+        return ctx.reply(user, `you can use \`/cards\` to see your own cards`, 'red')
+
+    const otherUser = await fetchUser(args.userIDs[0])
+    if (!otherUser)
+        return ctx.reply(user, `a bot user with discord ID \`${args.userIDs[0]}\` was not found`, 'red')
+
+    if (!otherUser.preferences.interact.canHas)
+        return ctx.reply(user, `the user you are attempting to check has disabled the ability to check their cards with \`/has\``, 'red')
+
+    const otherUserCards = await getAllUserCards(otherUser, true)
+    const otherCardsFiltered = otherUserCards.map(x => Object.assign({}, ctx.cards[x.cardID], x)).filter(x => !x.locked && cards.some(y => y.id === x.cardID))
+
+    if (otherCardsFiltered.length === 0)
+        return ctx.reply(user, `**${otherUser.username}** does not have that card!`, 'red')
+
+    if (otherCardsFiltered.length > 1)
+        return ctx.reply(user, `please specify your card query so it only matches a single card!`, 'red')
+
+    return ctx.reply(user, `Matched card ${formatCard(ctx, otherCardsFiltered[0])} ${otherCardsFiltered[0].fav? 'and it is marked as **favorite**': ''}`)
+}, {global: true})
+
+const miss = withCards(async (ctx, user, args, cards) => {
+    const userCards = await getAllUserCards(user, true)
+    const userCardIDs = userCards.map(x => x.cardID)
+    const diffList = cards.filter(x => userCardIDs.indexOf(x.id) === -1).filter(x => !x.excluded).sort(args.cardQuery.sort)
+
+    if (diffList.length === 0)
+        return ctx.reply(user, `you have all the cards matching this request!`)
+
+    return ctx.sendInteraction(ctx, user, {
+        pages: ctx.makePages(diffList.map(x => formatCard(ctx, x)), 20),
+        embed: { author: { name: `${user.username}, cards that you don't have (${ctx.numFmt(diffList.length)} results)` } }
+    })
+}, {global: true})
+
 const stats = async (ctx, user, args) => {}
 
 const defaultFunction = async (ctx, user, args) => {
     const btn = new Button('red_test_id').setLabel('Test Label').setStyle(4)
     const btn2 = new Button('green_anotherid').setLabel('Lol Label').setStyle(3)
     const select = {type:3, customID: 'stringy', options: [{description: 'option description', label: 'label 1', value: 'value1'}, {description: 'option description', label: 'label 2', value: 'value2'}]}
-    await ctx.send(ctx, user, {select: [select], buttons: [btn, btn2], permissions: {interact: [ctx.interaction.user.id], select: [ctx.interaction.user.id]}, content: 'Buttons!'})
+    await ctx.send(ctx, user, {selection: [select], buttons: [btn, btn2], permissions: {interact: [ctx.interaction.user.id], select: [ctx.interaction.user.id]}, content: 'Buttons!'})
 }
 
 const buttonFunction = async (ctx, user, args) => {
     await ctx.interaction.defer()
-    console.log(ctx.id)
+    console.log(ctx.selection)
     if (ctx.selection) {
         return await ctx.interaction.createFollowup({content: `You have selected the ${ctx.id.pop() === 'anotherid'? 'green': 'red'} button and your select option is ${ctx.selection.selection}`})
     }

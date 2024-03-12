@@ -134,15 +134,15 @@ const componentInteractionHandler = async (ctx, interaction, user) => {
 
     if (interaction.data.componentType === 3) {
         idsplit = [interaction.data.customID, interaction.data.values.raw[0]]
-        if (interactions.find(x => x.msgID === interaction.message.id)?.perms?.pages?.indexOf(interaction.user.id) < 0) {
+        if (interactions.find(x => x.msgID === interaction.message.id)?.permissions?.pages?.indexOf(interaction.user.id) < 0) {
             await interaction.defer(64)
             return interaction.createFollowup({content: 'You are not allowed to interact with this menu.'})
         }
         _.remove(pastSelects, (x) => x.msgID === interaction.message.id)
-        pastSelects.push({discord_id: interaction.user.id, selection: interaction.data.values.raw[0], msgID: interaction.message.id})
+        pastSelects.push({userID: interaction.user.id, selection: interaction.data.values.raw[0], msgID: interaction.message.id})
     } else {
 
-        if (interactions.find(x => x.msgID === interaction.message.id)?.perms?.interact?.indexOf(interaction.user.id) < 0) {
+        if (interactions.find(x => x.msgID === interaction.message.id)?.permissions?.interact?.indexOf(interaction.user.id) < 0) {
             await interaction.defer(64)
             return interaction.createFollowup({content: 'You are not allowed to interact with this message.'})
         }
@@ -167,7 +167,7 @@ const componentInteractionHandler = async (ctx, interaction, user) => {
             perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]},
         })
     const isolatedCtx = Object.assign({}, ctx, {
-        discord_guild: interaction.member ? interaction.member.guild : null,  /* current discord guild */
+        discordGuild: interaction.member?.guildID? await ctx.bot.guilds.get(interaction.member.guildID) : false,  /* current discord guild */
         interaction,
         id: idsplit.splice(1),
         selection,
