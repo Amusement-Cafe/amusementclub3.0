@@ -88,7 +88,7 @@ const trigger = async (type, ctx, user, args) => {
         }
     }
 
-    if (type === 'cmd') {
+    if (type === 'cmd' || type === 'mod') {
         if (!cursor.hasOwnProperty('_callback')) {
             await ctx.interaction.defer()
             return ctx.reply(user, `unknown command. Please check your spelling or use help`, 'red')

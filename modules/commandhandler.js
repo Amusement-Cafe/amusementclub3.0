@@ -122,7 +122,7 @@ const commandInteractionHandler = async (ctx, interaction, user) => {
 }
 
 const componentInteractionHandler = async (ctx, interaction, user) => {
-    let idsplit = interaction.data.customID.split('_')
+    let idSplit = interaction.data.customID.split('_')
     let selection
     let activeInteraction = interactions.find(x => x.msgID === interaction.message.id)
     if (!activeInteraction) {
@@ -133,7 +133,7 @@ const componentInteractionHandler = async (ctx, interaction, user) => {
     }
 
     if (interaction.data.componentType === 3) {
-        idsplit = [interaction.data.customID, interaction.data.values.raw[0]]
+        idSplit = [interaction.data.customID, interaction.data.values.raw[0]]
         if (interactions.find(x => x.msgID === interaction.message.id)?.permissions?.pages?.indexOf(interaction.user.id) < 0) {
             await interaction.defer(64)
             return interaction.createFollowup({content: 'You are not allowed to interact with this menu.'})
@@ -169,17 +169,49 @@ const componentInteractionHandler = async (ctx, interaction, user) => {
     const isolatedCtx = Object.assign({}, ctx, {
         discordGuild: interaction.member?.guildID? await ctx.bot.guilds.get(interaction.member.guildID) : false,  /* current discord guild */
         interaction,
-        id: idsplit.splice(1),
+        id: idSplit.splice(1),
         selection,
         reply
     })
 
-    await trigger('rct', isolatedCtx, user, [idsplit.shift()])
+    await trigger('rct', isolatedCtx, user, [idSplit.shift()])
 
 }
 
-const modalInteractionHandler = async (ctx, interaction) => {
-    interaction.channel.createMessage({content: `This is a modal interaction response, but it just responds to any modal....`})
+const modalInteractionHandler = async (ctx, interaction, user) => {
+    let idSplit = interaction.data.customID.split('_')
+    const selection = pastSelects.find(x => x.msgID === interaction.message.id)
+    const reply = (user, str, clr = 'default', args) => ctx.send(isolatedCtx, user,
+        {
+            embed: ctx.toObj(user, str, ctx.colors[clr]),
+            edit: args.edit || false,
+            parent: args.parent || false,
+            buttons: args.buttons || [],
+            select: args.select || [],
+            perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]},
+        })
+
+    let options = []
+
+    interaction.data.components.raw.map(x => {
+        if (x.type === 1)
+            x.components.map(y => {
+                options.push({[y.customID]: y.value})
+            })
+        else
+            options.push({[x.customID]: x.value})
+    })
+
+    const isolatedCtx = Object.assign({}, ctx, {
+        discordGuild: interaction.member?.guildID? await ctx.bot.guilds.get(interaction.member.guildID) : false,  /* current discord guild */
+        interaction,
+        id: idSplit.splice(1),
+        options: _.assign({}, ...options),
+        selection,
+        reply
+    })
+
+    await trigger('mod', isolatedCtx, user, [idSplit.shift()])
 }
 
 module.exports = {

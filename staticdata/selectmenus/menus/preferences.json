@@ -94,22 +94,26 @@
     {
       "description": "",
       "label": "Set a custom color",
-      "value": "profile_color"
+      "value": "profile_color",
+      "premium": true
     },
     {
       "description": "",
       "label": "Display your favorite card",
-      "value": "profile_card"
+      "value": "profile_favCard",
+      "premium": true
     },
     {
       "description": "",
       "label": "Set your favorite completed collection",
-      "value": "profile_favComplete"
+      "value": "profile_favComplete",
+      "premium": true
     },
     {
       "description": "",
       "label": "Set your favorite clouted collection",
-      "value": "profile_favClout"
+      "value": "profile_favClout",
+      "premium": true
     }
   ]
 }
