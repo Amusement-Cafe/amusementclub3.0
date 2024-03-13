@@ -18,6 +18,22 @@ const addUserCards = async (ctx, user, cardIDs) => {
     return await UserCards.bulkWrite(updates)
 }
 
+const removeUserCards = async (ctx, user, cardIDs) => {
+    const res = await UserCards.updateMany({
+        userID: user.userID,
+        cardID: { $in: cardIDs },
+    }, {
+        $inc: { amount: -1 }
+    })
+
+    await UserCards.deleteMany({
+        userid: user.discord_id,
+        amount: 0,
+    })
+
+    return res
+}
+
 const getSpecificUserCards = async (user, cardIDs, lean = true) => {
     if (lean)
         return UserCards.find({ userID: user.userID, cardID: {$in: cardIDs }}).lean()
@@ -34,4 +50,5 @@ module.exports = {
     addUserCards,
     getAllUserCards,
     getSpecificUserCards,
+    removeUserCards,
 }

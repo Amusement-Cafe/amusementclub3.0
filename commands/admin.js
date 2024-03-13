@@ -20,7 +20,9 @@ const {
 } = require("../modules/user")
 
 const {
+    addUserCards,
     getSpecificUserCards,
+    removeUserCards,
 } = require("../modules/usercards")
 
 const {
@@ -44,11 +46,11 @@ pcmd(['admin', 'mod'], ['sudo', 'add', 'lemons'], async (ctx, user, args) => awa
 
 pcmd(['admin', 'mod'], ['sudo', 'add', 'promobal'], async (ctx, user, args) => await sudoAddCurrency(ctx, user, args, 'promoBal'))
 
-pcmd(['admin', 'mod'], ['sudo', 'add', 'card'], async (ctx, user, args) => await sudoAddCards(ctx, user, args))
+pcmd(['admin', 'mod'], ['sudo', 'add', 'card'], async (ctx, user, args) => await sudoAddCard(ctx, user, args))
 
 pcmd(['admin', 'mod'], ['sudo', 'add', 'cards'], async (ctx, user, args) => await sudoAddCards(ctx, user, args))
 
-pcmd(['admin', 'mod'], ['sudo', 'remove', 'card'], async (ctx, user, args) => await sudoRemoveCards(ctx, user, args))
+pcmd(['admin', 'mod'], ['sudo', 'remove', 'card'], async (ctx, user, args) => await sudoRemoveCard(ctx, user, args))
 
 // pcmd(['admin'], ['sudo', 'help'], async (ctx, user, args) => await sudoHelp(ctx, user, args))
 
@@ -108,7 +110,7 @@ const sudoSum = withCards(async (ctx, user, args, cards) => {
 }, {global: true})
 
 /*
- To-Do
+ ToDo
  Once Proper Evals are implemented, circle back to these
 
 const sudoEvalReset = withCards(async (ctx, user, args) => {
@@ -141,16 +143,46 @@ const sudoAddCurrency = async (ctx, user, args, currency) => {
     return ctx.reply(user, reply.join('\n'))
 }
 
-const sudoAddCards = withCards(async (ctx, user, args, cards) => {
+const sudoAddCard = withCards(async (ctx, user, args, cards) => {
+    const target = await fetchUser(args.userIDs[0])
+    if (!target)
+        return ctx.reply(user, `bot user with ID \`${args.userIDs[0]}\` was not found!`, 'red')
+    const card = cards[0]
+    if (!card)
+        return ctx.reply(user, `a card matching your query was not found!`, 'red')
 
+    await addUserCards(ctx, target, [card.id])
+
+    return ctx.reply(user, `added ${formatCard(ctx, card)} to user **${target.username}!`)
 }, {global: true})
 
-const sudoRemoveCards = withCards(async (ctx, user, args, cards) => {
+const sudoAddCards = withCards(async (ctx, user, args, cards) => {
+    const target = await fetchUser(args.userIDs[0])
+    if (!target)
+        return ctx.reply(user, `bot user with ID \`${args.userIDs[0]}\` was not found!`, 'red')
+    if (cards.length === 0)
+        return ctx.reply(user, `a card matching your query was not found!`, 'red')
 
+    await addUserCards(ctx, target, cards.map(x => x.id))
+
+    return ctx.reply(user, `added **${cards.length}** cards to user **${target.username}!`)
+}, {global: true})
+
+const sudoRemoveCard = withCards(async (ctx, user, args, cards) => {
+    const target = await fetchUser(args.userIDs[0])
+    if (!target)
+        return ctx.reply(user, `bot user with ID \`${args.userIDs[0]}\` was not found!`, 'red')
+    const card = cards[0]
+    if (!card)
+        return ctx.reply(user, `a card matching your query was not found!`, 'red')
+
+    await removeUserCards(ctx, target, [card.id])
+
+    return ctx.reply(user, `removed ${formatCard(ctx, card)} from user **${target.username}!`)
 }, {global: true})
 
 /*
-To-Do
+ToDo
 Requires new help setup
 const sudoHelp = async (ctx, user, args) => {}
 */
@@ -277,7 +309,7 @@ const sudoGuildUnlock = async (ctx, user, args) => {
     return ctx.reply(user, `admin lock for guild \`${args.guildID}\` has been removed!`, 'red')
 }
 
-// To-Do Make this not break stats or quests
+// ToDo Make this not break stats or quests
 const sudoDailyReset = async (ctx, user, args) => {
     if (args.ids.length === 0)
         return ctx.reply(user, `at least one user ID is required for this command!`, 'red')
@@ -297,7 +329,7 @@ const sudoDailyReset = async (ctx, user, args) => {
     return ctx.reply(user, reply.join('\n'))
 }
 
-/* To-Do Potentially Re-implement when heroes are brought back
+/*ToDo Potentially Re-implement when heroes are brought back
 const sudoHeroScore = async (ctx, user, args) => {}
 
 const sudoGuildHeroCheck = async (ctx, user, args) => {}
