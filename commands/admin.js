@@ -26,6 +26,10 @@ const {
 } = require("../modules/usercards")
 
 const {
+    subTime,
+} = require('../utils/tools')
+
+const {
     pcmd,
 } = require('../utils/cmd')
 
@@ -151,7 +155,7 @@ const sudoAddCard = withCards(async (ctx, user, args, cards) => {
     if (!card)
         return ctx.reply(user, `a card matching your query was not found!`, 'red')
 
-    await addUserCards(ctx, target, [card.id])
+    await addUserCards(target, [card.id])
 
     return ctx.reply(user, `added ${formatCard(ctx, card)} to user **${target.username}!`)
 }, {global: true})
@@ -163,7 +167,7 @@ const sudoAddCards = withCards(async (ctx, user, args, cards) => {
     if (cards.length === 0)
         return ctx.reply(user, `a card matching your query was not found!`, 'red')
 
-    await addUserCards(ctx, target, cards.map(x => x.id))
+    await addUserCards(target, cards.map(x => x.id))
 
     return ctx.reply(user, `added **${cards.length}** cards to user **${target.username}!`)
 }, {global: true})
@@ -176,7 +180,7 @@ const sudoRemoveCard = withCards(async (ctx, user, args, cards) => {
     if (!card)
         return ctx.reply(user, `a card matching your query was not found!`, 'red')
 
-    await removeUserCards(ctx, target, [card.id])
+    await removeUserCards(target, [card.id])
 
     return ctx.reply(user, `removed ${formatCard(ctx, card)} from user **${target.username}!`)
 }, {global: true})
@@ -190,7 +194,7 @@ const sudoHelp = async (ctx, user, args) => {}
 const sudoAddRole = async (ctx, user, args) => {
     const reply = []
 
-    await Promise.all(args.users.split(' ').map(async x => {
+    await Promise.all(args.userIDs.split(' ').map(async x => {
         const target = await fetchUser(x)
 
         if (!target)
@@ -231,7 +235,7 @@ const sudoAddGuildOwner = async (ctx, user, args) => {
 const sudoRemoveRole = async (ctx, user, args) => {
     const reply = []
 
-    await Promise.all(args.users.split(' ').map(async x => {
+    await Promise.all(args.userIDs.split(' ').map(async x => {
         const target = await fetchUser(x)
 
         if (!target)
@@ -311,12 +315,13 @@ const sudoGuildUnlock = async (ctx, user, args) => {
 
 // ToDo Make this not break stats or quests
 const sudoDailyReset = async (ctx, user, args) => {
-    if (args.ids.length === 0)
+    if (args.userIDs.length === 0)
         return ctx.reply(user, `at least one user ID is required for this command!`, 'red')
 
     const reply = []
-    const past = ctx.subTime(new Date(), 1, 'day')
-    await Promise.all(args.ids.map(async x => {
+    const past = subTime(new Date(), 1, 'day')
+
+    await Promise.all(args.userIDs.map(async x => {
         const target = await fetchUser(x)
         if (!target)
             return reply.push(`\`${x}\` is an invalid User ID or they are not a bot user!`)
@@ -392,10 +397,10 @@ const sudoTransferCards = async (ctx, user, args) => {}
 const sudoEmbargoUser = async (ctx, user, args) => {
     const lift = args.lift
     const reply = []
-    if (args.ids.length === 0)
+    if (args.userIDs.length === 0)
         return ctx.reply(user, `at least one user ID is required for this command!`, 'red')
 
-    await Promise.all(args.ids.map(async x => {
+    await Promise.all(args.userIDs.map(async x => {
         const target = await fetchUser(x)
         if (!target)
             return reply.push(`\`${x}\` is an invalid User ID or they are not a bot user!`)
