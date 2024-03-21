@@ -50,7 +50,7 @@ const send = async (ctx, user, args) => {
 
 
     args.msgID = response? response.message? response.message.id: response.id: ctx.interaction.message.id
-    args.channelID = response? response.message? response.message.channelID: ctx.interaction.message.channelID: ctx.interaction.message.channelID
+    args.channelID = response? response.message? response.message.channelID: ctx.interaction.channelID: ctx.interaction.message.channelID
 
 
     if ((args.buttons || args.selection) && args.permissions)
@@ -162,7 +162,8 @@ const sendInteraction = async (ctx, user, args) => {
     if(interaction.checks && await interaction.checks())
         return await interaction.onError(ctx.interaction)
 
-    await invalidateOld(ctx, user)
+    if (interaction.pages?.length > 1 || interaction.confirmation || interaction.selection || interaction.customButtons)
+        await invalidateOld(ctx, user)
 
     return send(ctx, user, interaction)
 }
