@@ -78,7 +78,7 @@ const claimCards = withCards(async (ctx, user, args, cardstuff) => {
 
     const pages = cards.map(x => x.card.url)
 
-    await addUserCards(ctx, user, cards.map(x => x.card.id))
+    await addUserCards(user, cards.map(x => x.card.id))
 
     const newCards = cards.filter(x => x.count === 1)
     const oldCards = cards.filter(x => x.count > 1)

@@ -1,7 +1,7 @@
 const UserCards = require("../collections/usercard")
 
 
-const addUserCards = async (ctx, user, cardIDs) => {
+const addUserCards = async (user, cardIDs) => {
     const updates = cardIDs.map(x => ({
         updateOne: {
             filter: {
@@ -18,7 +18,7 @@ const addUserCards = async (ctx, user, cardIDs) => {
     return await UserCards.bulkWrite(updates)
 }
 
-const removeUserCards = async (ctx, user, cardIDs) => {
+const removeUserCards = async (user, cardIDs) => {
     const res = await UserCards.updateMany({
         userID: user.userID,
         cardID: { $in: cardIDs },
