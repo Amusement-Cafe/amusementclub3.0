@@ -1,0 +1,239 @@
+{
+  "all": [
+    {
+      "description": "Display The Effect Recipe Store",
+      "label": "Effect Recipes",
+      "value": "effects"
+    },
+    {
+      "description": "Display The Claim Ticket Store",
+      "label": "Claim Tickets",
+      "value": "tickets"
+    },
+    {
+      "description": "Display The Plot Building Store",
+      "label": "Plot Buildings",
+      "value": "plots"
+    },
+    {
+      "description": "Display The Bonus Store",
+      "label": "Bonus/Misc Items",
+      "value": "bonus"
+    },
+    {
+      "description": "Display The Guild Building Store",
+      "label": "Guild Buildings",
+      "value": "guild"
+    }
+  ],
+  "effects": [
+    {
+      "description": "",
+      "label": "Gift From Tohru",
+      "value": "effects_tohruGift"
+    },
+    {
+      "description": "",
+      "label": "Cake Day",
+      "value": "effects_cakeDay"
+    },
+    {
+      "description": "",
+      "label": "The Holy Grail",
+      "value": "effects_holyGrail"
+    },
+    {
+      "description": "",
+      "label": "Skies of Friendship",
+      "value": "effects_skyFriend"
+    },
+    {
+      "description": "",
+      "label": "Cherry Blossoms",
+      "value": "effects_cherryBlossom"
+    },
+    {
+      "description": "",
+      "label": "Onwards To Victory",
+      "value": "effects_onVictory"
+    },
+    {
+      "description": "",
+      "label": "The Ruler Jeanne",
+      "value": "effects_rulerJeanne"
+    },
+    {
+      "description": "",
+      "label": "Impossible Spell Card",
+      "value": "effects_spellCard"
+    },
+    {
+      "description": "",
+      "label": "Enlightened Ayano",
+      "value": "effects_enAyano"
+    },
+    {
+      "description": "",
+      "label": "Powerful Bocchi",
+      "value": "effects_pBocchi"
+    },
+    {
+      "description": "",
+      "label": "The Space Unity",
+      "value": "effects_spaceUnity"
+    },
+    {
+      "description": "",
+      "label": "The Judgement Day",
+      "value": "effects_judgeDay"
+    },
+    {
+      "description": "",
+      "label": "Claim Recall",
+      "value": "effects_claimRecall"
+    },
+    {
+      "description": "",
+      "label": "Memories of Christmas Cheer",
+      "value": "effects_memoryXmas"
+    },
+    {
+      "description": "",
+      "label": "Memories of Halloween Frights",
+      "value": "effects_memoryHall"
+    },
+    {
+      "description": "",
+      "label": "Memories of Birthdays Past",
+      "value": "effects_memoryBday"
+    },
+    {
+      "description": "",
+      "label": "Memories of Valentines Day",
+      "value": "effects_memoryVal"
+    }
+  ],
+  "tickets": [
+    {
+      "description": "",
+      "label": "1 Star Claim Ticket",
+      "value": "tickets_ticket1x1"
+    },
+    {
+      "description": "",
+      "label": "2 Star Claim Ticket",
+      "value": "tickets_ticket1x2"
+    },
+    {
+      "description": "",
+      "label": "3 Star Claim Ticket",
+      "value": "tickets_ticket1x3"
+    },
+    {
+      "description": "",
+      "label": "Triple 1 Star Claim Ticket",
+      "value": "tickets_ticket3x1s"
+    },
+    {
+      "description": "",
+      "label": "Triple 2 Star Claim Ticket",
+      "value": "tickets_ticket3x2s"
+    },
+    {
+      "description": "",
+      "label": "Triple 3 Star Claim Ticket",
+      "value": "tickets_ticket3x3s"
+    },
+    {
+      "description": "",
+      "label": "Triple Random 1 Star Claim Ticket",
+      "value": "tickets_ticket3x1r"
+    },
+    {
+      "description": "",
+      "label": "Triple Random 2 Star Claim Ticket",
+      "value": "tickets_ticket3x2r"
+    },
+    {
+      "description": "",
+      "label": "Triple Random 3 Star Claim Ticket",
+      "value": "tickets_ticket3x3r"
+    }
+  ],
+  "plots": [
+    {
+      "description": "The first and required building for plots",
+      "label": "Plot Castle",
+      "value": "plots_castle"
+    },
+    {
+      "description": "Provides lemons with daily + claim",
+      "label": "Gacha Bank",
+      "value": "plots_gachaBank"
+    },
+    {
+      "description": "",
+      "label": "Tavern",
+      "value": "plots_tavern"
+    },
+    {
+      "description": "",
+      "label": "Smithing Hub",
+      "value": "plots_smithHub"
+    },
+    {
+      "description": "",
+      "label": "Auction House",
+      "value": "plots_auctionHouse"
+    }
+  ],
+  "bonus": [
+    {
+      "description": "",
+      "label": "Effect Slot Upgrade",
+      "value": "bonus_slotUpgrade"
+    },
+    {
+      "description": "",
+      "label": "Effect Use Increase",
+      "value": "bonus_effectIncrease"
+    },
+    {
+      "description": "",
+      "label": "Legendary Card Swapper",
+      "value": "bonus_legendarySwapper"
+    }
+  ],
+  "guild": [
+    {
+      "description": "",
+      "label": "Lemonade Stand",
+      "value": "guild_lemonadeStand"
+    },
+    {
+      "description": "",
+      "label": "Processing Plant",
+      "value": "guild_processingPlant"
+    },
+    {
+      "description": "",
+      "label": "Pachinko Hall",
+      "value": "guild_pachinkoHall"
+    },
+    {
+      "description": "",
+      "label": "Arcade Center",
+      "value": "guild_arcadeCenter"
+    },
+    {
+      "description": "",
+      "label": "Pamper Central",
+      "value": "guild_pamperCentral"
+    },
+    {
+      "description": "",
+      "label": "Discount Center",
+      "value": "guild_discountCenter"
+    }
+  ]
+}

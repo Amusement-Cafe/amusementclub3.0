@@ -86,6 +86,10 @@ const trigger = async (type, ctx, user, args) => {
             await ctx.interaction.defer(64)
             ephemeral = true
         }
+
+        if (cursor._options.forceDefer) {
+            await ctx.interaction.defer()
+        }
     }
 
     if (type === 'cmd' || type === 'mod') {
@@ -109,6 +113,7 @@ const trigger = async (type, ctx, user, args) => {
         if (!deferless && !ephemeral) {
             await ctx.interaction.defer()
         }
+
         parsedArgs = parseArgs(ctx, user, ctx.options)
     }
     
