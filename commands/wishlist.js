@@ -58,8 +58,17 @@ const wishAddOne = withCards(async(ctx, user, args, cards) => {
 }, {global: true})
 
 const wishAddMany = withCards(async(ctx, user, args, cards) => {
-    await wishlistAdd(user, cards.map(x => x.id))
-    return ctx.reply(user, `you added **${cards.length}** cards to your wishlist!`)
+    return ctx.sendInteraction(ctx, user, {
+        confirmation: true,
+        pages: ctx.makePages(cards.map(x => formatCard(ctx, x))),
+        embed: {
+            title: `**${user.username}**, do you want to add the following cards to your wishlist?:`
+        },
+        onConfirm: async () => {
+            await wishlistAdd(user, cards.map(x => x.id))
+            return ctx.reply(user, `you added **${cards.length}** cards to your wishlist!`, 'green', {edit: true})
+        }
+    })
 }, {global: true})
 
 const wishRemoveOne = withCards(async(ctx, user, args, cards) => {
@@ -68,6 +77,15 @@ const wishRemoveOne = withCards(async(ctx, user, args, cards) => {
 }, {global: true})
 
 const wishRemoveMany = withCards(async(ctx, user, args, cards) => {
-    await wishlistRemove(user, cards.map(x => x.id))
-    return ctx.reply(user, `you removed **${cards.length}** cards from your wishlist!`)
+    return ctx.sendInteraction(ctx, user, {
+        confirmation: true,
+        pages: ctx.makePages(cards.map(x => formatCard(ctx, x))),
+        embed: {
+            title: `**${user.username}**, do you want to remove the following cards to your wishlist?:`
+        },
+        onConfirm: async () => {
+            await wishlistRemove(user, cards.map(x => x.id))
+            return ctx.reply(user, `you removed **${cards.length}** cards to your wishlist!`, 'green', {edit: true})
+        }
+    })
 }, {global: true})
