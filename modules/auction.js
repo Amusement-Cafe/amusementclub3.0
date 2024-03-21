@@ -1,3 +1,5 @@
+const lockFile  = require('proper-lockfile')
+
 const {
     fetchUser
 } = require('./user')
@@ -10,8 +12,38 @@ const {
     getEval,
 } = require("./eval")
 
+const {
+    getSpecificUserCards
+} = require('./usercards')
+
+const {
+    Auctions
+} = require('../collections')
+
+const {
+    addTime
+} = require('../utils/tools')
+
 const newAuction = async (ctx, user, card, price, fee, hours) => {
-    return true
+    const aucCard = await getSpecificUserCards(user, [card.id], true)
+    if (!aucCard)
+        return false
+
+    const aucCreation = await lockFile.lock(`auction`, {retries: 10, realpath: false}).then(async () => {
+        const newAuc = new Auctions()
+        newAuc.auctionID = 'aaaaaaaaaaaa'
+        newAuc.price = price
+        newAuc.highBid = price
+        newAuc.userID = user.userID
+        newAuc.cardID = card.id
+        newAuc.expires = addTime(new Date(), hours, 'hours')
+        newAuc.time = new Date()
+        newAuc.guildID = ctx.discordGuild.id
+        await newAuc.save()
+        await lockFile.unlock('auction')
+        return newAuc
+    })
+    return aucCreation
 }
 
 const bidAuction = async (ctx, user, auc, bid, add = false) => {

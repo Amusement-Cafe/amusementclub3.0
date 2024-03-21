@@ -9,7 +9,8 @@ const {
 const {
     formatAuctionTime,
     formatAuctionInfo,
-    newAuction, bidAuction,
+    newAuction,
+    bidAuction,
 } = require('../modules/auction')
 
 const {
@@ -192,7 +193,7 @@ const auctionBid = async (ctx, user, args) => {
     lastBidder? await bidAuction(ctx, user, auction, bid, true): await bidAuction(ctx, user, auction, bid)
 }
 
-// To-do Buildings, Stats, Wishlist Notifs
+//Todo Buildings, Stats, Wishlist Notifs
 const auctionSell = withCards(async (ctx, user, args, cards) => {
     if (ctx.settings.aucLock && !user.roles.some(x => x === 'admin'))
         return ctx.reply(user, `selling on auction is currently disabled by the admins.\nFor more info you may inquire in the [Support Server](${ctx.invite}).`, 'red')
@@ -250,16 +251,16 @@ const auctionSell = withCards(async (ctx, user, args, cards) => {
         checks,
         onConfirm: async () => {
             const auc = await newAuction(ctx, user, card, price, fee, hours)
-
+            console.log(auc)
             if (!auc)
                 return ctx.reply(user, `failed to create auction. Card might be missing or there was an internal server error.`, 'red', {edit:true})
 
             return ctx.reply(user, `you put ${formatCard(ctx, card)} on auction for **${price}** ${ctx.symbols.tomatoes}
-                Auction ID: \`${auc.id}\``, 'green', {edit:true})
+                Auction ID: \`${auc.auctionID}\``, 'green', {edit:true})
         }
     })
 })
-// To-do Stats
+//Todo Stats
 const auctionCancel = async (ctx, user, args) => {
     let auction = await Auctions.findOne({ auctionID: args.aucID })
 
