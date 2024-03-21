@@ -20,7 +20,6 @@ const parseArgs = (ctx, user, options) => {
         }
     }
 
-    let forgeArgs1, forgeArgs2
     Object.entries(options).forEach(([name, value]) => {
         switch (name) {
             case 'amount': query.amount = value; break;
@@ -34,8 +33,8 @@ const parseArgs = (ctx, user, options) => {
             case 'building': query.building = value; break;
             case 'card_id': query.cardID = value; break;
             case 'card_query': query.cardQuery = parseCardArgs(ctx, user, value); break;
-            case 'card_query_1': forgeArgs1 = parseCardArgs(ctx, user, value); query.cardQuery1 = value; break;
-            case 'card_query_2': forgeArgs2 = parseCardArgs(ctx, user, value); query.cardQuery2 = value; break;
+            case 'card_query_1': query.forgeArgs1 = parseCardArgs(ctx, user, value); query.cardQuery1 = value; break;
+            case 'card_query_2': query.forgeArgs2 = parseCardArgs(ctx, user, value); query.cardQuery2 = value; break;
             case 'claim_id': query.claimID = value; break;
             case 'clouted': query.clouted = value; break;
             case 'collection': query.cols.push(value.split(' ').map(y => bestColMatch(ctx, y.replace('-', '')))); query.colQuery = value; break;
@@ -77,7 +76,7 @@ const parseArgs = (ctx, user, options) => {
             case 'transaction_id': query.transactionID = value; break;
             case 'unlocked': query.any = value; break;
             case 'user_id': query.userIDs.push(value); break;
-            case 'user_ids': query.users = value; break;
+            case 'user_ids': query.userIDs = value.split(' '); break;
             default:
                 break
         }
