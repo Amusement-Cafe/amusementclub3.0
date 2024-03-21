@@ -24,6 +24,8 @@ const schema = new Schema({
         votes: {
             topgg:      { type: Number, default: 0 },
             dbl:        { type: Number, default: 0 },
+            lastTopGG:  { type: Date, default: new Date(0)},
+            lastDBL:    { type: Date, default: new Date(0)},
         },
         daily: {
             count:     { type: Number, default: 0 },

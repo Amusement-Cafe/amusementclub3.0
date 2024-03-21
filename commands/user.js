@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const nodeHtmlToImage = require('node-html-to-image')
 const htmlProfile = require('../staticdata/profile')
+const msToTime          = require('pretty-ms')
 
 const {
     cmd,
@@ -50,11 +51,11 @@ cmd('has', async (ctx, user, args) => await has(ctx, user, args))
 
 cmd('miss', async (ctx, user, args) => await miss(ctx, user, args))
 
-cmd('stats', async (ctx, user, args) => await defaultFunction(ctx, user, args))
+cmd('stats', async (ctx, user, args) => await stats(ctx, user, args))
 
-cmd('achievements', async (ctx, user, args) => await defaultFunction(ctx, user, args))
+cmd('achievements', async (ctx, user, args) => await achievements(ctx, user, args))
 
-cmd('vote', async (ctx, user, args) => await defaultFunction(ctx, user, args))
+cmd('vote', async (ctx, user) => await vote(ctx, user))
 
 cmd('todo', async (ctx, user, args) => await defaultFunction(ctx, user, args))
 
@@ -87,16 +88,20 @@ const daily = async (ctx, user) => {
     }
 
     const oldStats = await getStats(user, user.lastDaily, true)
-    const dailyStreak = oldStats.daily >= subTime(now, 2, 'days')
+    console.log(oldStats)
+    console.log(now)
+    const dailyStreak = oldStats.daily >= subTime(now, 2, 'days') && oldStats.daily < now
     const baseAmount = ctx.config.daily.amount
 
     let amount = baseAmount, streakAddition
 
-    if (dailyStreak) {
+    if (dailyStreak && user.streaks.daily.count > 0) {
         user.streaks.daily.count++
         let maxStreak = user.premium.tier? (user.premium.tier * 25) + 100: 100
         streakAddition = user.streaks.daily.count >= maxStreak? maxStreak * 5: user.streaks.daily.count * 5
         amount += streakAddition
+    } else if (dailyStreak) {
+        user.streaks.daily.count++
     } else {
         user.streaks.daily.lastCount = user.streaks.daily.count
         user.streaks.daily.count = 0
@@ -122,7 +127,7 @@ const daily = async (ctx, user) => {
 
     let description = `you have received **${ctx.numFmt(amount)}**${ctx.symbols.tomatoes}`
 
-    if (dailyStreak)
+    if (dailyStreak && user.streaks.daily.count > 1)
         description += `\nYou are currently on a **${ctx.numFmt(user.streaks.daily.count)}** day daily streak! You have gained an additional **${ctx.numFmt(streakAddition)}**${ctx.symbols.tomatoes}`
 
     description += `\nYou now have **${ctx.numFmt(user.tomatoes)}**${ctx.symbols.tomatoes}`
@@ -210,6 +215,64 @@ const miss = withCards(async (ctx, user, args, cards) => {
 
 const stats = async (ctx, user, args) => {}
 
+
+// ToDo Rework display
+const achievements = async (ctx, user, args) => {
+    let list = user.achievements.map(x => {
+        const item = ctx.achievements.find(y => y.id === x)
+        return `${item.title? `\`🏆\` `: ''}**${item.name}** • \`${item.desc}\`${item.hidden? ` • *Hidden*`: ''}`
+    })
+
+    const miss = args.missing
+    let missDiff
+
+    if (miss) {
+        list = ctx.achievements.filter(x => !user.achievements.some(y => x.id === y) && !x.hidden).map(z => `**${z.name}** • \`${z.desc}\``)
+        missDiff = ctx.achievements.filter(x => !user.achievements.some(y => x.id === y) && x.hidden).length
+    }
+
+    const embed = {author: { name: `${user.username}, ${miss? 'missing' : 'completed'} achievements: (${list.length}${miss? ` + ${missDiff} Hidden`: ''})` }}
+
+    if (!miss)
+        embed.footer = {text: `🏆 grants a title. To see achievements you don't have, use missing:true`}
+
+    if (list.length === 0 && miss)
+        return ctx.reply(user, `there is nothing to display here! You are missing **${missDiff}** hidden achievements!`, 'red')
+
+    if (list.length === 0)
+        return ctx.reply(user, `there is nothing to display here!`, 'red')
+
+    return ctx.sendInteraction(ctx, user, {
+        pages: ctx.makePages(list, 15),
+        embed
+    })
+}
+
+const vote = async (ctx, user) => {
+    const now = new Date()
+    const futureDBL = addTime(user.streaks.votes.lastDBL, 12, 'hours')
+    const futureTopGG = addTime(user.streaks.votes.lastTopGG, 12, 'hours')
+    const topGGTime = msToTime(futureTopGG - now, { compact: true })
+    const dblTime = msToTime(futureDBL - now, { compact: true })
+
+    return ctx.sendInteraction(ctx, user, {
+        embed: {
+            description: `You can vote for Amusement Club **every 12 hours** and get rewards.
+        Make sure you have allowed messages from server members in order to receive rewards in DMs.
+        - [Vote on top.gg](${ctx.links.topggUrl}) to get **free cards** (${futureTopGG > now? topGGTime : `ready`})
+- [Vote on Discord Bot List](${ctx.links.dblUrl}) to get **free ${ctx.symbols.tomatoes}** (${futureDBL > now? dblTime : `ready`})`,
+
+            fields: [
+                {
+                    name: `Get notified`,
+                    value: `You can enable bot notifications to let you know that it is time to vote. 
+                Run \`${ctx.prefix}preferences\` and change your notification options!`
+                }
+            ]
+        }
+    })
+}
+
 const defaultFunction = async (ctx, user, args) => {
     const btn = new Button('red_test_id').setLabel('Test Label').setStyle(4)
     const btn2 = new Button('green_anotherid').setLabel('Lol Label').setStyle(3)
@@ -217,7 +280,7 @@ const defaultFunction = async (ctx, user, args) => {
     await ctx.send(ctx, user, {selection: [select], buttons: [btn, btn2], permissions: {interact: [ctx.interaction.user.id], select: [ctx.interaction.user.id]}, content: 'Buttons!'})
 }
 
-const buttonFunction = async (ctx, user, args) => {
+const buttonFunction = async (ctx) => {
     await ctx.interaction.defer()
     console.log(ctx.selection)
     if (ctx.selection) {
