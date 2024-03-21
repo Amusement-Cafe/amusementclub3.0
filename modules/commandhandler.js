@@ -160,10 +160,10 @@ const componentInteractionHandler = async (ctx, interaction, user) => {
     const reply = (user, str, clr = 'default', args) => ctx.send(isolatedCtx, user,
         {
             embed: ctx.toObj(user, str, ctx.colors[clr]),
-            edit: args.edit || false,
-            parent: args.parent || false,
-            buttons: args.buttons || [],
-            select: args.select || [],
+            edit: args?.edit || false,
+            parent: args?.parent || false,
+            buttons: args?.buttons || [],
+            select: args?.select || [],
             perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]},
         })
     const isolatedCtx = Object.assign({}, ctx, {
@@ -184,10 +184,10 @@ const modalInteractionHandler = async (ctx, interaction, user) => {
     const reply = (user, str, clr = 'default', args) => ctx.send(isolatedCtx, user,
         {
             embed: ctx.toObj(user, str, ctx.colors[clr]),
-            edit: args.edit || false,
-            parent: args.parent || false,
-            buttons: args.buttons || [],
-            select: args.select || [],
+            edit: args?.edit || false,
+            parent: args?.parent || false,
+            buttons: args?.buttons || [],
+            select: args?.select || [],
             perms: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]},
         })
 
