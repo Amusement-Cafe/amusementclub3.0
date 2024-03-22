@@ -1,4 +1,6 @@
-
+const {
+    Collections,
+} = require('../collections')
 
 const byAlias = (ctx, name) => {
     const regex = new RegExp(name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'gi')
@@ -32,9 +34,12 @@ const resetNeeds = (collectionCards) => {
 
 const resetCollection = () => {}
 
+const fetchAllCollections = async () => await Collections.find().lean()
+
 module.exports = {
     bestColMatch,
     byAlias,
+    fetchAllCollections,
     resetCollection,
     resetNeeds,
 }

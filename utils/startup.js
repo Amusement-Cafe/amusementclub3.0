@@ -14,11 +14,18 @@ const {
 } = require('../modules/userstats')
 
 const {
+    fetchAllCollections
+} = require('../modules/collection')
+
+const {
+    fetchAllCards
+} = require('../modules/card')
+
+const {
     makePages
 } = require('./tools')
 
 const filter = new Filter()
-const cardInfos = []
 
 
 const toObj = (user, str, clr = 2067276) => {
@@ -37,22 +44,14 @@ const direct = async (ctx, user, str, clr = 'default') => {
         return ch.createMessage({embeds: [toObj(user, str, ctx.colors[clr])]}).catch(e => console.log(e))
     } catch (e) {console.log(e)}
 }
-//
-// const fillCardOwnerCount = async (carddata) => {
-//     const infos = await meta.fetchAllInfos()
-//     infos.map(x => {
-//         cardInfos[x.id] = x
-//     })
-// }
 
-const fillCardData = (carddata, config) => {
-    return carddata.map((x, i) => {
-        const col = config.data.collections.filter(y => y.id == x.col)[0]
+const fillCardData = (cards, collections, config) => {
+    return cards.map((x) => {
+        const col = collections.filter(y => y.collectionID == x.collectionID)[0]
         const ext = x.animated? 'gif' : (col.compressed? 'jpg' : 'png')
         const basePath = `/${col.promo? 'promo':'cards'}/${col.id}/${x.level}_${x.name}.${ext}`
         x.url = config.links.baseurl + basePath
         x.shorturl = config.links.shorturl + basePath
-        x.id = i
 
         if(x.added)
             x.added = Date.parse(x.added)
@@ -71,7 +70,7 @@ const calculateDistribution = (cards, collections) => {
         5: 0
     }
     cards.map(x => {
-        const col = collections.filter(y => y.id == x.col)[0]
+        const col = collections.filter(y => y.collectionID == x.collectionID)[0]
         if (!col.promo && (!col.rarity || col.rarity > 0)) {
             claimableCount[x.level]++
             claimableCount[0]++
@@ -83,8 +82,10 @@ const calculateDistribution = (cards, collections) => {
 const startup = async (config) => {
     let sauce
     filter.addWords(...config.data.bannedwords)
-    config.cards = fillCardData(config.data.cards, config)
-    // await fillCardOwnerCount(cards)
+    let collectionList = await fetchAllCollections()
+    let cardList = await fetchAllCards()
+    cardList = fillCardData(cardList, collectionList, config)
+
 
     let analytics = {
         capture: () => { }
@@ -122,8 +123,8 @@ const startup = async (config) => {
     // }
 
     return {
-        cards: config.cards, /* data with cards */
-        collections: config.data.collections, /* data with collections */
+        cards: cardList, /* data with cards */
+        collections: collectionList, /* data with collections */
         adminGuildID: config.bot.adminGuildID,
         promos: config.data.promos.map( x => Object.assign({}, x, {starts: Date.parse(x.starts), expires: Date.parse(x.expires)})),
         boosts: config.data.boosts.map( x => Object.assign({}, x, {starts: Date.parse(x.starts), expires: Date.parse(x.expires)})),
@@ -156,10 +157,9 @@ const startup = async (config) => {
         effects: require('../staticdata/effects'),
         slashCmd: require('../slashcommands/commands.json'),
         adminCmd: require('../slashcommands/admincommands.json'),
-        distribution: calculateDistribution(config.cards, config.data.collections),
+        distribution: calculateDistribution(cardList, collectionList),
         direct,
         send,
-        cardInfos,
         sauce,
         sendInteraction,
         toObj,

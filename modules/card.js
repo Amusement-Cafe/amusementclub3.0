@@ -1,6 +1,10 @@
 const _ = require('lodash')
 
 const {
+    Cards
+} = require('../collections')
+
+const {
     firstBy,
 } = require("thenby")
 
@@ -13,19 +17,17 @@ const {
 }  = require("./wishlist")
 
 
-const raritySymbols = [':star:', '<:bronze:1194177321511419904>', '<:silver:1194177323302408222>', '<:gold:1194177324485185556>']
-
 const formatCard = (ctx, card) => {
-    const col = ctx.collections.find(x => x.id == card.col)
-    const symbols = col.symbols? col.symbols: raritySymbols
+    const col = ctx.collections.find(x => x.collectionID == card.collectionID)
+    const symbols = col.stars
     const rarity = new Array(card.level + 1).join(symbols[card.level] || symbols[0])
-    const name = card.displayName || card.name.replace(/_/g, ' ')
-    return `[${rarity}]${card.locked? ' `🔒`': ''}${card.fav? ' `❤`' : ''} [${name}](${card.shorturl}) \`[${card.col}]\``
+    console.log(card)
+    const name = card.displayName || card.cardName.replace(/_/g, ' ')
+    return `[${rarity}]${card.locked? ' `🔒`': ''}${card.fav? ' `❤`' : ''} [${name}](${card.shorturl}) \`[${card.collectionID}]\``
 }
 
 const withCards = (callback, options) => async (ctx, user, args) => {
     let cards
-
 
     if (args.forgeArgs1) {
         cards = await getAllUserCards(user, true)
@@ -72,7 +74,10 @@ const withCards = (callback, options) => async (ctx, user, args) => {
     return callback(ctx, user, args, cards)
 }
 
+const fetchAllCards = async () => await Cards.find().lean()
+
 module.exports = {
+    fetchAllCards,
     formatCard,
     withCards
 }

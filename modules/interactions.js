@@ -16,7 +16,7 @@ const parseArgs = (ctx, user, options) => {
         tags: [],
         userIDs: [],
         cardQuery: {
-            sort: firstBy((a, b) => b.level - a.level).thenBy("col").thenBy("name")
+            sort: firstBy((a, b) => b.level - a.level).thenBy("collectionID").thenBy("cardName")
         }
     }
 
@@ -121,13 +121,13 @@ const parseCardArgs = (ctx, user, cardArgs) => {
                     sort = sortBuilder((a, b) => a.amount - b.amount, lessThan, sort)
                     break;
                 case 'name':
-                    sort = sortBuilder((a, b) => a.name - b.name, lessThan, sort)
+                    sort = sortBuilder((a, b) => a.cardName - b.cardName, lessThan, sort)
                     break;
                 case 'star':
                     sort = sortBuilder((a, b) => a.level - b.level, lessThan, sort)
                     break;
                 case 'col':
-                    sort = sortBuilder((a, b) => a.col - b.col, lessThan, sort)
+                    sort = sortBuilder((a, b) => a.collectionID - b.collectionID, lessThan, sort)
                     break;
                 case 'eval':
                     sort = sortBuilder((a, b) => evalSort(ctx, a, b), lessThan, sort)
@@ -211,15 +211,15 @@ const parseCardArgs = (ctx, user, cardArgs) => {
         }
     })
 
-    if(query.cols.length > 0) query.filters.push(c => query.cols.includes(c.col))
+    if(query.cols.length > 0) query.filters.push(c => query.cols.includes(c.collectionID))
     if(query.levels.length > 0) query.filters.push(c => query.levels.includes(c.level))
-    if(query.antiCols.length > 0) query.filters.push(c => !query.antiCols.includes(c.col))
+    if(query.antiCols.length > 0) query.filters.push(c => !query.antiCols.includes(c.collectionID))
     if(query.antiLevels.length > 0) query.filters.push(c => !query.antiLevels.includes(c.level))
     if(query.keywords.length > 0)
-        query.filters.push(c => (new RegExp(`(_|^)${query.keywords.map(k => k.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('.*')}`, 'gi')).test(c.name))
+        query.filters.push(c => (new RegExp(`(_|^)${query.keywords.map(k => k.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('.*')}`, 'gi')).test(c.cardName))
 
     if (!sort)
-        query.sort = firstBy((a, b) => b.level - a.level).thenBy("col").thenBy("name")
+        query.sort = firstBy((a, b) => b.level - a.level).thenBy("collectionID").thenBy("cardName")
     else
         query.sort = sort
 

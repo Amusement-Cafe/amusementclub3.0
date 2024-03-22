@@ -9,6 +9,6 @@ const schema = new Schema({
     amount:         { type: Number, default: 1 },
     rating:         { type: Number, default: 0 },
     personalTags:   { type: Array, default: [] },
-    obtained:       { type: Date, default: Date.now },
+    obtained:       { type: Date, default: new Date() },
 })
 module.exports = model('UserCard', schema)
