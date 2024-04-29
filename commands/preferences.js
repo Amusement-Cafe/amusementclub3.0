@@ -28,19 +28,7 @@ const modals = require('../staticdata/modals/profile.json')
 const btnReturn = new Button('preferenceReturn').setLabel('Main Menu').setStyle(2)
 
 
-cmd(['preferences', 'set', 'profile'], async (ctx, user, args) => await defaultFunction(ctx, user, args))
-
-cmd(['preferences', 'set', 'interact'], async (ctx, user, args) => await defaultFunction(ctx, user, args))
-
-cmd(['preferences', 'set', 'notify'], async (ctx, user, args) => await defaultFunction(ctx, user, args))
-
-cmd(['preferences', 'show', 'all'], async (ctx, user, args) => await prefsMain(ctx, user, args))
-
-cmd(['preferences', 'show', 'profile'], async (ctx, user, args) => await defaultFunction(ctx, user, args))
-
-cmd(['preferences', 'show', 'interact'], async (ctx, user, args) => await defaultFunction(ctx, user, args))
-
-cmd(['preferences', 'show', 'notify'], async (ctx, user, args) => await defaultFunction(ctx, user, args))
+cmd(['preferences'], async (ctx, user, args) => await prefsMain(ctx, user, args))
 
 rct('preferenceMenu', async (ctx, user, args) => await displayMenu(ctx, user, args))
 rct('preferenceReturn', async (ctx, user, args) => await prefsMain(ctx, user, args, true))

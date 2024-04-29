@@ -18,64 +18,64 @@
   ],
   "interact": [
     {
-      "description": "",
+      "description": "This option changes whether another user can use the /has command on you",
       "label": "Can Has",
       "value": "interact_canHas"
     },
     {
-      "description": "",
+      "description": "This option changes whether another user can use the /diff command on you",
       "label": "Can Diff",
       "value": "interact_canDiff"
     },
     {
-      "description": "",
+      "description": "This option changes whether another user can sell cards to you",
       "label": "Can Sell",
       "value": "interact_canSell"
     }
   ],
   "notify": [
     {
-      "description": "",
+      "description": "This option changes whether you receive a DM when your auction receives an initial bid",
       "label": "First Bid On Your Auctions",
       "value": "notify_aucBidMe"
     },
     {
-      "description": "",
+      "description": "This option changes whether you receive a DM when you are outbid on an auction",
       "label": "Outbid On Auction Notification",
       "value": "notify_aucOutbid"
     },
     {
-      "description": "",
+      "description": "This option changes whether you receive a DM when your auction receives a new highest bid",
       "label": "New Bid On Auction Notification",
       "value": "notify_aucNewBid"
     },
     {
-      "description": "",
+      "description": "This option changes whether you receive a DM when your auction ends",
       "label": "Auction End Notification",
       "value": "notify_aucEnd"
     },
     {
-      "description": "",
+      "description": "This option changes whether you receive a DM when a new bot announcement is made",
       "label": "New Bot Announcements",
       "value": "notify_announce"
     },
     {
-      "description": "",
+      "description": "This option changes whether you receive a DM when your daily is ready",
       "label": "Daily Ready Notifications",
       "value": "notify_daily"
     },
     {
-      "description": "",
+      "description": "This option changes whether you receive a DM when you can vote for the bot",
       "label": "Vote Ready Notifications",
       "value": "notify_vote"
     },
     {
-      "description": "",
+      "description": "This option changes whether you receive a DM when a collection is completed or completion is lost",
       "label": "Collection Completion Status Notifications",
       "value": "notify_completed"
     },
     {
-      "description": "",
+      "description": "This option changes whether you receive a DM when an effect expires or comes off cooldown",
       "label": "Effect Expires Or Comes Off Cooldown",
       "value": "notify_effectEnd"
     }

@@ -52,39 +52,39 @@
     "description": "Enable or disable the ability for other users to sell you cards via `/sell`"
   },
   "bio": {
-    "title": "",
-    "description": "Receive a DM notification when"
+    "title": "Bio Setting",
+    "description": "Open the modal below to set your bio"
   },
   "title": {
-    "title": "",
-    "description": "Receive a DM notification when"
+    "title": "Title Setting",
+    "description": "Use the select menu below to set your title"
   },
   "color": {
-    "title": "",
-    "description": "Receive a DM notification when"
+    "title": "Color Setting",
+    "description": "Open the modal below to set your color"
   },
   "favCard": {
-    "title": "",
-    "description": "Receive a DM notification when"
+    "title": "Favorite Card",
+    "description": "Open the modal below to set your Favorite Card"
   },
   "favComplete": {
-    "title": "",
-    "description": "Receive a DM notification when"
+    "title": "Favorite Completion",
+    "description": "Open the modal below to set your Favorite Collection Completion"
   },
   "favClout": {
-    "title": "",
-    "description": "Receive a DM notification when"
+    "title": "Favorite Clouted Collection",
+    "description": "Open the modal below to set your Favorite Clouted Collection"
   },
   "notify": {
-    "title": "Idk",
-    "description": "Receive a DM notification when"
+    "title": "Notification Options",
+    "description": "Use the select menu below to navigate to a Notification option.\nNotification options manage when the bot will DM you."
   },
   "interact": {
-    "title": "idk",
-    "description": "Receive a DM notification when"
+    "title": "Interaction Settings",
+    "description": "Use the select menu below to navigate to an Interaction option.\nInteraction options change how others can interact with you."
   },
   "profile": {
-    "title": "idK",
-    "description": "Receive a DM notification when"
+    "title": "Profile Settings",
+    "description": "Use the select menu below to navigate to a Profile option"
   }
 }
