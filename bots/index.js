@@ -1,0 +1,2 @@
+require('./ayano')
+require('./amusement')

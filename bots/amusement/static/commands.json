@@ -1,0 +1,15 @@
+{
+  "admin": [],
+  "general": [
+    {
+      "type": 1,
+      "name": "balance",
+      "description": "Check yo balance"
+    },
+    {
+      "type": 1,
+      "name": "daily",
+      "description": "Daily thing"
+    }
+  ]
+}

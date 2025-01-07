@@ -1,0 +1,17 @@
+{
+	"name": "Amusement Core",
+	"version": "3.0.0",
+	"description": "Core of Amusement Club",
+	"main": "index.js",
+	"scripts": {
+		"start": "nodemon index.js"
+	},
+	"author": "mj11jm",
+	"license": "MPL2.0",
+	"dependencies": {
+		"minio": "^8.0.2",
+		"mongoose": "^8.7.0",
+		"oceanic.js": "^1.11.2",
+		"yaml": "^2.5.1"
+	}
+}

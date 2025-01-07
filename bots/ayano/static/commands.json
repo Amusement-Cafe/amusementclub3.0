@@ -1,0 +1,22 @@
+{
+  "commands": [
+    {
+      "type": 1,
+      "name": "restart",
+      "description": "This is the start of the restart start",
+      "options": [
+        {
+          "type": 1,
+          "name": "ayano",
+          "description": "Restart Ayano"
+        }
+
+      ]
+    },
+    {
+      "type": 1,
+      "name": "rename",
+      "description": "This is a second command for testing"
+    }
+  ]
+}
