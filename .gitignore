@@ -93,5 +93,5 @@ config.json
 test/data/*
 # duckdoc.io project config
 .duckdoc
-scripts/cols.json
-scripts/crds.json
+src/amusement/scripts/cols.json
+src/amusement/scripts/crds.json
