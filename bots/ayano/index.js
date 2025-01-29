@@ -1,7 +1,7 @@
 const Oceanic = require('oceanic.js')
 
 const {
-    handleAyanoCommand,
+    handleBotCommand,
     registerBotCommand,
 } = require("../../utils/commandRegistrar")
 const {
@@ -11,6 +11,7 @@ const {
 require('./commands')
 const {restartAyano} = require("../../managers/ayano");
 const {getConfig} = require("../../utils/fileHelpers");
+const User = require("../../db/user");
 
 const bot = new Oceanic.Client({ auth: 'Bot ' + process.env.token, gateway: { intents: ["MESSAGE_CONTENT", "GUILD_MESSAGES", "DIRECT_MESSAGES"]}})
 
@@ -51,6 +52,7 @@ bot.on('messageCreate', async (msg) => {
 
 bot.on('interactionCreate', async (interaction) => {
     let base = [interaction.data.name]
+    let options = []
 
     let cursor = interaction.data
     while (cursor.hasOwnProperty('options')) {
@@ -61,14 +63,29 @@ bot.on('interactionCreate', async (interaction) => {
                 cursor = x
             } else if (x.name === 'global' && x.value) {
                 base.push(x.name)
+            } else {
+                options.push({[x.name]: x.value})
             }
         })
     }
+    ctx.user = await User.findOne({userID: interaction.user.id})
+    ctx.interaction = interaction
+    ctx.options = Object.assign({}, ...options)
 
-    await handleAyanoCommand(base, {ctx, interaction})
+    switch (interaction.constructor) {
+        case Oceanic.CommandInteraction:
+            return await handleBotCommand(base, ctx)
+        case Oceanic.ComponentInteraction:
+            return
+        case Oceanic.ModalSubmitInteraction:
+            return
+        default:
+            return false
+    }
+
 })
 
 registerBotCommand(['restart', 'ayano'], async (ctx, extras, more) => {
     await more.interaction.reply({content: 'restarting'})
-    await restartAyano(process)
+    await restartAyano()
 })

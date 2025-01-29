@@ -2,7 +2,7 @@ const {model, Schema} = require('mongoose')
 
 const schema = new Schema({
     cardID:         { type: Number, index: true },
-    level:          { type: Number },
+    rarity:         { type: Number },
     animated:       { type: Boolean, default: false },
     collectionID:   { type: String },
     cardName:       { type: String },

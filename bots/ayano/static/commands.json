@@ -15,8 +15,20 @@
     },
     {
       "type": 1,
-      "name": "rename",
-      "description": "This is a second command for testing"
+      "name": "update",
+      "description": "This is a third command for testing",
+      "options": [
+        {
+          "type": 3,
+          "name": "collection",
+          "description": "The collection that is receiving new cards."
+        },
+        {
+          "type": 5,
+          "name": "promo",
+          "description": "Select whether the collection to be added is a promo or not."
+        }
+      ]
     }
   ]
 }

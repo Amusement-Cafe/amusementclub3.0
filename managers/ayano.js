@@ -14,6 +14,7 @@ const createAyano = async () => {
     bot = child.fork('./bots/ayano', {env: config.ayano})
     bot.on('error', (err) => console.log(err))
     bot.on('message', (message) => console.log(message))
+    // bot.on('exit', () => stopAyano())
 }
 
 const startAyano = async () => {
@@ -33,7 +34,9 @@ const stopAyano = async () => {
 }
 
 const restartAyano = async () => {
-    console.log(bot)
+    if (!bot) {
+        return
+    }
     bot.send({quit: true})
     bot.kill()
     bot = null

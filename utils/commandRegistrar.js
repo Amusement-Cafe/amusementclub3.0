@@ -1,3 +1,6 @@
+const {getCommandOptions} = require("./optionsHandler");
+const {Collections, Cards} = require("../db");
+const {ctxFiller} = require("./ctxFiller");
 const cliCommands = new Map()
 const botCommands = {}
 
@@ -36,11 +39,11 @@ const handleCLICommand = (input) => {
     }
 }
 
-const handleAyanoCommand = (input, extras) => {
+
+
+const handleBotCommand = async (input, ctx) => {
     let currentLevel = botCommands
 
-    console.log(input)
-    console.log(botCommands)
     for (let cmd of input) {
         if (!currentLevel[cmd]) {
             return console.log(`${input.join(' ')} is NOT a command.... yet?`)
@@ -52,42 +55,40 @@ const handleAyanoCommand = (input, extras) => {
         return console.log(`Somehow you have run a command without a handler!`)
     }
 
-    if (currentLevel.handler) {
-        return currentLevel.handler(extras.ctx, currentLevel.options, extras)
-    } else {
-        return console.log(`${input.join(' ')} doesn't have a handler?`)
-    }
-}
-
-const handleAmusementCommand = (input, extras) => {
-    let currentLevel = botCommands
-    console.log(botCommands)
-    for (let cmd of input) {
-        if (!currentLevel[cmd]) {
-            return console.log(`${input.join(' ')} is NOT a command.... yet?`)
+    let deferless, ephemeral
+    if (currentLevel.options) {
+        if (currentLevel.options.deferless) {
+            deferless = true
         }
-        currentLevel = currentLevel[cmd]
-    }
 
-    if (!currentLevel.handler) {
-        return console.log(`Somehow you have run a command without a handler!`)
-    }
+        if (currentLevel.options?.perms && currentLevel.options.perms.length > 0) {
+            if (!currentLevel.options.perms.find(x => ctx.user.roles.some(y => x === y))) {
+                return ctx.interaction.reply({content:`You don't have permission to use this command`})
+            }
+        }
 
-    if (currentLevel.options?.perms && currentLevel.options.perms.length > 0) {
-        if (!currentLevel.options.perms.find(x => extras.user.roles.some(y => x === y))) {
-            return extras.interaction.reply({content:`You don't have permission to use this command`})
+        if (currentLevel.options?.premium && !ctx.user.premium.active) {
+            return ctx.interaction.reply({content:`This is an Amusement+ only command. See /tip for more Amusement+ info.`})
+        }
+
+        if (currentLevel.options.ephemeral) {
+            await ctx.interaction.defer(64)
+            ephemeral = true
+        }
+
+        if (currentLevel.options.forceDefer) {
+            await ctx.interaction.defer()
         }
     }
 
-    if (currentLevel.options?.premium && !extras.user.premium.active) {
-        return extras.interaction.reply({content:`This is an Amusement+ only command. See /tip for more Amusement+ info.`})
+    if (!deferless && !ephemeral) {
+        await ctx.interaction.defer()
     }
 
-    if (currentLevel.handler) {
-        return currentLevel.handler(extras.ctx, currentLevel.options, extras)
-    } else {
-        return console.log(`${input.join(' ')} doesn't have a handler?`)
-    }
+    ctx = await ctxFiller(ctx)
+
+    return currentLevel.handler(ctx)
+
 }
 
 
@@ -96,7 +97,6 @@ registerCLICommand('hi', () => console.log('hello'))
 module.exports = {
     registerBotCommand,
     registerCLICommand,
-    handleAmusementCommand,
-    handleAyanoCommand,
+    handleBotCommand,
     handleCLICommand,
 }
