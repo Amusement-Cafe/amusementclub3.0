@@ -10,13 +10,12 @@
           "name": "ayano",
           "description": "Restart Ayano"
         }
-
       ]
     },
     {
       "type": 1,
       "name": "update",
-      "description": "This is a third command for testing",
+      "description": "This is a second command for testing",
       "options": [
         {
           "type": 3,
@@ -27,6 +26,42 @@
           "type": 5,
           "name": "promo",
           "description": "Select whether the collection to be added is a promo or not."
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "alias",
+      "description": "This is a third command for testing",
+      "options": [
+        {
+          "type": 3,
+          "name": "collection",
+          "description": "The collection that is receiving an alias.",
+          "required": true
+        },
+        {
+          "type": 3,
+          "name": "alias",
+          "description": "The alias(es) to add to the collection. Space separated.",
+          "required": true
+        },
+        {
+          "type": 5,
+          "name": "remove",
+          "description": "Select whether you are removing aliases or not."
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "rename",
+      "description": "This is the start of the restart start",
+      "options": [
+        {
+          "type": 1,
+          "name": "ayano",
+          "description": "Restart Ayano"
         }
       ]
     }

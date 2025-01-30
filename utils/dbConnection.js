@@ -1,17 +1,12 @@
 const mongoose = require('mongoose')
 
-const {
-    getConfig
-} = require("./fileHelpers")
-
 let db
 
-const getDBConnection = () => {
+const getDBConnection = (ctx) => {
     if (db)
         return db
-    let config = getConfig()
     require('../db')
-    db = mongoose.connect(config.database.url)
+    db = mongoose.connect(ctx.config.database.url)
     return db
 }
 

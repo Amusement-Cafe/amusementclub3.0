@@ -12,6 +12,8 @@ require('./commands')
 const {restartAyano} = require("../../managers/ayano");
 const {getConfig} = require("../../utils/fileHelpers");
 const User = require("../../db/user");
+const {Collections, Cards} = require("../../db");
+const {getContext} = require("../../utils/ctxFiller");
 
 const bot = new Oceanic.Client({ auth: 'Bot ' + process.env.token, gateway: { intents: ["MESSAGE_CONTENT", "GUILD_MESSAGES", "DIRECT_MESSAGES"]}})
 
@@ -26,16 +28,17 @@ process.on('message', async (msg) => {
 })
 
 let ctx = {}
+let ready = false
 
 bot.once('ready', async () => {
-    ctx.db = await getDBConnection()
-    ctx.config = getConfig()
+    ctx = await getContext()
     let slashCommands = require('./static/commands.json')
     const serverCommands = await bot.application.getGuildCommands('651599467174428703')
     if (serverCommands.length !== slashCommands.commands.length) {
         console.log('Updating server commands as a mis-match was found')
         await bot.application.bulkEditGuildCommands('651599467174428703', slashCommands.commands)
     }
+    ready = true
 })
 
 bot.on('ready', async () => {
@@ -51,6 +54,9 @@ bot.on('messageCreate', async (msg) => {
 })
 
 bot.on('interactionCreate', async (interaction) => {
+    if (!ready) {
+        return interaction.reply({content:`This is an Amusement+ only command. See /tip for more Amusement+ info.`})
+    }
     let base = [interaction.data.name]
     let options = []
 
@@ -68,13 +74,16 @@ bot.on('interactionCreate', async (interaction) => {
             }
         })
     }
-    ctx.user = await User.findOne({userID: interaction.user.id})
-    ctx.interaction = interaction
-    ctx.options = Object.assign({}, ...options)
+    let isolatedCtx = Object.assign({}, ctx, {
+        interaction,
+        bot,
+        options: Object.assign({}, ...options)
+    })
+    isolatedCtx.user = await User.findOne({userID: interaction.user.id})
 
     switch (interaction.constructor) {
         case Oceanic.CommandInteraction:
-            return await handleBotCommand(base, ctx)
+            return await handleBotCommand(base, isolatedCtx)
         case Oceanic.ComponentInteraction:
             return
         case Oceanic.ModalSubmitInteraction:
