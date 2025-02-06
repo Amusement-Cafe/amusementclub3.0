@@ -12,7 +12,7 @@ registerBotCommand('update', async (ctx, extras) => {
         await getS3Connection(ctx)
 
     if (updating)
-        return await ctx.interaction.reply({content: `An update is already in progress, please wait for it to finish and try again!`})
+        return await ctx.send(ctx, `An update is already in progress, please wait for it to finish and try again!`)
 
     const before = new Date()
     updating = true
@@ -27,8 +27,7 @@ registerBotCommand('update', async (ctx, extras) => {
             let collectionCards = await new Promise((resolve, reject) => {
                 let stream = ctx.s3.listObjectsV2(ctx.config.minio.bucket, `cards/${col}/`)
                 let cards = []
-                stream.on('data', (item) => {
-                    cards.push(item)})
+                stream.on('data', (item) => cards.push(item))
                 stream.on('error', (err) => reject(err))
                 stream.on('end', () => resolve(cards))
             })
@@ -72,13 +71,13 @@ registerBotCommand('update', async (ctx, extras) => {
                 responsePairs.push(`**NEW** ${collection.name}:${colCards.length}`)
             }
             newCards = multiCards.flat()
-            ctx.collections = await Collections.find().lean()
+            ctx.global.collections = await Collections.find()
         }
     }
 
     if (newCards.length === 0) {
         updating = false
-        return ctx.interaction.reply({content: `There was nothing to add!`})
+        return ctx.send(ctx, `There was nothing to add!`)
     }
 
     let lastID = ctx.cards?.sort((a, b) => b.cardID - a.cardID)[0]?.cardID || 0
@@ -94,6 +93,7 @@ registerBotCommand('update', async (ctx, extras) => {
         newCard.cardName = name
         newCard.displayName = name.split(' ').map(s => s[0].toUpperCase() + s.slice(1).toLowerCase()).join(' ')
         newCard.added = new Date()
+        newCard.cardURL = `https://a.amu.cards/${newCard.collectionID}/${fileName}`
         await newCard.save()
         lastID++
     }
@@ -105,13 +105,11 @@ registerBotCommand('update', async (ctx, extras) => {
 
     const after = new Date()
     updating = false
-    ctx.cards = await Cards.find().lean()
-    return await ctx.interaction.reply({content: `That took ${after - before}ms or ${(after - before) / 1000} seconds, is that too long?`, embeds: [{
-        description: response.substring(0, 4095)
-        }]})
-
-    // data.on('data', (item) => console.log(item))
-    // data.on('error', (err) => console.log(err))
-    await extras.interaction.reply({content: content})
-    // await extras.interaction.reply({content:'It works'})
+    ctx.global.cards = await Cards.find()
+    return ctx.send(ctx, {
+        content: `That took ${after-before}ms!`,
+        embed: {
+            description: response.substring(0, 4095)
+        }
+    })
 })

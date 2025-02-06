@@ -12,7 +12,7 @@ const _ = require("lodash")
  * @param args
  * @returns {Promise<void>}
  */
-const send = async (ctx, user, args) => {
+const send = async (ctx, args) => {
     let components = args.components || []
 
     if (typeof args === 'string') {
@@ -103,14 +103,18 @@ const cfmResolve = async (ctx, confirm) => {
 /**
  *
  * @param ctx - Base context object
- * @param user - Bot user object
  * @param args - The basic response args (e.g. buttons/pages/perms/onConfirm/onDecline/etc)
  * @returns {Promise<void>}
  */
-const sendInteraction = async (ctx, user, args) => {
+const sendInteraction = async (ctx, args) => {
+
+    if (typeof args === 'string') {
+        args = {embed: {description: args}}
+    }
+
     let interaction = Object.assign({}, {
-        userID: user.userID,
-        permissions: {pages: [user.userID], cfm: [user.userID], dcl: [user.userID]},
+        userID: ctx.user.userID,
+        permissions: {pages: [ctx.user.userID], cfm: [ctx.user.userID], dcl: [ctx.user.userID]},
         components: [],
         buttons: ['first', 'back', 'next', 'last'],
         pageNum: 0,
@@ -146,8 +150,8 @@ const sendInteraction = async (ctx, user, args) => {
 
     if (interaction.confirmation) {
         let buttons = interaction.customCfmButtons || [
-            { type: 2, label: 'Confirm', style: 3, customID: 'cfm_cfm'},
-            { type: 2, label: 'Decline', style: 4, customID: 'cfm_dcl'}
+            { type: 2, label: 'Confirm', style: 3, customID: 'cfm'},
+            { type: 2, label: 'Decline', style: 4, customID: 'dcl'}
         ]
         interaction.components.push({ type: 1, components: buttons })
     }
@@ -159,9 +163,9 @@ const sendInteraction = async (ctx, user, args) => {
         return await interaction.onError(ctx.interaction)
 
     if (interaction.pages?.length > 1 || interaction.confirmation || interaction.selection || interaction.customButtons)
-        await invalidateOld(ctx, user)
+        await invalidateOld(ctx, ctx.user)
 
-    return send(ctx, user, interaction)
+    return send(ctx, interaction)
 }
 
 const invalidateOld = async (ctx, user) => {
@@ -189,4 +193,5 @@ const invalidateOld = async (ctx, user) => {
 module.exports = {
     send,
     sendInteraction,
+    cfmResolve,
 }

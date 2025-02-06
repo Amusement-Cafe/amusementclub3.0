@@ -11,25 +11,27 @@ const getCommandOptions = async (ctx, user) => {
             sort: firstBy((a, b) => b.rarity - a.rarity).thenBy('collectionID').thenBy('cardName'),
         }
     }
+    if (ctx.options) {
+        Object.entries(ctx.options).forEach(([name, value]) => {
+            switch (name) {
+                case 'alias': args.aliases = value.split(' '); break;
+                case 'collection':
+                    args.cols.push(value.split(' ').map(x => {
+                        let close = closest(x, _.flattenDeep(ctx.collections.map(y => y.aliases)))
 
-    Object.entries(ctx.options).forEach(([name, value]) => {
-        switch (name) {
-            case 'alias': args.aliases = value.split(' '); break;
-            case 'collection':
-                args.cols.push(value.split(' ').map(x => {
-                    let close = closest(x, _.flattenDeep(ctx.collections.map(y => y.aliases)))
+                        if (distance(x, close) <= 3) {
+                            return close
+                        }
+                        return false
+                    }));
+                    args.colQuery = value;
+                    break;
+                case 'promo': args.promo = value; break;
+                case 'remove': args.remove = value; break;
+            }
+        })
+    }
 
-                    if (distance(x, close) <= 3) {
-                        return close
-                    }
-                    return false
-                }));
-                args.colQuery = value;
-                break;
-            case 'promo': args.promo = value; break;
-            case 'remove': args.remove = value; break;
-        }
-    })
     args.cols = _.flattenDeep(args.cols).filter(x => x)
     return args
 }

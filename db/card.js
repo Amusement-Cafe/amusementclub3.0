@@ -7,9 +7,10 @@ const schema = new Schema({
     collectionID:   { type: String },
     cardName:       { type: String },
     displayName:    { type: String },
+    cardURL:        { type: String },
     added:          { type: Date },
-    eval:           { type: Number },
     lastUpdatedEval:{ type: Date },
+    eval:           { type: Number },
 
     ratingSum:      { type: Number, default: 0 },
     timesRated:     { type: Number, default: 0 },

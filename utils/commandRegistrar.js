@@ -1,8 +1,7 @@
-const {getCommandOptions} = require("./optionsHandler");
-const {Collections, Cards} = require("../db");
-const {ctxFiller} = require("./ctxFiller");
+const {ctxFiller} = require("./ctxFiller")
 const cliCommands = new Map()
 const botCommands = {}
+const rctCommands = {}
 
 
 const registerCLICommand = (command, handler, options) => {
@@ -12,6 +11,21 @@ const registerCLICommand = (command, handler, options) => {
 const registerBotCommand = (command, handler, options) => {
     const commandArray = Array.isArray(command)? command: [command]
     let currentLevel = botCommands
+
+    for (let cmd of commandArray) {
+        if (!currentLevel[cmd]) {
+            currentLevel[cmd] = {}
+        }
+        currentLevel = currentLevel[cmd]
+    }
+
+    currentLevel.handler = handler
+    currentLevel.options = options
+}
+
+const registerReaction = (command, handler, options) => {
+    const commandArray = Array.isArray(command)? command: [command]
+    let currentLevel = rctCommands
 
     for (let cmd of commandArray) {
         if (!currentLevel[cmd]) {
@@ -38,8 +52,6 @@ const handleCLICommand = (input) => {
         console.log(`${input} is NOT a command.... yet?\nDid you mean to use one of these:\n${others.join('\n')}`)
     }
 }
-
-
 
 const handleBotCommand = async (input, ctx) => {
     let currentLevel = botCommands
@@ -88,15 +100,33 @@ const handleBotCommand = async (input, ctx) => {
     ctx = await ctxFiller(ctx)
 
     return currentLevel.handler(ctx)
-
 }
 
+const handleReaction = async (input, ctx) => {
+    let currentLevel = rctCommands
+    let commandSplit = input[0].split('-')
+    const command = commandSplit.shift().split('_')
+    ctx.arguments = commandSplit[0]
 
-registerCLICommand('hi', () => console.log('hello'))
+    for (let cmd of command) {
+        if (!currentLevel[cmd]) {
+            return console.log(`${command.join(' ')} is NOT a reaction.... yet?`)
+        }
+        currentLevel = currentLevel[cmd]
+    }
+
+    if (!currentLevel.handler) {
+        return console.log(`Somehow you have run a command without a handler!`)
+    }
+    ctx = await ctxFiller(ctx)
+    return currentLevel.handler(ctx)
+}
 
 module.exports = {
     registerBotCommand,
     registerCLICommand,
+    registerReaction,
     handleBotCommand,
     handleCLICommand,
+    handleReaction,
 }

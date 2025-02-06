@@ -10,6 +10,42 @@
       "type": 1,
       "name": "daily",
       "description": "Daily thing"
+    },
+    {
+      "type": 1,
+      "name": "claim",
+      "description": "Claim cards with this command!",
+      "options": [
+        {
+          "type": 4,
+          "name": "count",
+          "description": "A description",
+          "minValue": 1,
+          "maxValue": 20
+        },
+        {
+          "type": 5,
+          "name": "promo",
+          "description": "Another Description"
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "refresh",
+      "description": "Top Level Refresh",
+      "options": [
+        {
+          "type": 1,
+          "name": "global",
+          "description": "Initiate a refresh of the bot commands"
+        },
+        {
+          "type": 1,
+          "name": "guild",
+          "description": "Initiate a refresh of the bot guild commands"
+        }
+      ]
     }
   ]
 }

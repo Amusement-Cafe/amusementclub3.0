@@ -2,31 +2,32 @@ const {getCommandOptions} = require("./optionsHandler");
 const {Collections, Cards} = require("../db");
 const {getDBConnection} = require("./dbConnection");
 const {getConfig} = require("./fileHelpers");
+const {sendInteraction} = require("./messageCreation");
+const Emitter = require('events')
 
-const byAlias = (ctx, name) => {
-    const regex = new RegExp(name.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'gi')
-    return ctx.collections.filter(x => x.aliases.some(y => regex.test(y)))
-}
 
-const bestColMatch = (ctx, name) => {
-    const c = byAlias(ctx, name)
-    return c.sort((a, b) => a.id.length - b.id.length)
-}
+let globalContext = {}
 
-const getContext = async () => {
-    let ctx = {}
-    ctx.config = getConfig()
-    ctx.db = await getDBConnection(ctx)
-    ctx.collections = await Collections.find()
-    ctx.cards = await Cards.find()
-    return ctx
+
+const getContext = async (bot) => {
+    if (globalContext.events) {
+        return globalContext
+    }
+
+    globalContext.config = getConfig()
+    globalContext.db = await getDBConnection(globalContext)
+    globalContext.collections = await Collections.find()
+    globalContext.cards = await Cards.find()
+    globalContext.events = new Emitter()
+
+    return globalContext
 }
 
 const ctxFiller = async (ctx, bot) => {
     let args = await getCommandOptions(ctx, ctx.user)
     return Object.assign({}, ctx, {
         args,
-        reply: (user, string, color = 'default', edit) => {},
+        send: sendInteraction,
         sendDM: async (ctx, user, message, color) => {
             try {
                 let dmChannel = await ctx.bot.rest.users.createDM(user.userID)
@@ -44,10 +45,25 @@ const ctxFiller = async (ctx, bot) => {
             return { description: `**${user.username}**, ${string}`, color: color }
         },
         fmtNum: (num) => num.toLocaleString('en-US'),
+        formatName: (ctx, card) => {
+            const col = ctx.collections.find(x => x.collectionID === card.collectionID)
+            const rarity = new Array(card.rarity + 1).join(col.stars[card.rarity] || col.stars[0])
+            return `[${rarity}]${card.locked? ' `🔒`': ''}${card.fav? ' `❤`' : ''} [${card.displayName}](${card.cardURL}) \`[${card.collectionID}]\``
+        },
+        colors: {
+            red: 14356753,
+            yellow: 16756480,
+            green: 1030733,
+            blue: 1420012,
+            grey: 3553598,
+            deepgreen:1142316,
+            default: 2067276
+        }
     })
 }
 
 module.exports = {
+    globalContext,
     ctxFiller,
     getContext
 }

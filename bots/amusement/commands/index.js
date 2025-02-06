@@ -1,1 +1,2 @@
+require('./claim')
 require('./user')
