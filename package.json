@@ -4,11 +4,12 @@
 	"description": "Core of Amusement Club",
 	"main": "index.js",
 	"scripts": {
-		"start": "nodemon index.js"
+		"start": "node index.js"
 	},
 	"author": "mj11jm",
 	"license": "MPL2.0",
 	"dependencies": {
+		"express": "^4.21.2",
 		"fastest-levenshtein": "^1.0.16",
 		"lodash": "^4.17.21",
 		"minio": "^8.0.2",

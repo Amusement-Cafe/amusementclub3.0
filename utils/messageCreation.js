@@ -190,8 +190,11 @@ const invalidateOld = async (ctx, user) => {
 // })
 
 
+
+
 module.exports = {
     send,
     sendInteraction,
     cfmResolve,
+    switchPage,
 }

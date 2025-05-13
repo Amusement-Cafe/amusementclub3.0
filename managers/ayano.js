@@ -13,7 +13,13 @@ const createAyano = async () => {
     const config = getConfig()
     bot = child.fork('./bots/ayano', {env: config.ayano})
     bot.on('error', (err) => console.log(err))
-    bot.on('message', (message) => console.log(message))
+    bot.on('message', async (message) => {
+        console.log(message)
+        if (message.restart) {
+            console.log('Restarting...')
+            await restartAyano()
+        }
+    })
     // bot.on('exit', () => stopAyano())
 }
 

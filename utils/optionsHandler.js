@@ -26,6 +26,7 @@ const getCommandOptions = async (ctx, user) => {
                     }));
                     args.colQuery = value;
                     break;
+                case 'count': args.count = value; break;
                 case 'promo': args.promo = value; break;
                 case 'remove': args.remove = value; break;
             }

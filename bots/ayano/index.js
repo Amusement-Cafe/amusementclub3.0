@@ -6,6 +6,10 @@ const {
     handleReaction,
 } = require("../../utils/commandRegistrar")
 
+const {
+    listen
+} = require("../../utils/webhooks")
+
 
 require('./commands')
 require('../../utils/cfmHandler')
@@ -39,6 +43,7 @@ bot.once('ready', async () => {
         console.log('Updating server commands as a mis-match was found')
         await bot.application.bulkEditGuildCommands('651599467174428703', slashCommands.commands)
     }
+    await listen(ctx)
     ready = true
 })
 

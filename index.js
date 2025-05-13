@@ -5,6 +5,7 @@ const {
 require('./managers')
 const {stopAyano} = require("./managers/ayano");
 const {stopAmusement} = require("./managers/amusement");
+require('./utils/webhooks')
 let prompt
 
 console.log(`AmusementCLI v1.0`)

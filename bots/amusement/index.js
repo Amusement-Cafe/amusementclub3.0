@@ -1,16 +1,15 @@
 const Oceanic = require('oceanic.js')
 
 const {
-    handleBotCommand
+    handleBotCommand, handleReaction
 } = require("../../utils/commandRegistrar")
 const {
     fetchOrCreateUser
 } = require("./helpers/user")
-const {
-    startup
-} = require('./utils/startup')
+const jobs = require('./utils/jobs')
 
 require('./commands')
+require('../../utils/cfmHandler')
 const {getContext, globalContext} = require("../../utils/ctxFiller");
 
 
@@ -21,11 +20,12 @@ bot.once('ready', async () => {
     ctx = await getContext()
     started = true
     let slashCommands = require('./static/commands.json')
-    const globalCommands = await bot.application.getGuildCommands('651599467174428703')
+    const globalCommands = await bot.application.getGuildCommands(ctx.config.amusement.adminGuildID)
     if (globalCommands.length !== slashCommands.general.length) {
         console.log('Updating global commands as a mis-match was found')
-        await bot.application.bulkEditGuildCommands('651599467174428703', slashCommands.general)
+        await bot.application.bulkEditGuildCommands(ctx.config.amusement.adminGuildID, slashCommands.general)
     }
+    jobs.startTicks(ctx)
 })
 
 bot.on('ready', async () => {
@@ -38,6 +38,7 @@ process.on('message', async (msg) => {
         await bot.connect()
     }
     if (msg.quit) {
+        jobs.stopTicks()
         await bot.disconnect(false)
     }
     if (msg.send) {
@@ -76,5 +77,14 @@ bot.on('interactionCreate', async (interaction) => {
         global: globalContext
     })
     isolatedCtx.user = await fetchOrCreateUser(interaction)
-    await handleBotCommand(base, isolatedCtx)
+    switch (interaction.constructor) {
+        case Oceanic.CommandInteraction:
+            return await handleBotCommand(base, isolatedCtx)
+        case Oceanic.ComponentInteraction:
+            return await handleReaction(base, isolatedCtx)
+        case Oceanic.ModalSubmitInteraction:
+            return
+        default:
+            return false
+    }
 })
