@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const {Cards} = require("../../../db");
+const {Cards} = require("../../../db")
 
 const referencePrices = {
     1: 100,
@@ -9,15 +9,24 @@ const referencePrices = {
     5: 20000
 }
 
+let processing = false
+
 const evalCards = async (ctx) => {
+    if (processing) {
+        return
+    }
+    processing = true
+    const start = new Date()
     console.log('Attempting Card Eval Updates\nGathering Cards....')
     const cards = await Cards.find()
     console.log("Cards gathered, updating evals")
     await Promise.all(cards.map(async (card) => {
         if (card.lastUpdatedEval && card.lastUpdatedEval >= (Date.now() - (1000 * 60 * 60 * 24 * 7)))
             return
+        console.log(`Processing card ID ${card.cardID}`)
         let price = referencePrices[card.rarity]
         let cardCollection = ctx.collections.find(x => x.collectionID === card.collectionID)
+        console.log(`Processing Eval`)
 
         price += price * card.animated? 1.05: 1
         price *= price * cardCollection.promo? 1.1: 1
@@ -41,39 +50,12 @@ const evalCards = async (ctx) => {
         await card.save()
     }))
 
+    const end = new Date()
     console.log("Finished Updating Evals")
-
+    console.log(`Processing Started at ${start} and ended at ${end}`)
+    processing = false
 }
 
-const rarities = [1, 2, 3, 4, 5]
-const totalCopies = [1, 100, 600, 250, 1000, 0]
-const ownerCount = [1, 50, 200, 100, 0, 500]
-const soldToBot = [0, 1, 500, 5000, 100]
-const wishlistedCount = [0, 500, 1, 50, 5000, 100]
-const dates = [new Date("2017-12-25"), new Date("2019-05-15"), new Date("2020-09-18"), new Date("2025-03-12"), new Date("2023-07-07")]
-
-
-// for (let i = 0; i < 20; i++) {
-//     let card = {
-//         rarity: _.sample(rarities),
-//         promo: Math.round(Math.random()),
-//         animated: Math.round(Math.random()),
-//         added: _.sample(dates),
-//         stats: {
-//             ownerCount: _.sample(ownerCount),
-//             soldToBot: _.sample(soldToBot),
-//             totalCopies: _.sample(totalCopies),
-//             wishlistedCount: _.sample(wishlistedCount),
-//         }
-//     }
-//     let eval = evalCard(null, card)
-//     console.log(eval)
-//     console.log(card)
-//     console.log('\n\n\n')
-// }
-
-// const price = calculateCardPrice(cardData);
-// console.log(price); // This will calculate the price based on the new data
 module.exports = {
     evalCards
 }

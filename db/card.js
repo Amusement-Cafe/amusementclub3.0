@@ -26,8 +26,7 @@ const schema = new Schema({
         source:         { type: String },
         image:          { type: String },
 
-        added:          { type: Date },
-        author:         { type: String },
+        userID:         { type: String },
         contributor:    { type: String },
     },
 

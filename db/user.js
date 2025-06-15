@@ -53,6 +53,7 @@ const schema = new Schema({
     lastAnnounce:       { type: Date, default: new Date() },
     lastMsg:            { type: String },
     lastCard:           { type: Number, default: -1 },
+    lastCards:          { type: Array, default: [] },
 
     dailyNotified:      { type: Boolean, default: true },
 
@@ -73,7 +74,6 @@ const schema = new Schema({
             aucEnd:     { type: Boolean, default: true  },
             announce:   { type: Boolean, default: false },
             daily:      { type: Boolean, default: false },
-            vote:       { type: Boolean, default: false },
             completed:  { type: Boolean, default: true  },
             effectEnd:  { type: Boolean, default: false },
         },

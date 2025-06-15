@@ -6,7 +6,7 @@ const schema = new Schema({
     origin:         { type: String },
     creatorID:      { type: String },
 
-    stars:          { type: Array, default: [':star:', '<:bronze:1194177321511419904>', '<:silver:1194177323302408222>', '<:gold:1194177324485185556>'] },
+    stars:          { type: Array, default: ['★', '★', '★', '★'] },
     aliases:        { type: Array, default: [] },
 
     promo:          { type: Boolean, default: false },
