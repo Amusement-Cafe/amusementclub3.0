@@ -6,7 +6,18 @@ const {
     closest
 } = require('fastest-levenshtein')
 
-const getCommandOptions = async (ctx, user) => {
+
+const bestColMatch = (ctx, arg) => {
+    // console.log(_.flattenDeep(ctx.collections.map(y => y.aliases)))
+    let close = closest(arg, _.flattenDeep(ctx.collections.map(y => y.aliases)))
+    // console.log(close)
+    if (distance(arg, close) <= 3) {
+        console.log(ctx.collections.filter(x => x.aliases.includes(close)))
+        return ctx.collections.filter(x => x.aliases.includes(close))
+    }
+}
+
+const getCommandOptions = async (ctx) => {
     let args = {
         cols: [],
         tags: [],
@@ -20,7 +31,7 @@ const getCommandOptions = async (ctx, user) => {
         Object.entries(ctx.options).forEach(([name, value]) => {
             switch (name) {
                 case 'alias': args.aliases = value.split(' '); break;
-                // case 'card_query': args.cardQuery = parseCardArgs(ctx, ctx.user, value.split(' ')); break;
+                case 'card_query': args.cardQuery = parseCardArgs(ctx, ctx.user, value); break;
                 case 'collection':
                     args.cols.push(value.split(' ').map(x => {
                         let close = closest(x, _.flattenDeep(ctx.collections.map(y => y.aliases)))
@@ -80,7 +91,7 @@ const parseCardArgs = (ctx, user, cardArgs) => {
                     sort = sortBuilder((a, b) => a.cardName - b.cardName, lessThan, sort)
                     break;
                 case 'star':
-                    sort = sortBuilder((a, b) => a.level - b.level, lessThan, sort)
+                    sort = sortBuilder((a, b) => a.rarity - b.rarity, lessThan, sort)
                     break;
                 case 'col':
                     sort = sortBuilder((a, b) => a.collectionID - b.collectionID, lessThan, sort)
@@ -123,7 +134,7 @@ const parseCardArgs = (ctx, user, cardArgs) => {
                         break;
                     case 'lock':
                     case 'locked':
-                        query.filters.push(card => card.locked === flag)
+                        query.filters.push(card => flag? card.locked: !card.locked)
                         query.locked = flag
                         query.userQuery = true
                         break;
@@ -140,7 +151,7 @@ const parseCardArgs = (ctx, user, cardArgs) => {
                         break;
                     case 'promo':
                         const promoCols = bestColMatch(ctx, subStr)
-                        flag? promoCols.map(x => query.cols.push(x.id)): promoCols.map(x => query.antiCols.push(x.id))
+                        flag? promoCols.map(x => query.cols.push(x.collectionID)): promoCols.map(x => query.antiCols.push(x.collectionID))
                         break;
                     case 'diff':
                     case 'miss':
@@ -151,7 +162,7 @@ const parseCardArgs = (ctx, user, cardArgs) => {
                         if (!isNaN(parsedInt))
                             flag? query.levels.push(parsedInt): query.antiLevels.push(parsedInt)
                         else
-                            flag? query.cols.push(bestColMatch(ctx, subStr)[0].id): query.antiCols.push(bestColMatch(ctx, subStr)[0].id)
+                            flag? query.cols.push(bestColMatch(ctx, subStr)[0].collectionID): query.antiCols.push(bestColMatch(ctx, subStr)[0].collectionID)
 
                 }
             }
@@ -175,7 +186,7 @@ const parseCardArgs = (ctx, user, cardArgs) => {
         query.filters.push(c => (new RegExp(`(_|^)${query.keywords.map(k => k.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('.*')}`, 'gi')).test(c.cardName))
 
     if (!sort)
-        query.sort = firstBy((a, b) => b.level - a.level).thenBy("collectionID").thenBy("cardName")
+        query.sort = firstBy((a, b) => b.rarity - a.rarity).thenBy("collectionID").thenBy("cardName")
     else
         query.sort = sort
 

@@ -59,7 +59,6 @@ const handleCLICommand = (input) => {
 
 const handleBotCommand = async (input, ctx) => {
     let currentLevel = botCommands
-    console.log(currentLevel)
 
     for (let cmd of input) {
         if (!currentLevel[cmd]) {

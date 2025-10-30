@@ -1,6 +1,20 @@
 const UserCards = require('../../../db/userCard')
 
 
+const withCards = async (ctx, args) => {
+    let userCards
+    userCards = await getUserCardsLean(ctx, ctx.user)
+    userCards  = await mergeUserCards(ctx, userCards)
+    console.log(userCards.filter(x => x.locked === false).length)
+    args.cardQuery?.filters?.map(x => {
+        userCards = userCards.filter(x)
+        console.log(x.toString())
+        return userCards
+    })
+    userCards.sort(args.cardQuery.sort)
+    return userCards
+}
+
 const addUserCards = async (ctx, cardIDs) => {
     const writes = cardIDs.map((id) => {
         return {
@@ -61,4 +75,5 @@ module.exports = {
     getUserCards,
     getUserCardsLean,
     mergeUserCards,
+    withCards,
 }

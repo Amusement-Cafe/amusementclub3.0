@@ -45,5 +45,7 @@ registerCLICommand('acstop', () => stopAmusement())
 registerCLICommand('acrestart', () => restartAmusement())
 
 module.exports = {
+    restartAmusement,
+    startAmusement,
     stopAmusement
 }
