@@ -1,20 +1,38 @@
-const {registerBotCommand} = require('../../../utils/commandRegistrar')
-const _ = require("lodash");
-const {addUserCards} = require("../helpers/userCard");
+const _ = require("lodash")
 
-registerBotCommand(['claim'], async (ctx) => await claimNormal(ctx))
+const {
+    registerBotCommand
+} = require('../../../utils/commandRegistrar')
+
+const {
+    addUserCards
+} = require("../helpers/userCard")
+
+const {
+    calculateClaimCost
+} = require("../helpers/claim")
+
+registerBotCommand(['claim'], async (ctx) => await claimNormal(ctx), {withCards: true})
 
 const claimNormal = async (ctx) => {
+
+    let claimRNG = Math.random() * 100
+
     ctx.collections = ctx.collections.filter(x => x.inClaimPool)
     ctx.cards = ctx.cards.filter(x => ctx.collections.some(y => y.collectionID === x.collectionID))
     const claims = ctx.args.count || 1
+    const price = calculateClaimCost(ctx, claims)
+    if (price > ctx.user.tomatoes) {
+        return ctx.send(ctx, `you have an insufficient tomato balance to claim ${claims} cards!`, 'red')
+    }
+    console.log(price)
     let claimed = []
     let descriptionText = ``
     for (let i = 0; i < claims; i++) {
         let card = _.sample(ctx.cards)
         claimed.push(card)
-        descriptionText += `${ctx.formatName(ctx, card)}\n`
     }
+    claimed.sort((a, b) => b.rarity - a.rarity).map(card => descriptionText += `${ctx.formatName(ctx, card)}\n`)
 
     await addUserCards(ctx, claimed.map(x => x.cardID))
     return ctx.send(ctx, {

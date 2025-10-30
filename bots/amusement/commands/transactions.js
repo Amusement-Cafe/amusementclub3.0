@@ -11,8 +11,12 @@ registerBotCommand(['transaction', 'decline'], async (ctx) => await finalizeTran
 
 registerBotCommand(['transaction', 'list'], async (ctx) => await listTransactions(ctx))
 
+registerBotCommand(['transaction', 'info'], async (ctx) => await transactionInfo(ctx))
+
 const sell = async (ctx, many = false) => {}
 
 const finalizeTransaction = async (ctx, confirm = true) => {}
 
 const listTransactions = async (ctx) => {}
+
+const transactionInfo = async (ctx) => {}

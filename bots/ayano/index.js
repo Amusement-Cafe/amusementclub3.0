@@ -108,3 +108,8 @@ registerBotCommand(['restart', 'ayano'], async (ctx) => {
     await ctx.interaction.reply({content: 'restarting'})
     process.send({restart: true})
 })
+
+registerBotCommand(['restart', 'amusement'], async (ctx) => {
+    await ctx.interaction.reply({content: 'restarting'})
+    process.send({restartac: true})
+})

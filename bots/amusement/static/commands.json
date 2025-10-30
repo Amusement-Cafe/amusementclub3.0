@@ -1,5 +1,119 @@
 {
-  "admin": [],
+  "admin": [
+    {
+      "type": 1,
+      "name": "sudo",
+      "description": "Top Level Sudo",
+      "options": [
+        {
+          "type": 1,
+          "name": "help",
+          "description": "Open the admin help menu"
+        },
+        {
+          "type": 1,
+          "name": "wip",
+          "description": "Toggle the bots maintenance mode.",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "summon",
+          "description": "Summon any card from the bot.",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "embargo",
+          "description": "Embargo a list of users.",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "transfer",
+          "description": "Top Level Transfer",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "announce",
+          "description": "Top Level Announce",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "auction",
+          "description": "Top Level Auction",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "add",
+          "description": "Top Level Add",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "remove",
+          "description": "Top Level Remove",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "guild",
+          "description": "Top Level Guild",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "reset",
+          "description": "Top Level Reset",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "reverse",
+          "description": "Top Level Reverse",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "refresh",
+          "description": "Top Level Refresh",
+          "options": [
+            {
+              "type": 1,
+              "name": "global",
+              "description": "Initiate a refresh of the bot commands"
+            },
+            {
+              "type": 1,
+              "name": "guild",
+              "description": "Initiate a refresh of the bot guild commands"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "audit",
+      "description": "",
+      "options": []
+    },
+    {
+      "type": 1,
+      "name": "source",
+      "description": "",
+      "options": []
+    },
+    {
+      "type": 1,
+      "name": "mod",
+      "description": "",
+      "options": []
+    }
+  ],
   "general": [
     {
       "type": 1,
@@ -10,6 +124,11 @@
       "type": 1,
       "name": "daily",
       "description": "Daily thing"
+    },
+    {
+      "type": 1,
+      "name": "cards",
+      "description": "Check your cards"
     },
     {
       "type": 1,
@@ -27,23 +146,6 @@
           "type": 5,
           "name": "promo",
           "description": "Another Description"
-        }
-      ]
-    },
-    {
-      "type": 1,
-      "name": "refresh",
-      "description": "Top Level Refresh",
-      "options": [
-        {
-          "type": 1,
-          "name": "global",
-          "description": "Initiate a refresh of the bot commands"
-        },
-        {
-          "type": 1,
-          "name": "guild",
-          "description": "Initiate a refresh of the bot guild commands"
         }
       ]
     }

@@ -1,20 +1,28 @@
 const Oceanic = require('oceanic.js')
+const jobs = require('./utils/jobs')
 
 const {
-    handleBotCommand, handleReaction
+    handleBotCommand,
+    handleReaction
 } = require("../../utils/commandRegistrar")
+
 const {
     fetchOrCreateUser
 } = require("./helpers/user")
-const jobs = require('./utils/jobs')
+
+const {
+    getContext,
+    globalContext
+} = require("../../utils/ctxFiller")
 
 require('./commands')
 require('../../utils/cfmHandler')
-const {getContext, globalContext} = require("../../utils/ctxFiller");
-
 
 const bot = new Oceanic.Client({ auth: 'Bot ' + process.env.token})
 let started, ctx
+
+//Todo
+//Replace Guild Commands with globals before release
 
 bot.once('ready', async () => {
     ctx = await getContext()
@@ -54,20 +62,33 @@ bot.on('interactionCreate', async (interaction) => {
 
     let base = [interaction.data.name || interaction.data.customID]
     let options = []
-
     let cursor = interaction.data
-    while (cursor.hasOwnProperty('options')) {
-        cursor = cursor.options.raw? cursor.options.raw : cursor.options
-        cursor.map(x => {
-            if (x.type === 1 || x.type === 2) {
-                base.push(x.name)
-                cursor = x
-            } else if (x.name === 'global' && x.value) {
-                base.push(x.name)
-            } else {
-                options.push({[x.name]: x.value})
-            }
-        })
+
+    if (interaction.constructor === Oceanic.ModalSubmitInteraction) {
+        while (cursor.hasOwnProperty('components')) {
+            cursor = cursor.components.raw? cursor.components.raw : cursor.components
+            cursor.map(x => {
+                if (x.type === 1 || x.type === 2) {
+                    cursor = x
+                } else {
+                    options.push({[x.customID]: x.value})
+                }
+            })
+        }
+    } else {
+        while (cursor.hasOwnProperty('options')) {
+            cursor = cursor.options.raw? cursor.options.raw : cursor.options
+            cursor.map(x => {
+                if (x.type === 1 || x.type === 2) {
+                    base.push(x.name)
+                    cursor = x
+                } else if (x.name === 'global' && x.value) {
+                    base.push(x.name)
+                } else {
+                    options.push({[x.name]: x.value})
+                }
+            })
+        }
     }
 
     let isolatedCtx = Object.assign({}, ctx, {
@@ -83,7 +104,7 @@ bot.on('interactionCreate', async (interaction) => {
         case Oceanic.ComponentInteraction:
             return await handleReaction(base, isolatedCtx)
         case Oceanic.ModalSubmitInteraction:
-            return
+            return await handleReaction(base, isolatedCtx)
         default:
             return false
     }

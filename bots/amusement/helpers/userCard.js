@@ -40,12 +40,25 @@ const removeUserCards = async (ctx, cardIDs) => {
     return update
 }
 
-const getUserCards = async (ctx) => {
-    return UserCards.find({userID: ctx.user.userID})
+const getUserCards = (ctx) => UserCards.find({userID: ctx.user.userID})
+const getUserCardsLean = (ctx) => UserCards.find({userID: ctx.user.userID}).lean()
+
+const mergeUserCards = async (ctx, userCards) => {
+    const merged = []
+    userCards.map(card => {
+        let ctxCard = ctx.cards[card.cardID]
+        if (ctxCard.cardID !== card.cardID) {
+            console.log(ctxCard.cardID)
+        }
+        merged.push(Object.assign({}, ctxCard, card))
+    })
+    return merged
 }
 
 module.exports = {
     addUserCards,
     removeUserCards,
     getUserCards,
+    getUserCardsLean,
+    mergeUserCards,
 }

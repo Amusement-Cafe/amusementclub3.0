@@ -9,13 +9,18 @@
           "type": 1,
           "name": "ayano",
           "description": "Restart Ayano"
+        },
+        {
+          "type": 1,
+          "name": "amusement",
+          "description": "Restart Amusement Club"
         }
       ]
     },
     {
       "type": 1,
       "name": "update",
-      "description": "This is a second command for testing",
+      "description": "Start a collection update",
       "options": [
         {
           "type": 3,
@@ -37,7 +42,7 @@
         {
           "type": 1,
           "name": "alias",
-          "description": "Restart Ayano",
+          "description": "Set an alias for a collection",
           "options": [
             {
               "type": 3,
@@ -54,25 +59,25 @@
             {
               "type": 5,
               "name": "remove",
-              "description": "Select whether you are removing aliases or not."
+              "description": "Select whether you are removing aliases or not. (Default is false)"
             }
           ]
         },
         {
           "type": 1,
           "name": "author",
-          "description": "Restart Ayano",
+          "description": "Set a collection's Author",
           "options": [
             {
               "type": 3,
               "name": "collection",
-              "description": "The collection that is receiving an alias.",
+              "description": "The collection that is receiving an author.",
               "required": true
             },
             {
-              "type": 3,
+              "type": 6,
               "name": "author",
-              "description": "The alias(es) to add to the collection. Space separated.",
+              "description": "The author mention or discord ID",
               "required": true
             }
           ]
@@ -80,18 +85,12 @@
         {
           "type": 1,
           "name": "compression",
-          "description": "Restart Ayano",
+          "description": "Toggle a collection between compressed and not compressed images",
           "options": [
             {
               "type": 3,
               "name": "collection",
-              "description": "The collection that is receiving an alias.",
-              "required": true
-            },
-            {
-              "type": 3,
-              "name": "author",
-              "description": "The alias(es) to add to the collection. Space separated.",
+              "description": "The collection to toggle compression for.",
               "required": true
             }
           ]
@@ -99,18 +98,18 @@
         {
           "type": 1,
           "name": "display",
-          "description": "Restart Ayano",
+          "description": "Set a collection's display name",
           "options": [
             {
               "type": 3,
               "name": "collection",
-              "description": "The collection that is receiving an alias.",
+              "description": "The collection that is receiving an update.",
               "required": true
             },
             {
               "type": 3,
-              "name": "author",
-              "description": "The alias(es) to add to the collection. Space separated.",
+              "name": "display_name",
+              "description": "The display name to set the collection to.",
               "required": true
             }
           ]
@@ -127,8 +126,8 @@
               "required": true
             },
             {
-              "type": 3,
-              "name": "author",
+              "type": 10,
+              "name": "rarity",
               "description": "The alias(es) to add to the collection. Space separated.",
               "required": true
             }
@@ -145,6 +144,124 @@
           "type": 1,
           "name": "commands",
           "description": "Initiate a refresh of the bot commands"
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "create",
+      "description": "Top Level Create",
+      "options": [
+        {
+          "type": 1,
+          "name": "promo",
+          "description": "Create a new promo event",
+          "options": [
+            {
+              "type": 3,
+              "name": "card_query",
+              "description": "Query the promo collection to start a promo for",
+              "required": true
+            },
+            {
+              "type": 3,
+              "name": "start_time",
+              "description": "When the promo will start",
+              "required": true
+            },
+            {
+              "type": 3,
+              "name": "end_time",
+              "description": "When the promo will end",
+              "required": true
+            },
+            {
+              "type": 3,
+              "name": "currency",
+              "description": "The currency displayed for this promo event, default is ✨"
+            }
+          ]
+        },
+        {
+          "type": 1,
+          "name": "boost",
+          "description": "Create a new boost event",
+          "options": [
+            {
+              "type": 3,
+              "name": "card_query",
+              "description": "Query for the cards to be selected for a boost",
+              "required": true
+            },
+            {
+              "type": 4,
+              "name": "drop_rate",
+              "description": "The percentage chance that a card will drop from this boost, whole numbers only (eg 5, 10, 20)",
+              "required": true
+            },
+            {
+              "type": 3,
+              "name": "start_time",
+              "description": "When the boost will start",
+              "required": true
+            },
+            {
+              "type": 3,
+              "name": "end_time",
+              "description": "When the boost will end",
+              "required": true
+            }
+          ]
+        },
+        {
+          "type": 1,
+          "name": "bonus",
+          "description": "Create a new daily bonus event",
+          "options": [
+            {
+              "type": 4,
+              "name": "bonus_amount",
+              "description": "The amount the bonus provides to dailies",
+              "required": true
+            },
+            {
+              "type": 3,
+              "name": "start_time",
+              "description": "When the bonus will start",
+              "required": true
+            },
+            {
+              "type": 3,
+              "name": "end_time",
+              "description": "When the bonus will end",
+              "required": true
+            }
+          ]
+        },
+        {
+          "type": 1,
+          "name": "discount",
+          "description": "Create a new claim discount event",
+          "options": [
+            {
+              "type": 4,
+              "name": "discount_rate",
+              "description": "The percentage off that claims will cost, whole numbers only (eg 5, 10, 20)",
+              "required": true
+            },
+            {
+              "type": 3,
+              "name": "start_time",
+              "description": "When the promo will start",
+              "required": true
+            },
+            {
+              "type": 3,
+              "name": "end_time",
+              "description": "When the promo will end",
+              "required": true
+            }
+          ]
         }
       ]
     }

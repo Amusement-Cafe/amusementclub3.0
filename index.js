@@ -2,10 +2,19 @@ const readline = require('readline')
 const {
     handleCLICommand,
 } = require('./utils/commandRegistrar')
+
+const {
+    startAyano,
+    stopAyano
+} = require("./managers/ayano")
+
+const {
+    startAmusement,
+    stopAmusement,
+} = require("./managers/amusement")
+
 require('./managers')
-const {stopAyano} = require("./managers/ayano");
-const {stopAmusement} = require("./managers/amusement");
-require('./utils/webhooks')
+
 let prompt
 
 console.log(`AmusementCLI v1.0`)
@@ -18,6 +27,11 @@ prompt.on('line', async line => {
         await stopAyano()
         await stopAmusement()
         return prompt.close()
+    }
+    if (line === "start") {
+        await startAyano()
+        await startAmusement()
+        return prompt.prompt()
     }
     await handleCLICommand(line, {roles: ['cliAdmin']})
     prompt.prompt()

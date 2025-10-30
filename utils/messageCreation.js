@@ -8,7 +8,6 @@ const _ = require("lodash")
 /**
  *
  * @param ctx
- * @param user
  * @param args
  * @returns {Promise<void>}
  */
@@ -104,12 +103,13 @@ const cfmResolve = async (ctx, confirm) => {
  *
  * @param ctx - Base context object
  * @param args - The basic response args (e.g. buttons/pages/perms/onConfirm/onDecline/etc)
+ * @param color - If args is a string, pass a color name here
  * @returns {Promise<void>}
  */
-const sendInteraction = async (ctx, args) => {
+const sendInteraction = async (ctx, args, color = 'green') => {
 
     if (typeof args === 'string') {
-        args = {embed: {description: args}}
+        args = {embed: {description: args, color: ctx.colors[color]}}
     }
 
     let interaction = Object.assign({}, {
@@ -145,6 +145,7 @@ const sendInteraction = async (ctx, args) => {
         if (interaction.buttons?.includes('next')  && !interaction.customPgnButtons) pgnButtons.push({type: 2, label: 'Next', style: 1, customID: 'pgn_next'})
         if (interaction.buttons?.includes('last')  && !interaction.customPgnButtons) pgnButtons.push({type: 2, label: 'Last', style: 1, customID: 'pgn_last'})
         if (interaction.buttons?.includes('close') && !interaction.customPgnButtons) pgnButtons.push({type: 2, label: 'End', style: 4, customID: 'pgn_end'})
+        if (interaction.pages.length >= 25 && !interaction.customPgnButtons) pgnButtons.push({type: 2, label: 'Custom Page', style: 2, customID: 'pgn_pages'})
         interaction.components.push({ type: 1, components: pgnButtons })
     }
 

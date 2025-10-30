@@ -8,6 +8,10 @@ const {
     getConfig
 } = require("../utils/fileHelpers")
 
+const {
+    restartAmusement
+} = require("./amusement")
+
 let bot
 const createAyano = async () => {
     const config = getConfig()
@@ -18,6 +22,10 @@ const createAyano = async () => {
         if (message.restart) {
             console.log('Restarting...')
             await restartAyano()
+        }
+        if (message.restartac) {
+            console.log('Restarting Amusement')
+            await restartAmusement()
         }
     })
     // bot.on('exit', () => stopAyano())
@@ -54,6 +62,7 @@ registerCLICommand('ayystop', () => stopAyano())
 registerCLICommand('ayyrestart', () => restartAyano())
 
 module.exports = {
+    startAyano,
     restartAyano,
     stopAyano
 }

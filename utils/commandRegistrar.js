@@ -38,6 +38,10 @@ const registerReaction = (command, handler, options) => {
     currentLevel.options = options
 }
 
+const registerModal = (modal, handler, options) => {
+
+}
+
 const handleCLICommand = (input) => {
     if (cliCommands.has(input)) {
         const {handler} = cliCommands.get(input)
@@ -55,6 +59,7 @@ const handleCLICommand = (input) => {
 
 const handleBotCommand = async (input, ctx) => {
     let currentLevel = botCommands
+    console.log(currentLevel)
 
     for (let cmd of input) {
         if (!currentLevel[cmd]) {
@@ -97,6 +102,7 @@ const handleBotCommand = async (input, ctx) => {
         await ctx.interaction.defer()
     }
 
+    ctx.cmdOptions = currentLevel.options || {}
     ctx = await ctxFiller(ctx)
 
     return currentLevel.handler(ctx)

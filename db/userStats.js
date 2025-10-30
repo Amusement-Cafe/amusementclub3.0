@@ -2,7 +2,6 @@ const {model, Schema} = require('mongoose')
 
 const schema = new Schema({
     userID:             { type: String, index: true },
-    username:           { type: String },
     daily:              { type: Date, index: true },
     claims:             { type: Number, default: 0 },
     promoclaims:        { type: Number, default: 0 },

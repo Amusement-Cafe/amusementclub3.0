@@ -1,9 +1,9 @@
 const {model, Schema} = require('mongoose')
 
 const schema = new Schema({
-    userID:         { type: String },
+    userID:         { type: String, index: true },
 
-    cardID:         { type: Number },
+    cardID:         { type: Number, index: true },
     amount:         { type: Number,  default: 1 },
     rating:         { type: Number,  default: 0 },
 

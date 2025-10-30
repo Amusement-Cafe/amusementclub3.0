@@ -1,6 +1,10 @@
+const _ = require("lodash")
 const {firstBy} = require('thenby')
-const {distance, closest} = require('fastest-levenshtein')
-const _ = require("lodash");
+
+const {
+    distance,
+    closest
+} = require('fastest-levenshtein')
 
 const getCommandOptions = async (ctx, user) => {
     let args = {
@@ -9,12 +13,14 @@ const getCommandOptions = async (ctx, user) => {
         userIDs: [],
         cardQuery: {
             sort: firstBy((a, b) => b.rarity - a.rarity).thenBy('collectionID').thenBy('cardName'),
-        }
+        },
+        userCards: []
     }
     if (ctx.options) {
         Object.entries(ctx.options).forEach(([name, value]) => {
             switch (name) {
                 case 'alias': args.aliases = value.split(' '); break;
+                // case 'card_query': args.cardQuery = parseCardArgs(ctx, ctx.user, value.split(' ')); break;
                 case 'collection':
                     args.cols.push(value.split(' ').map(x => {
                         let close = closest(x, _.flattenDeep(ctx.collections.map(y => y.aliases)))
