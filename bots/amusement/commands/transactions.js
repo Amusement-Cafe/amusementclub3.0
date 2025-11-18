@@ -5,6 +5,7 @@ const {
     completeTransaction,
     listTransactions,
 } = require('../helpers/transactions')
+const {fetchUser} = require("../helpers/user");
 
 
 registerBotCommand(['sell', 'one'], async (ctx) => await sell(ctx), { withCards: true })
@@ -20,8 +21,88 @@ registerBotCommand(['transaction', 'list'], async (ctx) => await listTransaction
 registerBotCommand(['transaction', 'info'], async (ctx) => await transactionInfo(ctx))
 
 const sell = async (ctx, many = false) => {
+    let saleCards, toUser
 
-    console.log(ctx.args)
+    if (!many) {
+        saleCards = ctx.userCards[0]? [ctx.userCards[0]]: false
+    } else {
+        saleCards = ctx.userCards
+    }
+
+    if (ctx.args.userIDs[0]) {
+        toUser = await fetchUser(ctx.args.userIDs[0])
+        if (!toUser) {
+            return ctx.send(ctx, `The user you have entered <@${ctx.args.userIDs[0]}> does not have a bot account to setup a sale to! Have them start playing before trying again.`, 'red')
+        }
+
+        if (toUser.userID === ctx.user.userID) {
+            return ctx.send(ctx, `You cannot setup sales to yourself!`, 'red')
+        }
+
+        if (!toUser.preferences.interact.canSell) {
+            return ctx.send(ctx, `The user you are trying to sell to has disabled the ability to sell them cards!`, 'red')
+        }
+    }
+
+    if (!saleCards || saleCards.length === 0) {
+        return ctx.send(ctx, `no cards found for query \`${ctx.options.card_query}\`, please check your spelling and try again!`, 'red')
+    }
+
+    if (ctx.options.amount && !many) {
+        if (saleCards.fav && saleCards.amount === ctx.options.amount) {
+            return ctx.send(ctx, `You are trying to sell as many copies as you own, but this card is favorited! Reduce your sale amount by 1 or remove the card from your favorites before re-running this command.`, 'red')
+        }
+
+        if (saleCards.amount < ctx.options.amount) {
+            return ctx.send(ctx, `You cannot sell more copies than you own!`, 'red')
+        }
+    }
+
+    saleCards = saleCards.filter(x => x.fav? x.amount > 1: x.amount >= 1)
+
+    if (saleCards.length === 0) {
+        return ctx.send(ctx, `All cards in your query are favorited and only have one copy! Please re-run your command to include more non-favorite cards or remove the cards from your favorites first!`, 'red')
+    }
+
+    if (!ctx.args.cardQuery.locked) {
+        saleCards = saleCards.filter(x => !x.locked)
+    }
+
+    if (saleCards.length === 0) {
+        return ctx.send(ctx, `Are you sure you want to sell this card?\nThe card you have chosen is locked and cannot be sold unless you use the \`-locked\` query in your card query!`, 'red')
+    }
+
+    let cost = saleCards.reduce((a, b) => a + (b.eval), 0)
+
+    if (ctx.options.amount && !many) {
+        cost = cost * ctx.options.amount
+    }
+
+    if (ctx.options.amount && many) {
+        saleCards = saleCards.slice(0, ctx.options.amount < saleCards.length? ctx.options.amount : saleCards.length)
+    }
+
+    const transaction = await createTransaction(ctx, saleCards, toUser, cost)
+
+    if (!transaction.success) {
+        return ctx.send(ctx, transaction.error, 'red')
+    }
+
+    console.log(transaction)
+
+    let title = toUser? `${toUser.username}, ${ctx.user.username} wants to sell you ${saleCards.length} cards for ${cost}`: `${ctx.user.username}, you are trying to sell ${saleCards.length} to the bot for ${cost}`
+
+    return ctx.send(ctx, {
+        pages: ctx.getPages(saleCards.map((card) => ctx.formatName(ctx, card))),
+        embed: {
+            title: title,
+            color: ctx.colors.yellow,
+        },
+        customButtons: [
+            { type: 2, label: `Confirm`, style: 3, customID: `trans_cfm-${transaction.transactionID.replaceAll(/-/g, "O")}`},
+            { type: 2, label: 'Decline', style: 4, customID: `trans_dcl-${transaction.transactionID.replaceAll(/-/g, "O")}`}
+        ]
+    })
 }
 
 const finalizeTransaction = async (ctx, confirm = true) => {}

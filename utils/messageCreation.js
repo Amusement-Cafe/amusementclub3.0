@@ -28,7 +28,6 @@ const send = async (ctx, args) => {
             chunk.map(x => components.push({type: 1, components: x}))
         }
     }
-
     if (components.length > 5) {
         throw Error('Too Many Action Rows in message')
     }
@@ -87,13 +86,13 @@ const cfmResolve = async (ctx, confirm) => {
 
 
     if(!confirm)
-        await data.onDecline(ctx.interaction)
+        await data.onDecline(ctx)
 
     if(data.checks && await data.checks())
-        return await data.onError(ctx.interaction)
+        return await data.onError(ctx)
 
     if(confirm)
-        await data.onConfirm(ctx.interaction)
+        await data.onConfirm(ctx)
 
     if(!data.persist)
         _.pull(interactions, data)

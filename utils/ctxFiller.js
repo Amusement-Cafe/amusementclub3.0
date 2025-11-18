@@ -17,8 +17,7 @@ const {
 } = require("./messageCreation")
 
 const {
-    getUserCardsLean,
-    mergeUserCards
+    withCards,
 } = require("../bots/amusement/helpers/userCard")
 
 const {
@@ -54,10 +53,9 @@ const ctxFiller = async (ctx, bot) => {
 
     let userCards
 
-    if (ctx.cmdOptions?.withCards) {
-        userCards = await getUserCardsLean(ctx, ctx.user)
-        userCards  = await mergeUserCards(ctx, userCards)
-        userCards.sort(args.cardQuery.sort)
+    if (ctx.cmdOptions?.withCards || ctx.options.card_query) {
+        userCards = await withCards(ctx, args)
+
     }
 
     let userStats = await getUserStats(ctx)

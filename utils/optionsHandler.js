@@ -12,7 +12,6 @@ const bestColMatch = (ctx, arg) => {
     let close = closest(arg, _.flattenDeep(ctx.collections.map(y => y.aliases)))
     // console.log(close)
     if (distance(arg, close) <= 3) {
-        console.log(ctx.collections.filter(x => x.aliases.includes(close)))
         return ctx.collections.filter(x => x.aliases.includes(close))
     }
 }
@@ -46,6 +45,7 @@ const getCommandOptions = async (ctx) => {
                 case 'count': args.count = value; break;
                 case 'promo': args.promo = value; break;
                 case 'remove': args.remove = value; break;
+                case 'user_id': args.userIDs.push(value); break;
             }
         })
     }
@@ -179,9 +179,9 @@ const parseCardArgs = (ctx, user, cardArgs) => {
     })
 
     if(query.cols.length > 0) query.filters.push(c => query.cols.includes(c.collectionID))
-    if(query.levels.length > 0) query.filters.push(c => query.levels.includes(c.level))
+    if(query.levels.length > 0) query.filters.push(c => query.levels.includes(c.rarity))
     if(query.antiCols.length > 0) query.filters.push(c => !query.antiCols.includes(c.collectionID))
-    if(query.antiLevels.length > 0) query.filters.push(c => !query.antiLevels.includes(c.level))
+    if(query.antiLevels.length > 0) query.filters.push(c => !query.antiLevels.includes(c.rarity))
     if(query.keywords.length > 0)
         query.filters.push(c => (new RegExp(`(_|^)${query.keywords.map(k => k.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('.*')}`, 'gi')).test(c.cardName))
 

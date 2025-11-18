@@ -23,6 +23,18 @@ const fetchOrCreateUser = async (interaction) => {
     return user
 }
 
+const fetchUser = async (userID) => {
+    let user = await User.findOne({userID: userID})
+
+    if (!user) {
+        return false
+    }
+
+    return user
+
+}
+
 module.exports = {
-    fetchOrCreateUser
+    fetchOrCreateUser,
+    fetchUser
 }
