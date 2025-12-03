@@ -1,4 +1,5 @@
 const {
+    selections,
     interactions,
 } = require('./globalArrays')
 
@@ -162,7 +163,7 @@ const sendInteraction = async (ctx, args, color = 'green') => {
     if(interaction.checks && await interaction.checks())
         return await interaction.onError(ctx.interaction)
 
-    if (interaction.pages?.length > 1 || interaction.confirmation || interaction.selection || interaction.customButtons)
+    if (interaction.pages?.length > 1 || interaction.confirmation || interaction.forceInvalid)
         await invalidateOld(ctx, ctx.user)
 
     return send(ctx, interaction)

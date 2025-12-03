@@ -1,0 +1,214 @@
+{
+  "mainMenu": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+
+
+
+
+  "bonus": {
+    "title": "Bonus Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "effects": {
+    "title": "Effects Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "guild": {
+    "title": "Guild Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "tickets": {
+    "title": "Tickets Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "plots": {
+    "title": "Plots Menu Title",
+    "description": "Select A Store Category Below"
+  },
+
+
+
+
+  "slotUpgrade": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "legendarySwapper": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "effectIncrease": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+
+
+
+
+  "tohruGift": {
+    "title": "Gift from Tohru",
+    "description": "Buy below, soon"
+  },
+  "cakeDay": {
+    "title": "Cake Day",
+    "description": "Select A Store Category Below"
+  },
+  "holyGrail": {
+    "title": "Main Menu Titles",
+    "description": "Select A Store Category Below"
+  },
+  "skyFriend": {
+    "title": "Main Menu Titless",
+    "description": "Select A Store Category Below"
+  },
+  "cherryBlossom": {
+    "title": "Main Menu Titless",
+    "description": "Select A Store Category Below"
+  },
+  "onVictory": {
+    "title": "Main Menu Titlesss",
+    "description": "Select A Store Category Below"
+  },
+  "rulerJeanne": {
+    "title": "Main Menu Titlessss",
+    "description": "Select A Store Category Below"
+  },
+  "spellCard": {
+    "title": "Main Menu Titlesssss",
+    "description": "Select A Store Category Below"
+  },
+
+
+
+
+  "enAyano": {
+    "title": "Main Menu Titlessssss",
+    "description": "Select A Store Category Below"
+  },
+  "pBocchi": {
+    "title": "Main Menu Titlessssssss",
+    "description": "Select A Store Category Below"
+  },
+  "spaceUnity": {
+    "title": "Main Menu Titlesssssssss",
+    "description": "Select A Store Category Below"
+  },
+  "judgeDay": {
+    "title": "Main Menu Titlesssssssss",
+    "description": "Select A Store Category Below"
+  },
+  "claimRecall": {
+    "title": "Main Menu Titlessssssssss",
+    "description": "Select A Store Category Below"
+  },
+  "memoryXmas": {
+    "title": "Main Menu Titlesssssssssss",
+    "description": "Select A Store Category Below"
+  },
+  "memoryHall": {
+    "title": "Main Menu Titlessssssssssss",
+    "description": "Select A Store Category Below"
+  },
+  "memoryBday": {
+    "title": "Main Menu Titlessssssssssssss",
+    "description": "Select A Store Category Below"
+  },
+  "memoryVal": {
+    "title": "Main Menu Titlesssssssssssssss",
+    "description": "Select A Store Category Below"
+  },
+
+
+
+
+  "lemonadeStand": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "processingPlant": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "pachinkoHall": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "arcadeCenter": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "pamperCentral": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "discountCenter": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+
+
+
+
+  "ticket1x1": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "ticket1x2": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "ticket1x3": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "ticket3x1s": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "ticket3x2s": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "ticket3x3s": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "ticket3x1r": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "ticket3x2r": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "ticket3x3r": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+
+
+
+
+  "castle": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "gachaBank": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "tavern": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "smithHub": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  },
+  "auctionHouse": {
+    "title": "Main Menu Title",
+    "description": "Select A Store Category Below"
+  }
+}

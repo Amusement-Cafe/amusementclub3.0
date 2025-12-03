@@ -1,5 +1,5 @@
 const calculateClaimCost = (ctx, count, claimCount) => {
-    const activeDiscount = ctx.promos.find(x => x.isDiscount === true && x.expires > new Date())
+    const activeDiscount = ctx.promos.find(x => x.isDiscount === true && x.expires > new Date() && x.starts < new Date())
 
     // const activeDiscount = 100
     let price = 0

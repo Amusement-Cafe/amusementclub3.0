@@ -5,22 +5,20 @@ const withCards = async (ctx, args) => {
     let userCards
     userCards = await getUserCardsLean(ctx, ctx.user)
     userCards  = await mergeUserCards(ctx, userCards)
-    console.log(userCards.filter(x => x.locked === false).length)
     args.cardQuery?.filters?.map(x => {
         userCards = userCards.filter(x)
-        console.log(x.toString())
         return userCards
     })
     userCards.sort(args.cardQuery.sort)
     return userCards
 }
 
-const addUserCards = async (ctx, cardIDs) => {
+const addUserCards = async (userID, cardIDs) => {
     const writes = cardIDs.map((id) => {
         return {
             updateOne: {
                 filter: {
-                    userID: ctx.user.userID,
+                    userID: userID,
                     cardID: id
                 },
                 update: {
@@ -35,10 +33,10 @@ const addUserCards = async (ctx, cardIDs) => {
     return await UserCards.bulkWrite(writes)
 }
 
-const removeUserCards = async (ctx, cardIDs) => {
+const removeUserCards = async (userID, cardIDs) => {
     const update = await UserCards.updateMany(
         {
-        userID: ctx.user.userID,
+        userID: userID,
         cardID: {$in: cardIDs}
         },
         {
@@ -47,7 +45,7 @@ const removeUserCards = async (ctx, cardIDs) => {
     )
 
     await UserCards.deleteMany({
-        userID: ctx.user.userID,
+        userID: userID,
         amount: 0
     })
 

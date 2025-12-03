@@ -22,42 +22,41 @@ const bigIntToUUID = (bigInt) => {
 }
 
 const encodeBaseN = (bigInt, alphabet) => {
-    const base = BigInt(alphabet.length);
-    let output = "";
+    const base = BigInt(alphabet.length)
+    let output = ""
     while (bigInt > 0n) {
-        output = alphabet[Number(bigInt % base)] + output;
-        bigInt /= base;
+        output = alphabet[Number(bigInt % base)] + output
+        bigInt /= base
     }
     return output;
 }
 
 function decodeBaseN(str, alphabet) {
-    const base = BigInt(alphabet.length);
-    const indexMap = new Map();
-    alphabet.split("").forEach((c, i) => indexMap.set(c, BigInt(i)));
+    const base = BigInt(alphabet.length)
+    const indexMap = new Map()
+    alphabet.split("").forEach((c, i) => indexMap.set(c, BigInt(i)))
 
-    let value = 0n;
+    let value = 0n
     for (const c of str) {
-        value = value * base + indexMap.get(c);
+        value = value * base + indexMap.get(c)
     }
-    return value;
+    return value
 }
 
 function encodeUUID(uuid, minLength = 22) {
-    let bi = uuidToBigInt(uuid);
-    let encoded = encodeBaseN(bi, alphabet);
+    let bi = uuidToBigInt(uuid)
+    let encoded = encodeBaseN(bi, alphabet)
 
-    // Pad with leading first-alphabet-char if shorter
     if (encoded.length < minLength) {
-        encoded = alphabet[0].repeat(minLength - encoded.length) + encoded;
+        encoded = alphabet[0].repeat(minLength - encoded.length) + encoded
     }
 
-    return encoded;
+    return encoded
 }
 
 function decodeUUID(encoded) {
-    const bi = decodeBaseN(encoded, alphabet);
-    return bigIntToUUID(bi);
+    const bi = decodeBaseN(encoded, alphabet)
+    return bigIntToUUID(bi)
 }
 
 const generateNewID = () => {

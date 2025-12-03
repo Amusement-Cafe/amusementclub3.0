@@ -1,6 +1,9 @@
 const {registerBotCommand} = require('../../../utils/commandRegistrar')
-const _ = require('lodash')
-const {has} = require("lodash");
+const {
+    getUserStats,
+} = require("../helpers/stats")
+
+
 
 registerBotCommand('daily', async (ctx) => await daily(ctx))
 
@@ -26,20 +29,28 @@ registerBotCommand(['cards', 'global'], async (ctx) => await cards(ctx), { globa
 
 
 const daily = async (ctx) => {
-    ctx.user.tomatoes += 1
-    await ctx.send(ctx, `You have claimed daily! You now have ${ctx.fmtNum(ctx.user.tomatoes)} tomatoes!`)
+    let nextUserDaily = new Date(ctx.user.lastDaily).getTime() + ctx.hourToMS(20)
+    console.log(nextUserDaily)
+    if (ctx.user.lastDaily < nextUserDaily) {
+        return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you can claim your daily <t:${Math.floor(nextUserDaily / 1000)}:R>`, 'red')
+    }
+    ctx.user.tomatoes += 750
+    ctx.user.lastDaily = new Date()
     await ctx.user.save()
+    ctx.stats = await getUserStats(ctx)
+    await ctx.updateStat(ctx, 'tomatoIn', 750)
+    await ctx.send(ctx, `You have claimed daily! You now have ${ctx.fmtNum(ctx.user.tomatoes)} tomatoes!`)
 }
 
 const balance = async (ctx) => {
-    await ctx.send(ctx, `Your balance is currently ${ctx.fmtNum(ctx.user.tomatoes)} tomatoes.\n~~I'll re-add symbols soon-ish~~`)
+    await ctx.send(ctx, `Your balance is currently\n- ${ctx.fmtNum(ctx.user.tomatoes)}${ctx.symbols.tomato}\n- ${ctx.fmtNum(ctx.user.lemons)}${ctx.symbols.lemon}\n- ${ctx.fmtNum(ctx.user.promoBal)}${ctx.symbols.promo}`)
 }
 
 const cards = async (ctx) => {
     const pages = ctx.getPages(ctx.userCards.map(x => ctx.formatName(ctx, x)), 15)
     return await ctx.send(ctx, {
         embed: {
-          title: `Your cards, temp`
+          title: `${ctx.user.username}, your cards (${ctx.fmtNum(ctx.userCards.length)} results)`
         },
         pages,
     })

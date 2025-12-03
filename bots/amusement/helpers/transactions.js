@@ -1,32 +1,41 @@
 const Transaction = require('../../../db/transaction')
-const {generateNewID} = require("../../../utils/misc");
+const {
+    generateNewID
+} = require("../../../utils/misc")
+
+const {
+    fetchUser,
+} = require("./user")
+
+const {
+    addUserCards,
+    removeUserCards,
+} = require("./userCard")
 
 
-const createTransaction = async (ctx, userCards, toID = 'bot', cost) => {
+const createTransaction = async (ctx, cardIDs, toID = 'bot', cost) => {
     if (toID !== 'bot' || !toID) {
         toID = toID.userID
     }
 
-
-
-
     let trans = new Transaction()
     trans.transactionID = generateNewID()
-    trans.fromID = ctx.user.ID
+    trans.fromID = ctx.user.userID
     trans.toID = toID
     trans.status = 'pending'
     trans.guildID = ctx.guildID? ctx.guildID : 'DM'
     trans.cost = cost
-    trans.cardIDs = userCards.map(x => x.id)
+    trans.cardIDs = cardIDs
     trans.dateCreated = new Date()
     await trans.save()
 
     return {success: true, transactionID: trans.transactionID }
 }
 
-const completeTransaction = async (ctx, decline = false, parent = true) => {
+const completeTransaction = async (ctx, decline = false, parent = true, extra = false) => {
     ctx.arguments = ctx.arguments.replaceAll(/O/g, "-")
     const transaction = await Transaction.findOne({transactionID: ctx.arguments})
+
     if (!transaction || transaction.status === 'completed') {
         return ctx.send(ctx, {
             embed: {
@@ -36,17 +45,78 @@ const completeTransaction = async (ctx, decline = false, parent = true) => {
             parent
         })
     }
+
+    if (ctx.user.userID !== transaction.fromID && ctx.user.userID !== transaction.toID && !ctx.user.roles.some(x => x === 'admin' || x === 'mod' || x === 'auditor')) {
+        await ctx.interaction.defer(64)
+        return ctx.interaction.createFollowup({
+            embeds: [{
+                description: `${ctx.user.username}, you cannot interact with another user's transaction!`,
+                color: ctx.colors.red
+            }]
+        })
+    }
+
+    extra? await ctx.interaction.defer(64): null
+
     if (decline) {
         transaction.status = 'completed'
         await transaction.save()
+        if (ctx.user.userID !== transaction.fromID) {
+            return ctx.send(ctx, {
+                embed: {
+                    description: `The transaction from <@${transaction.fromID}> has been declined.`,
+                    color: ctx.colors.red
+                },
+                parent: !extra
+            })
+        }
         return ctx.send(ctx, {
             embed: {
                 description: `The transaction to ${transaction.toID === 'bot'? 'bot': `<@${transaction.toID}>`} has been declined.`,
                 color: ctx.colors.red
             },
-            parent
+            parent: !extra
         })
     }
+
+    if (ctx.user.userID !== transaction.toID) {
+        extra? null: await ctx.interaction.defer(64)
+        return ctx.interaction.createFollowup({
+            embeds: [{
+                description: `${ctx.user.username}, you cannot accept a sale for another user!`,
+                color: ctx.colors.red
+            }]
+        })
+    }
+
+    let toUser = await fetchUser(transaction.toID)
+    let fromUser = await fetchUser(transaction.fromID)
+
+    if (toUser.tomatoes < transaction.cost) {
+        return ctx.send(ctx, {
+            embed: {
+                description: `You don't have enough tomatoes to accept this transaction!\nYou need **${ctx.fmtNum(transaction.cost - ctx.user.tomatoes)}**${ctx.symbols.tomato} more tomatoes to accept this transaction.`,
+                color: ctx.colors.red
+            },
+            parent: !extra
+        })
+    }
+
+    toUser.tomatoes -= transaction.cost
+    fromUser.tomatoes += transaction.cost
+    await removeUserCards(fromUser.userID, transaction.cardIDs)
+    await addUserCards(toUser.userID, transaction.cardIDs)
+    await toUser.save()
+    await fromUser.save()
+
+    return ctx.send(ctx, {
+        embed: {
+            description: `${ctx.boldName(fromUser.username)} sold ${ctx.boldName(transaction.cardIDs.length)} card(s) to ${ctx.boldName(toUser.username)} for ${ctx.boldName(ctx.fmtNum(transaction.cost))}${ctx.symbols.tomato}`,
+            color: ctx.colors.green
+        },
+        parent: !extra
+    })
+
 }
 
 const listTransactions = async () => {

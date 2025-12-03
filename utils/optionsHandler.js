@@ -8,9 +8,7 @@ const {
 
 
 const bestColMatch = (ctx, arg) => {
-    // console.log(_.flattenDeep(ctx.collections.map(y => y.aliases)))
     let close = closest(arg, _.flattenDeep(ctx.collections.map(y => y.aliases)))
-    // console.log(close)
     if (distance(arg, close) <= 3) {
         return ctx.collections.filter(x => x.aliases.includes(close))
     }
@@ -24,7 +22,13 @@ const getCommandOptions = async (ctx) => {
         cardQuery: {
             sort: firstBy((a, b) => b.rarity - a.rarity).thenBy('collectionID').thenBy('cardName'),
         },
-        userCards: []
+        userCards: [],
+        fmtOptions: {
+            eval: false,
+            locked: true,
+            fav: true,
+            amount: true,
+        }
     }
     if (ctx.options) {
         Object.entries(ctx.options).forEach(([name, value]) => {

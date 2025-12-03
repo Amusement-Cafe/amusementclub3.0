@@ -208,6 +208,11 @@
           ]
         }
       ]
+    },
+    {
+      "type": 1,
+      "name": "store",
+      "description": "Browse the store."
     }
   ]
 }

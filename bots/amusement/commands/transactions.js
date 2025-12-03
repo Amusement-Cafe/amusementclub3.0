@@ -21,7 +21,7 @@ registerBotCommand(['transaction', 'list'], async (ctx) => await listTransaction
 registerBotCommand(['transaction', 'info'], async (ctx) => await transactionInfo(ctx))
 
 const sell = async (ctx, many = false) => {
-    let saleCards, toUser
+    let saleCards, toUser, amountDisplay
 
     if (!many) {
         saleCards = ctx.userCards[0]? [ctx.userCards[0]]: false
@@ -56,6 +56,8 @@ const sell = async (ctx, many = false) => {
         if (saleCards.amount < ctx.options.amount) {
             return ctx.send(ctx, `You cannot sell more copies than you own!`, 'red')
         }
+
+        amountDisplay = ctx.options.amount
     }
 
     saleCards = saleCards.filter(x => x.fav? x.amount > 1: x.amount >= 1)
@@ -82,22 +84,37 @@ const sell = async (ctx, many = false) => {
         saleCards = saleCards.slice(0, ctx.options.amount < saleCards.length? ctx.options.amount : saleCards.length)
     }
 
-    const transaction = await createTransaction(ctx, saleCards, toUser, cost)
+    if (!toUser) {
+        cost = Math.round(cost * .75)
+    }
+
+    const transaction = await createTransaction(ctx, saleCards.map(x => x.cardID), toUser, cost)
 
     if (!transaction.success) {
         return ctx.send(ctx, transaction.error, 'red')
     }
 
-    console.log(transaction)
+    ctx.args.fmtOptions.amount = false
 
-    let title = toUser? `${toUser.username}, ${ctx.user.username} wants to sell you ${saleCards.length} cards for ${cost}`: `${ctx.user.username}, you are trying to sell ${saleCards.length} to the bot for ${cost}`
+    cost = `${ctx.fmtNum(cost)}${ctx.symbols.tomato}`
+
+    let title = toUser? `${toUser.username}, ${ctx.user.username} wants to sell you ${amountDisplay? amountDisplay: saleCards.length} cards for ${cost}`: `${ctx.user.username}, you are trying to sell ${amountDisplay? amountDisplay: saleCards.length} to the bot for ${cost}`
+
+    let perms = {pages: [ctx.user.userID], cfm: [ctx.user.userID], dcl: [ctx.user.userID]}
+
+    if (toUser) {
+        perms.pages.push(toUser.userID)
+        perms.cfm = [toUser.userID]
+        perms.dcl.push(toUser.userID)
+    }
 
     return ctx.send(ctx, {
-        pages: ctx.getPages(saleCards.map((card) => ctx.formatName(ctx, card))),
+        pages: ctx.getPages(saleCards.map((card) => `${ctx.formatName(ctx, card)}${amountDisplay? ` (x${amountDisplay})`: ``}`)),
         embed: {
             title: title,
             color: ctx.colors.yellow,
         },
+        permissions: perms,
         customButtons: [
             { type: 2, label: `Confirm`, style: 3, customID: `trans_cfm-${transaction.transactionID.replaceAll(/-/g, "O")}`},
             { type: 2, label: 'Decline', style: 4, customID: `trans_dcl-${transaction.transactionID.replaceAll(/-/g, "O")}`}

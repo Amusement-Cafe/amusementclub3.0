@@ -21,7 +21,8 @@ const {
 } = require("../bots/amusement/helpers/userCard")
 
 const {
-    getUserStats
+    getUserStats,
+    updateUserStats,
 } = require("../bots/amusement/helpers/stats")
 
 const {
@@ -61,6 +62,7 @@ const ctxFiller = async (ctx, bot) => {
     let userStats = await getUserStats(ctx)
     return Object.assign({}, ctx, {
         args,
+        stats: userStats,
         userCards: userCards,
         send: sendInteraction,
         sendDM: async (ctx, user, message, color) => {
@@ -71,6 +73,11 @@ const ctxFiller = async (ctx, bot) => {
                 console.log(e)
             }
         },
+        updateStat: async (ctx, stat, amount) => await updateUserStats(ctx, stat, amount),
+        secToMS: (seconds) => seconds * 1000,
+        minToMS: (minutes) => minutes * 60 * 1000,
+        hourToMS: (hours) => hours * 60 * 60 * 1000,
+        dayToMS: (days) => days * 24 * 60 * 60 * 1000,
         toEmbed: (user, string, color = 2067276) => {
             if (typeof string === 'object') {
                 string.description = `**${user.username}**, ${string.description}`
@@ -83,7 +90,11 @@ const ctxFiller = async (ctx, bot) => {
         formatName: (ctx, card) => {
             const col = ctx.collections.find(x => x.collectionID === card.collectionID)
             const rarity = new Array(card.rarity + 1).join(col.stars[card.rarity - 1] || col.stars[0])
-            return `[${rarity}]${card.locked? ' `🔒`': ''}${card.fav? ' `❤`' : ''} [${card.displayName}](${card.cardURL}) \`[${card.collectionID}]\`${card.amount && card.amount > 1? `(x${card.amount})`: ''}${` ${card.eval}`}`
+            const eval = ctx.fmtNum(card.eval)
+            const amount = card.amount && card.amount > 1? `(x${card.amount})`: ''
+            const locked = card.locked? ' `🔒`': ''
+            const fav = card.fav? ' `❤`' : ''
+            return `[${rarity}]${ctx.args.fmtOptions.locked? locked: ''}${ctx.args.fmtOptions.fav? fav: ''} [${card.displayName}](${card.cardURL}) \`[${card.collectionID}]\`${ctx.args.fmtOptions.amount? amount: ''}${ctx.args.fmtOptions.eval? ` ${eval}`: ''}`
         },
         getPages: (array, split = 10, maxCharacters = 4096) => {
             let count = 0, page = 0
@@ -103,6 +114,9 @@ const ctxFiller = async (ctx, bot) => {
 
             return pages
         },
+        boldName: (name) => {
+            return `**${name}**`
+        },
         colors: {
             red: 14356753,
             yellow: 16756480,
@@ -113,7 +127,15 @@ const ctxFiller = async (ctx, bot) => {
             default: 2067276
         },
         symbols: {
-
+            tomato: '`🍅`',
+            lemon: '`🍋`',
+            auctionNoBid: '`🔹`',
+            auctionHasBid: '`🔷`',
+            auctionOwn: '`🔸`',
+            auctionIcon: '`▫️`',
+            accept: '`✅`',
+            decline: '`❌`',
+            promo: '`✨`'
         }
     })
 }

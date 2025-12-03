@@ -3,6 +3,11 @@ const cliCommands = new Map()
 const botCommands = {}
 const rctCommands = {}
 
+const {
+    selections,
+    interactions,
+} = require('./globalArrays')
+
 
 const registerCLICommand = (command, handler, options) => {
     cliCommands.set(command, {handler, options})
@@ -111,7 +116,8 @@ const handleReaction = async (input, ctx) => {
     let currentLevel = rctCommands
     let commandSplit = input[0].split('-')
     const command = commandSplit.shift().split('_')
-    ctx.arguments = commandSplit[0]
+    const oldInteract = interactions.find(x => x.msgID === ctx.interaction.message.id)
+    ctx.arguments = ctx.interaction.data.componentType === 3? ctx.interaction.data.values.raw: commandSplit[0]
 
     for (let cmd of command) {
         if (!currentLevel[cmd]) {
@@ -124,6 +130,26 @@ const handleReaction = async (input, ctx) => {
         return console.log(`Somehow you have run a command without a handler!`)
     }
     ctx = await ctxFiller(ctx)
+
+    if (!oldInteract) {
+        const old = await ctx.bot.rest.channels.getMessage(ctx.interaction.message.channelID, ctx.interaction.message.id)
+        await old.edit({embeds: old.embeds, content: old.content, components: []})
+        await ctx.interaction.defer(64)
+        return await ctx.interaction.createFollowup({
+            embeds: [{
+                description: `The message you tried to interact with has expired! Menus and buttons expire after 15 minutes!`,
+                color: ctx.colors.red
+            }]
+        })
+    }
+
+    if (oldInteract.permissions?.pages?.indexOf(ctx.interaction.user.id) < 0) {
+        await ctx.interaction.defer(64)
+        return ctx.send(ctx, {embed: {
+            description: `You are not allowed to interact with another user's messages!`,
+                color: ctx.colors.red
+            }})
+    }
     return currentLevel.handler(ctx)
 }
 
