@@ -1,0 +1,37 @@
+---
+amusement:
+  token:
+  adminGuildID: ''
+  legendaryDrop: 0.000000001
+analytics:
+  posthog:
+    key:
+    url: https://
+ayano:
+  token:
+  reportChannelID:
+database:
+  url: 'mongodb://'
+  name: amuse3
+links:
+  website: 'https://'
+  discord: 'https://'
+  cards: 'https://'
+minio:
+  endpoint:
+  port: 9000
+  bucket:
+  s3accessKeyId:
+  s3secretAccessKey:
+  cardroot: cards/
+  s3ForcePathStyle: true
+  signatureVersion: v4
+  region:
+  useSSL: false
+webhooks:
+  port: 2727
+  auth: applebananafish
+  tokens:
+    patreon: 123
+    kofi: abc
+    healthMonitor: 123
