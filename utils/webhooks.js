@@ -13,6 +13,9 @@ const listen = async (ctx) => {
     const app = express()
     app.get('/id/*', async (req, res) => {
         let cardID = req.url.split('/')[2]
+        if (cardID.endsWith('.jpg') || cardID.endsWith('.png') || cardID.endsWith('.gif')) {
+            cardID = cardID.toString().substring(0, cardID.length - 4)
+        }
         if (isNaN(Number(cardID))) {
             return res.status(501).send(`Don't be bad`).end()
         }

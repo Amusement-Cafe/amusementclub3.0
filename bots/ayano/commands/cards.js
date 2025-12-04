@@ -93,7 +93,7 @@ registerBotCommand('update', async (ctx, extras) => {
         newCard.cardName = name
         newCard.displayName = name.split(' ').map(s => s[0].toUpperCase() + s.slice(1).toLowerCase()).join(' ')
         newCard.added = new Date()
-        newCard.cardURL = `https://a.amu.cards/${newCard.collectionID}/${fileName}`
+        newCard.cardURL = `https://c.amu.cards/${newCard.cardID}${newCard.animated? '.gif': ''}`
         await newCard.save()
         lastID++
     }

@@ -28,10 +28,15 @@ bot.once('ready', async () => {
     ctx = await getContext()
     started = true
     let slashCommands = require('./static/commands.json')
-    const globalCommands = await bot.application.getGuildCommands(ctx.config.amusement.adminGuildID)
+    const globalCommands = await bot.application.getGlobalCommands()
+    const guildCommands = await bot.application.getGuildCommands(ctx.config.amusement.adminGuildID)
     if (globalCommands.length !== slashCommands.general.length) {
         console.log('Updating global commands as a mis-match was found')
-        await bot.application.bulkEditGuildCommands(ctx.config.amusement.adminGuildID, slashCommands.general)
+        await bot.application.bulkEditGlobalCommands(slashCommands.general)
+    }
+    if (guildCommands.length !== slashCommands.admin.length) {
+        console.log(`Updating Admin commands as a mis-match was found!`)
+        await bot.application.bulkEditGuildCommands(ctx.config.amusement.adminGuildID, slashCommands.admin)
     }
     jobs.startTicks(ctx)
 })
@@ -109,3 +114,6 @@ bot.on('interactionCreate', async (interaction) => {
             return false
     }
 })
+
+bot.on('error', (err) => {console.log(err)})
+process.on('uncaughtException', (err) => {console.log(err)})

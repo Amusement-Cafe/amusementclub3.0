@@ -73,6 +73,7 @@ const ctxFiller = async (ctx, bot) => {
                 console.log(e)
             }
         },
+        sleep: async (ms) => new Promise(resolve => setTimeout(resolve, ms)),
         updateStat: async (ctx, stat, amount) => await updateUserStats(ctx, stat, amount),
         secToMS: (seconds) => seconds * 1000,
         minToMS: (minutes) => minutes * 60 * 1000,

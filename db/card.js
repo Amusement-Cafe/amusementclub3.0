@@ -4,6 +4,7 @@ const schema = new Schema({
     cardID:         { type: Number, index: true },
     rarity:         { type: Number },
     animated:       { type: Boolean, default: false },
+    canDrop:        { type: Boolean, default: true },
     collectionID:   { type: String },
     cardName:       { type: String },
     displayName:    { type: String },
