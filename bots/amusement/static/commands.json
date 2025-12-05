@@ -213,6 +213,25 @@
       "type": 1,
       "name": "store",
       "description": "Browse the store."
+    },
+    {
+      "type": 1,
+      "name": "forge",
+      "description": "Forge two cards of similar rarity together",
+      "options": [
+        {
+          "name": "card_query_1",
+          "description": "Enter either a card name, or card query here. If using query, only fill out this option!",
+          "type": 3,
+          "required": true
+        },
+        {
+          "name": "card_query_2",
+          "description": "Enter a card query or name here if you entered a card name for card 1!",
+          "type": 3,
+          "required": false
+        }
+      ]
     }
   ]
 }

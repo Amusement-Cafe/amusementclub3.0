@@ -35,6 +35,8 @@ const getCommandOptions = async (ctx) => {
             switch (name) {
                 case 'alias': args.aliases = value.split(' '); break;
                 case 'card_query': args.cardQuery = parseCardArgs(ctx, ctx.user, value); break;
+                case 'card_query_1': args.forgeQuery1 = parseCardArgs(ctx, ctx.user, value); break;
+                case 'card_query_2': args.forgeQuery2 = parseCardArgs(ctx, ctx.user, value); break;
                 case 'collection':
                     args.cols.push(value.split(' ').map(x => {
                         let close = closest(x, _.flattenDeep(ctx.collections.map(y => y.aliases)))

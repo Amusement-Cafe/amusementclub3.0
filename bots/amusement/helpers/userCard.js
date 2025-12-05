@@ -5,6 +5,17 @@ const withCards = async (ctx, args) => {
     let userCards
     userCards = await getUserCardsLean(ctx, ctx.user)
     userCards  = await mergeUserCards(ctx, userCards)
+    if (args.forgeQuery1) {
+        let forgeCards1 = userCards
+        let forgeCards2 = userCards
+        args.forgeQuery1?.filters?.map(x => forgeCards1 = forgeCards1.filter(x))
+        if (args.forgeQuery2) {
+            args.forgeQuery2?.filters?.map(x => forgeCards2 = forgeCards2.filter(x))
+        } else {
+            forgeCards2 = forgeCards1
+        }
+        return [forgeCards1, forgeCards2]
+    }
     args.cardQuery?.filters?.map(x => {
         userCards = userCards.filter(x)
         return userCards

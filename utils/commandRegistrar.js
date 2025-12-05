@@ -129,6 +129,7 @@ const handleReaction = async (input, ctx) => {
     if (!currentLevel.handler) {
         return console.log(`Somehow you have run a command without a handler!`)
     }
+    ctx.cmdOptions = currentLevel.options || {}
     ctx = await ctxFiller(ctx)
 
     if (!oldInteract) {
