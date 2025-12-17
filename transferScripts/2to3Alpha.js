@@ -110,12 +110,14 @@ const transferAuctions = async (db) => {
 
 const transferCards = async (db) => {
     const cardJSON = require('../../ayano/data/cards.json')
+    const colJSON = require('../../ayano/data/collections.json')
     const cardInfos = db.collection('cardinfos').find()
     console.log('Processing Cards')
     let count = 1
     for (let c = await cardInfos.next(); c != null; c = await cardInfos.next()) {
         console.log(`Processing Card ${count}`)
         let json = cardJSON.find(x => x.id === c.id)
+        let col = colJSON.find(x => x.id === json?.col)
         const card = await new Cards()
         card.cardID = json.id
         card.rarity = json.level
@@ -123,13 +125,14 @@ const transferCards = async (db) => {
         card.collectionID = json.col
         card.cardName = json.name.replaceAll('_', ' ')
         card.displayName = card.cardName.split(' ').map(s => s[0].toUpperCase() + s.slice(1).toLowerCase()).join(' ')
-        card.cardURL = `https://c.amu.cards/id/${card.cardID}`
+        card.cardURL = `https://c.amu.cards/id/${card.cardID}${card.animated? '.gif': ''}`
         card.added = c.meta.added
         card.lastUpdatedEval = new Date(0)
         card.eval = -1
         card.ratingSum = c.ratingsum
         card.timesRated = c.usercount
         card.ownerCount = c.ownercount
+        card.canDrop = !col.promo || json.level !== 5
         card.meta = {
             booruID: c.meta.booruid,
             booruScore: c.meta.booruscore,
@@ -182,6 +185,9 @@ const transferCollections = async (db) => {
         newCol.origin = col.origin
         newCol.aliases = col.aliases
         newCol.promo = col.promo || false
+        if (newCol.promo) {
+            newCol.inClaimPool = false
+        }
         newCol.compressed = col.compressed
         newCol.dateAdded = col.dateAdded
         newCol.creatorID = col.author
@@ -498,7 +504,7 @@ const transferUserCards = async (db) => {
         userCard.amount = uc.amount
         userCard.rating = uc.rating
         userCard.fav = uc.fav
-        userCard.locked = uc.locked
+        userCard.locked = uc.locked || false
         userCard.acquired = uc.obtained
         await userCard.save()
         count++
@@ -527,16 +533,66 @@ const transferUserEffects = async (db) => {
 
 const transferUserInventories = async (db) => {
     const oldInventories = db.collection('userinventories').find()
+    const getType = (item) => {
+        switch (item) {
+            case 'castle':
+            case 'gbank':
+            case 'tavern':
+            case 'smithhub':
+            case 'auchouse':
+                return 'blueprint'
+                break;
+            case 'tohrugift':
+            case 'cakeday':
+            case 'holygrail':
+            case 'skyfriend':
+            case 'cherrybloss':
+            case 'onvictory':
+            case 'rulerjeanne':
+            case 'spellcard':
+            case 'festivewish':
+            case 'enayano':
+            case 'pbocchi':
+            case 'spaceunity':
+            case 'judgeday':
+            case 'claimrecall':
+            case 'memoryxmas':
+            case 'memoryhall':
+            case 'memoryval':
+            case 'memorybday':
+                return 'recipe'
+                break;
+            case 'legendticket':
+            case 'ticket1x1':
+            case 'ticket1x2':
+            case 'ticket1x3':
+            case 'ticket3x1s':
+            case 'ticket3x2s':
+            case 'ticket3x3s':
+            case 'ticket3x1r':
+            case 'ticket3x2r':
+            case 'ticket3x3r':
+                return 'ticket'
+                break;
+            case 'slotupgrade':
+            case 'effectincrease':
+            case 'legendswapper':
+                return 'bonus'
+                break;
+        }
+    }
     console.log('Processing UserInventories')
     let count = 1
     for (let ui = await oldInventories.next(); ui != null; ui = await oldInventories.next()) {
         console.log(`Processing User Inventory ${count}`)
+        let type = getType(ui.id)
         const userInventory = await new UserInventories()
         userInventory.userID = ui.userid
         userInventory.itemID = ui.id
         userInventory.colID = ui.col
         userInventory.acquired = ui.acquired
         userInventory.cards = ui.cards
+        userInventory.type = type
         await userInventory.save()
         count++
     }
@@ -671,12 +727,30 @@ const updateEvalStats = async () => {
     for (let c of cards) {
         console.log(`Processing card ${c.cardID}`)
         console.log(`Finding card ${c.cardID} in User Cards`)
-        const uCards = await UserCards.find({cardID: c.cardID}).lean()
-        console.log(`Found Card in User Cards`)
-        for (const uCard of uCards) {
-            c.stats.totalCopies += uCard.amount
-        }
-        c.ownerCount = uCards.length
+
+        const uCards = await UserCards.aggregate([
+            {
+                $match: {
+                    cardID: c.cardID
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalOwners: { $sum: 1},
+                    totalAmount: { $sum: "$amount" }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    totalOwners: 1,
+                    totalAmount: 1
+                }
+            }
+        ])
+        c.stats.totalCopies = uCards[0].totalAmount
+        c.ownerCount = uCards[0].totalOwners
         console.log(`Finding Card in Transactions`)
         const cTrans = await Transactions.find({cardID: c.cardID, to: "bot", status: "confirmed"}).lean()
         for (const cTran of cTrans) {
