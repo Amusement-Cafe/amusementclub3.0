@@ -32,15 +32,15 @@
 
 
   "slotUpgrade": {
-    "title": "Main Menu Title",
+    "title": "Slot Upgrade Title",
     "description": "Select A Store Category Below"
   },
   "legendarySwapper": {
-    "title": "Main Menu Title",
+    "title": "Legendary Swapper Title",
     "description": "Select A Store Category Below"
   },
   "effectIncrease": {
-    "title": "Main Menu Title",
+    "title": "Effect Increase Title",
     "description": "Select A Store Category Below"
   },
 
@@ -56,27 +56,27 @@
     "description": "Select A Store Category Below"
   },
   "holyGrail": {
-    "title": "Main Menu Titles",
+    "title": "Holy Grail",
     "description": "Select A Store Category Below"
   },
   "skyFriend": {
-    "title": "Main Menu Titless",
+    "title": "Skies of Friendship",
     "description": "Select A Store Category Below"
   },
   "cherryBlossom": {
-    "title": "Main Menu Titless",
+    "title": "Cherry Blossoms",
     "description": "Select A Store Category Below"
   },
   "onVictory": {
-    "title": "Main Menu Titlesss",
+    "title": "Onwards to Victory",
     "description": "Select A Store Category Below"
   },
   "rulerJeanne": {
-    "title": "Main Menu Titlessss",
+    "title": "The Ruler Jeanne",
     "description": "Select A Store Category Below"
   },
   "spellCard": {
-    "title": "Main Menu Titlesssss",
+    "title": "Impossible Spell Card",
     "description": "Select A Store Category Below"
   },
 
@@ -84,39 +84,39 @@
 
 
   "enAyano": {
-    "title": "Main Menu Titlessssss",
+    "title": "Enlightened Ayano",
     "description": "Select A Store Category Below"
   },
   "pBocchi": {
-    "title": "Main Menu Titlessssssss",
+    "title": "Powerful Bocchi",
     "description": "Select A Store Category Below"
   },
   "spaceUnity": {
-    "title": "Main Menu Titlesssssssss",
+    "title": "Space Unity",
     "description": "Select A Store Category Below"
   },
   "judgeDay": {
-    "title": "Main Menu Titlesssssssss",
+    "title": "Judgment Day",
     "description": "Select A Store Category Below"
   },
   "claimRecall": {
-    "title": "Main Menu Titlessssssssss",
+    "title": "Claim Recall",
     "description": "Select A Store Category Below"
   },
   "memoryXmas": {
-    "title": "Main Menu Titlesssssssssss",
+    "title": "Memories of Christmas Cheer",
     "description": "Select A Store Category Below"
   },
   "memoryHall": {
-    "title": "Main Menu Titlessssssssssss",
+    "title": "Memories of Halloween Frights",
     "description": "Select A Store Category Below"
   },
   "memoryBday": {
-    "title": "Main Menu Titlessssssssssssss",
+    "title": "Memories of Birthdays Past",
     "description": "Select A Store Category Below"
   },
   "memoryVal": {
-    "title": "Main Menu Titlesssssssssssssss",
+    "title": "Memories of Valentines Day",
     "description": "Select A Store Category Below"
   },
 
@@ -124,27 +124,27 @@
 
 
   "lemonadeStand": {
-    "title": "Main Menu Title",
+    "title": "Lemonade Stand",
     "description": "Select A Store Category Below"
   },
   "processingPlant": {
-    "title": "Main Menu Title",
+    "title": "Processing Plant",
     "description": "Select A Store Category Below"
   },
   "pachinkoHall": {
-    "title": "Main Menu Title",
+    "title": "Pachinko Hall",
     "description": "Select A Store Category Below"
   },
   "arcadeCenter": {
-    "title": "Main Menu Title",
+    "title": "Arcade Center",
     "description": "Select A Store Category Below"
   },
   "pamperCentral": {
-    "title": "Main Menu Title",
+    "title": "Pamper Central",
     "description": "Select A Store Category Below"
   },
   "discountCenter": {
-    "title": "Main Menu Title",
+    "title": "Discount Center",
     "description": "Select A Store Category Below"
   },
 
@@ -152,39 +152,39 @@
 
 
   "ticket1x1": {
-    "title": "Main Menu Title",
+    "title": "Single One Star Claim Ticket",
     "description": "Select A Store Category Below"
   },
   "ticket1x2": {
-    "title": "Main Menu Title",
+    "title": "Single Two Star Claim Ticket",
     "description": "Select A Store Category Below"
   },
   "ticket1x3": {
-    "title": "Main Menu Title",
+    "title": "Single Three Star Claim Ticket",
     "description": "Select A Store Category Below"
   },
   "ticket3x1s": {
-    "title": "Main Menu Title",
+    "title": "Triple One Star Claim Ticket, Single Collection",
     "description": "Select A Store Category Below"
   },
   "ticket3x2s": {
-    "title": "Main Menu Title",
+    "title": "Triple Two Star Claim Ticket, Single Collection",
     "description": "Select A Store Category Below"
   },
   "ticket3x3s": {
-    "title": "Main Menu Title",
+    "title": "Triple Three Star Claim Ticket, Single Collection",
     "description": "Select A Store Category Below"
   },
   "ticket3x1r": {
-    "title": "Main Menu Title",
+    "title": "Triple Random One Star Claim Ticket",
     "description": "Select A Store Category Below"
   },
   "ticket3x2r": {
-    "title": "Main Menu Title",
+    "title": "Triple Random Two Star Claim Ticket",
     "description": "Select A Store Category Below"
   },
   "ticket3x3r": {
-    "title": "Main Menu Title",
+    "title": "Triple Random Three Star Claim Ticket",
     "description": "Select A Store Category Below"
   },
 

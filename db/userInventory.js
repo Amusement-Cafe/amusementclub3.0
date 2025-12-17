@@ -4,6 +4,7 @@ const schema = new Schema({
     userID:     { type: String, index: true },
     itemID:     { type: String },
     colID:      { type: String },
+    type:       { type: String },
 
     acquired:   { type: Date },
 

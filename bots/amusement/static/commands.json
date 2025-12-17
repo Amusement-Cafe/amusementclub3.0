@@ -216,6 +216,11 @@
     },
     {
       "type": 1,
+      "name": "inventory",
+      "description": "Browse your item inventory."
+    },
+    {
+      "type": 1,
       "name": "forge",
       "description": "Forge two cards of similar rarity together",
       "options": [

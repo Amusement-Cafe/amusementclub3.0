@@ -41,9 +41,11 @@ const displayStore = async (ctx) => {
     })
 }
 
-const displayItem = async (ctx) => {
-    const item = ctx.arguments[0]
-    const buyItem = new Button(`storeBuy-${item}`).setLabel('Buy Now!').setStyle(3)
+const displayItem = async (ctx, disable = false) => {
+    const itemSplit = ctx.arguments[0].split('-')
+    const item = itemSplit[0]
+    const category = itemSplit[1]
+    const buyItem = new Button(`storeBuy-${item}-${category}`).setLabel('Buy Now!').setStyle(3).setOff(disable)
     await ctx.send(ctx, {
         embed: embeds[item],
         customButtons: [homeButton, buyItem],
@@ -52,13 +54,38 @@ const displayItem = async (ctx) => {
 }
 
 const buyItem = async (ctx) => {
-    await ctx.interaction.defer()
-    console.log(ctx.arguments)
-    return ctx.send(ctx, {
-        embed: {
-            description: `${ctx.user.username} you definitely just bought ${ctx.arguments}!`,
-            color: ctx.colors.green
-        },
+    switch (ctx.arguments[1]) {
+        case 'ticket':
+            return await purchaseTicket(ctx)
+        case 'guild':
+            return await purchaseGuildBuilding(ctx)
+        case 'bonus':
+            return await purchaseBonus(ctx)
+        case 'recipe':
+            return await purchaseRecipe(ctx)
+        case 'blueprint':
+            return await purchasePlotBuilding(ctx)
+    }
+}
 
-    })
+const purchaseTicket = async (ctx) => {
+    await ctx.interaction.defer()
+    let cost = ctx.items[ctx.arguments[0]].cost
+    if (ctx.user.lemons < cost) {
+        return ctx.send(ctx, `You have insufficient lemons to purchase ${ctx.boldName(ctx.arguments[0])}`, 'red')
+    }
+    return ctx.send(ctx, `You tried to purchase ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(cost)}${ctx.symbols.lemon}!`, 'deepgreen')
+    console.log('ticket')
+}
+const purchaseGuildBuilding = async (ctx) => {
+    console.log('guild')
+}
+const purchaseRecipe = async (ctx) => {
+    console.log('recipe')
+}
+const purchaseBonus = async (ctx) => {
+    console.log('bonus')
+}
+const purchasePlotBuilding = async (ctx) => {
+    console.log('plot')
 }

@@ -26,10 +26,20 @@ const {
 } = require("../bots/amusement/helpers/stats")
 
 const {
+    withGlobalCards
+} = require("../bots/amusement/helpers/cards")
+
+const {
     Collections,
     Cards,
     Promos
 } = require("../db")
+
+const {
+    items
+} = require('../bots/amusement/static/items')
+
+
 
 let globalContext = {}
 
@@ -52,18 +62,23 @@ const getContext = async (bot) => {
 const ctxFiller = async (ctx, bot) => {
     let args = await getCommandOptions(ctx, ctx.user)
 
-    let userCards
+    let userCards, globalCards
 
     if (ctx.cmdOptions?.withCards || ctx.options.card_query) {
         userCards = await withCards(ctx, args)
+    }
 
+    if (ctx.cmdOptions?.globalCards) {
+        globalCards = await withGlobalCards()
     }
 
     let userStats = await getUserStats(ctx)
     return Object.assign({}, ctx, {
         args,
+        items,
         stats: userStats,
         userCards: userCards,
+        globalCards: globalCards,
         send: sendInteraction,
         sendDM: async (ctx, user, message, color) => {
             try {

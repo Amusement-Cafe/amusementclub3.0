@@ -46,10 +46,13 @@ registerBotCommand('update', async (ctx, extras) => {
             stream.on('error', (err) => reject(err))
             stream.on('end', () => resolve(list))
         })
-        collectionList = collectionList.filter(x => !ctx.collections.some(y => x.prefix.substring(5).replaceAll(`/`, '') === y.collectionID))
+        collectionList = collectionList.filter(x => !ctx.collections.some(y => x.prefix && x.prefix.substring(5).replaceAll(`/`, '') === y.collectionID))
         if (collectionList.length > 0) {
             let multiCards = []
             for (let c of collectionList) {
+                if (!c.prefix) {
+                    continue
+                }
                 let colName = c.prefix.substring(5).replaceAll(`/`, '')
                 const collection = await new Collections()
                 collection.collectionID = colName
@@ -93,7 +96,8 @@ registerBotCommand('update', async (ctx, extras) => {
         newCard.cardName = name
         newCard.displayName = name.split(' ').map(s => s[0].toUpperCase() + s.slice(1).toLowerCase()).join(' ')
         newCard.added = new Date()
-        newCard.cardURL = `https://c.amu.cards/${newCard.cardID}${newCard.animated? '.gif': ''}`
+        newCard.cardURL = `https://c.amu.cards/id/${newCard.cardID}${newCard.animated? '.gif': ''}`
+        newCard.canDrop = !ctx.args.promo
         await newCard.save()
         lastID++
     }

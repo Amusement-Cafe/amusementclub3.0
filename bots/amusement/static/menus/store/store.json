@@ -30,210 +30,210 @@
     {
         "description": "",
         "label": "Gift From Tohru",
-        "value": "tohruGift"
+        "value": "tohruGift-recipe"
     },
     {
         "description": "",
         "label": "Cake Day",
-        "value": "cakeDay"
+        "value": "cakeDay-recipe"
     },
     {
         "description": "",
         "label": "The Holy Grail",
-        "value": "holyGrail"
+        "value": "holyGrail-recipe"
     },
     {
         "description": "",
         "label": "Skies of Friendship",
-        "value": "skyFriend"
+        "value": "skyFriend-recipe"
     },
     {
         "description": "",
         "label": "Cherry Blossoms",
-        "value": "cherryBlossom"
+        "value": "cherryBlossom-recipe"
     },
     {
         "description": "",
         "label": "Onwards To Victory",
-        "value": "onVictory"
+        "value": "onVictory-recipe"
     },
     {
         "description": "",
         "label": "The Ruler Jeanne",
-        "value": "rulerJeanne"
+        "value": "rulerJeanne-recipe"
     },
     {
         "description": "",
         "label": "Impossible Spell Card",
-        "value": "spellCard"
+        "value": "spellCard-recipe"
     },
     {
         "description": "",
         "label": "Enlightened Ayano",
-        "value": "enAyano"
+        "value": "enAyano-recipe"
     },
     {
         "description": "",
         "label": "Powerful Bocchi",
-        "value": "pBocchi"
+        "value": "pBocchi-recipe"
     },
     {
         "description": "",
         "label": "The Space Unity",
-        "value": "spaceUnity"
+        "value": "spaceUnity-recipe"
     },
     {
         "description": "",
         "label": "The Judgement Day",
-        "value": "judgeDay"
+        "value": "judgeDay-recipe"
     },
     {
         "description": "",
         "label": "Claim Recall",
-        "value": "claimRecall"
+        "value": "claimRecall-recipe"
     },
     {
         "description": "",
         "label": "Memories of Christmas Cheer",
-        "value": "memoryXmas"
+        "value": "memoryXmas-recipe"
     },
     {
         "description": "",
         "label": "Memories of Halloween Frights",
-        "value": "memoryHall"
+        "value": "memoryHall-recipe"
     },
     {
         "description": "",
         "label": "Memories of Birthdays Past",
-        "value": "memoryBday"
+        "value": "memoryBday-recipe"
     },
     {
         "description": "",
         "label": "Memories of Valentines Day",
-        "value": "memoryVal"
+        "value": "memoryVal-recipe"
     }
 ],
     "tickets": [
     {
         "description": "",
         "label": "1 Star Claim Ticket",
-        "value": "ticket1x1"
+        "value": "ticket1x1-ticket"
     },
     {
         "description": "",
         "label": "2 Star Claim Ticket",
-        "value": "ticket1x2"
+        "value": "ticket1x2-ticket"
     },
     {
         "description": "",
         "label": "3 Star Claim Ticket",
-        "value": "ticket1x3"
+        "value": "ticket1x3-ticket"
     },
     {
         "description": "",
         "label": "Triple 1 Star Claim Ticket",
-        "value": "ticket3x1s"
+        "value": "ticket3x1s-ticket"
     },
     {
         "description": "",
         "label": "Triple 2 Star Claim Ticket",
-        "value": "ticket3x2s"
+        "value": "ticket3x2s-ticket"
     },
     {
         "description": "",
         "label": "Triple 3 Star Claim Ticket",
-        "value": "ticket3x3s"
+        "value": "ticket3x3s-ticket"
     },
     {
         "description": "",
         "label": "Triple Random 1 Star Claim Ticket",
-        "value": "ticket3x1r"
+        "value": "ticket3x1r-ticket"
     },
     {
         "description": "",
         "label": "Triple Random 2 Star Claim Ticket",
-        "value": "ticket3x2r"
+        "value": "ticket3x2r-ticket"
     },
     {
         "description": "",
         "label": "Triple Random 3 Star Claim Ticket",
-        "value": "ticket3x3r"
+        "value": "ticket3x3r-ticket"
     }
 ],
     "plots": [
     {
         "description": "The first and required building for plots",
         "label": "Plot Castle",
-        "value": "castle"
+        "value": "castle-blueprint"
     },
     {
         "description": "Provides lemons with daily + claim",
         "label": "Gacha Bank",
-        "value": "gachaBank"
+        "value": "gachaBank-blueprint"
     },
     {
         "description": "",
         "label": "Tavern",
-        "value": "tavern"
+        "value": "tavern-blueprint"
     },
     {
         "description": "",
         "label": "Smithing Hub",
-        "value": "smithHub"
+        "value": "smithHub-blueprint"
     },
     {
         "description": "",
         "label": "Auction House",
-        "value": "auctionHouse"
+        "value": "auctionHouse-blueprint"
     }
 ],
     "bonus": [
     {
         "description": "",
         "label": "Effect Slot Upgrade",
-        "value": "slotUpgrade"
+        "value": "slotUpgrade-bonus"
     },
     {
         "description": "",
         "label": "Effect Use Increase",
-        "value": "effectIncrease"
+        "value": "effectIncrease-bonus"
     },
     {
         "description": "",
         "label": "Legendary Card Swapper",
-        "value": "legendarySwapper"
+        "value": "legendarySwapper-bonus"
     }
 ],
     "guild": [
     {
         "description": "",
         "label": "Lemonade Stand",
-        "value": "lemonadeStand"
+        "value": "lemonadeStand-guild"
     },
     {
         "description": "",
         "label": "Processing Plant",
-        "value": "processingPlant"
+        "value": "processingPlant-guild"
     },
     {
         "description": "",
         "label": "Pachinko Hall",
-        "value": "pachinkoHall"
+        "value": "pachinkoHall-guild"
     },
     {
         "description": "",
         "label": "Arcade Center",
-        "value": "arcadeCenter"
+        "value": "arcadeCenter-guild"
     },
     {
         "description": "",
         "label": "Pamper Central",
-        "value": "pamperCentral"
+        "value": "pamperCentral-guild"
     },
     {
         "description": "",
         "label": "Discount Center",
-        "value": "discountCenter"
+        "value": "discountCenter-guild"
     }
 ]
 }

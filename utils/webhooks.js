@@ -24,7 +24,7 @@ const listen = async (ctx) => {
             res.status(404).send('No card with that ID').end()
         }
         let collection = await Collection.findOne({collectionID: card.collectionID})
-        res.redirect(301, `https://a.amu.cards/cards/${card.collectionID}/${card.rarity}_${card.cardName.replaceAll(' ', '_')}${card.animated? '.gif': collection.compressed? '.jpg': '.png'}`)
+        res.redirect(301, `https://t.amu.cards/cards/${card.collectionID}/${card.rarity}_${card.cardName.replaceAll(' ', '_')}${card.animated? '.gif': collection.compressed? '.jpg': '.png'}`)
         return res.status(200).end()
     })
 

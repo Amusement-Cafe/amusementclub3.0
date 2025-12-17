@@ -117,7 +117,7 @@ const handleReaction = async (input, ctx) => {
     let commandSplit = input[0].split('-')
     const command = commandSplit.shift().split('_')
     const oldInteract = interactions.find(x => x.msgID === ctx.interaction.message.id)
-    ctx.arguments = ctx.interaction.data.componentType === 3? ctx.interaction.data.values.raw: commandSplit[0]
+    ctx.arguments = ctx.interaction.data.componentType === 3? ctx.interaction.data.values.raw: commandSplit
 
     for (let cmd of command) {
         if (!currentLevel[cmd]) {
