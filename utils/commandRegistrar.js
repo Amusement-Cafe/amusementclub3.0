@@ -116,7 +116,7 @@ const handleReaction = async (input, ctx) => {
     let currentLevel = rctCommands
     let commandSplit = input[0].split('-')
     const command = commandSplit.shift().split('_')
-    const oldInteract = interactions.find(x => x.msgID === ctx.interaction.message.id)
+    let oldInteract = interactions.find(x => x.msgID === ctx.interaction.message.id)
     ctx.arguments = ctx.interaction.data.componentType === 3? ctx.interaction.data.values.raw: commandSplit
 
     for (let cmd of command) {
@@ -132,7 +132,7 @@ const handleReaction = async (input, ctx) => {
     ctx.cmdOptions = currentLevel.options || {}
     ctx = await ctxFiller(ctx)
 
-    if (!oldInteract) {
+    if (!oldInteract && (command[0] === 'pgn' || command[0] === 'dcl' || command[0] === 'cfm')) {
         const old = await ctx.bot.rest.channels.getMessage(ctx.interaction.message.channelID, ctx.interaction.message.id)
         await old.edit({embeds: old.embeds, content: old.content, components: []})
         await ctx.interaction.defer(64)
@@ -142,6 +142,14 @@ const handleReaction = async (input, ctx) => {
                 color: ctx.colors.red
             }]
         })
+    }
+    if (!oldInteract) {
+        oldInteract = {
+            permissions: {
+                pages: [ctx.interaction.message.interactionMetadata.user.id],
+                decline: [ctx.interaction.message.interactionMetadata.user.id]
+            }
+        }
     }
 
     if (oldInteract.permissions?.pages?.indexOf(ctx.interaction.user.id) < 0) {

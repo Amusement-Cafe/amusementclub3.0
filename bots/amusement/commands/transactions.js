@@ -5,7 +5,10 @@ const {
     completeTransaction,
     listTransactions,
 } = require('../helpers/transactions')
-const {fetchUser} = require("../helpers/user");
+
+const {
+    fetchUser
+} = require("../helpers/user")
 
 
 registerBotCommand(['sell', 'one'], async (ctx) => await sell(ctx), { withCards: true })

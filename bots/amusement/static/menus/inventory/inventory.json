@@ -1,0 +1,212 @@
+{
+  "all": [
+    {
+      "description": "Display your claim tickets",
+      "label": "Tickets",
+      "value": "ticket"
+    },
+    {
+      "description": "Display your plot blueprints",
+      "label": "Blueprints",
+      "value": "blueprint"
+    },
+    {
+      "description": "Display your effect recipes",
+      "label": "Recipes",
+      "value": "recipe"
+    },
+    {
+      "description": "Display your bonus items",
+      "label": "Bonus (Misc)",
+      "value": "bonus"
+    }
+  ],
+  "ticket": [
+    {
+      "description": "View or use your Legendary Claim Ticket(s)",
+      "label": "Legendary Claim Ticket",
+      "value": "legendTicket-ticket"
+    },
+    {
+      "description": "View or use your 1 Star Claim Ticket(s)",
+      "label": "Single 1 Star Claim Ticket",
+      "value": "ticket1x1-ticket"
+    },
+    {
+      "description": "View or use your 2 Star Claim Ticket(s)",
+      "label": "Single 2 Star Claim Ticket",
+      "value": "ticket1x2-ticket"
+    },
+    {
+      "description": "View or use your 3 Star Claim Ticket(s)",
+      "label": "Single 3 Star Claim Ticket",
+      "value": "ticket1x3-ticket"
+    },
+    {
+      "description": "View or use your Triple 1 Star Claim Ticket(s)",
+      "label": "Triple 1 Star Claim Ticket",
+      "value": "ticket3x1s-ticket"
+    },
+    {
+      "description": "View or use your Triple 2 Star Claim Ticket(s)",
+      "label": "Triple 2 Star Claim Ticket",
+      "value": "ticket3x2s-ticket"
+    },
+    {
+      "description": "View or use your Triple 3 Star Claim Ticket(s)",
+      "label": "Triple 3 Star Claim Ticket",
+      "value": "ticket3x3s-ticket"
+    },
+    {
+      "description": "View or use your Triple Random 1 Star Claim Ticket(s)",
+      "label": "Triple Random 1 Star Claim Ticket",
+      "value": "ticket3x1r-ticket"
+    },
+    {
+      "description": "View or use your Triple Random 2 Star Claim Ticket(s)",
+      "label": "Triple Random 2 Star Claim Ticket",
+      "value": "ticket3x2r-ticket"
+    },
+    {
+      "description": "View or use your Triple Random 3 Star Claim Ticket(s)",
+      "label": "Triple Random 3 Star Claim Ticket",
+      "value": "ticket3x3r-ticket"
+    }
+  ],
+  "blueprint": [
+    {
+      "description": "View or build your castle(s)",
+      "label": "Plot Castle",
+      "value": "castle-blueprint"
+    },
+    {
+      "description": "View or build your Gacha Bank(s)",
+      "label": "Plot Gacha Bank",
+      "value": "gBank-blueprint"
+    },
+    {
+      "description": "View or build your Tavern(s)",
+      "label": "Plot Tavern",
+      "value": "tavern-blueprint"
+    },
+    {
+      "description": "View or build your Smithing Hub(s)",
+      "label": "Plot Smithing Hub",
+      "value": "smithHub-blueprint"
+    },
+    {
+      "description": "View or build your Auction House(s)",
+      "label": "Plot Auction House",
+      "value": "aucHouse-blueprint"
+    }
+  ],
+  "bonus": [
+    {
+      "description": "View or use your Legendary Swapper",
+      "label": "Legendary Swapper",
+      "value": "legendSwapper-bonus"
+    },
+    {
+      "description": "View or use your Effect Increase(s)",
+      "label": "Effect Increase",
+      "value": "effectIncrease-bonus"
+    },
+    {
+      "description": "View or use your Effect Slot Upgrade",
+      "label": "Effect Slot Upgrade",
+      "value": "slotUpgrade-bonus"
+    }
+  ],
+  "recipe": [
+    {
+      "description": "View or create the Gift From Tohru effect",
+      "label": "Gift From Tohru",
+      "value": "tohruGift-recipe"
+    },
+    {
+      "description": "View or create the Cake Day effect",
+      "label": "Cake Day",
+      "value": "cakeDay-recipe"
+    },
+    {
+      "description": "View or create the Holy Grail effect",
+      "label": "Holy Grail",
+      "value": "holyGrail-recipe"
+    },
+    {
+      "description": "View or create the Skies of Friendship effect",
+      "label": "Skies of Friendship",
+      "value": "skyFriend-recipe"
+    },
+    {
+      "description": "View or create the Cherry Blossoms effect",
+      "label": "Cherry Blossoms",
+      "value": "cherryBloss-recipe"
+    },
+    {
+      "description": "View or create the Onwards to Victory effect",
+      "label": "Onwards to Victory",
+      "value": "onVictory-recipe"
+    },
+    {
+      "description": "View or create the Ruler Jeanne effect",
+      "label": "Ruler Jeanne",
+      "value": "rulerJeanne-recipe"
+    },
+    {
+      "description": "View or create the Impossible Spell Card effect",
+      "label": "Impossible Spell Card",
+      "value": "spellCard-recipe"
+    },
+    {
+      "description": "View or create the Festival of Wishes effect",
+      "label": "Festival of Wishes",
+      "value": "festiveWish-recipe"
+    },
+    {
+      "description": "View or create the Enlightened Ayano effect",
+      "label": "Enlightened Ayano",
+      "value": "enAyano-recipe"
+    },
+    {
+      "description": "View or create the Powerful Bocchi effect",
+      "label": "Powerful Bocchi",
+      "value": "pBocchi-recipe"
+    },
+    {
+      "description": "View or create the Space Unity effect",
+      "label": "Space Unity",
+      "value": "spaceUnity-recipe"
+    },
+    {
+      "description": "View or create the Judgment Day effect",
+      "label": "Judgment Day",
+      "value": "judgeDay-recipe"
+    },
+    {
+      "description": "View or create the Claim Recall effect",
+      "label": "Claim Recall",
+      "value": "claimRecall-recipe"
+    },
+    {
+      "description": "View or create the Memories of Christmas Cheer effect",
+      "label": "Memories of Christmas Cheer",
+      "value": "memoryXmas-recipe"
+    },
+    {
+      "description": "View or create the Memories of Halloween Frights effect",
+      "label": "Memories of Halloween Frights",
+      "value": "memoryHall-recipe"
+    },
+    {
+      "description": "View or create the Memories of Birthdays Past effect",
+      "label": "Memories of Birthdays Past",
+      "value": "memoryBday-recipe"
+    },
+    {
+      "description": "View or create the Memories of Valentines Day effect",
+      "label": "Memories of Valentines Day",
+      "value": "memoryVal-recipe"
+    }
+  ]
+}

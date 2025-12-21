@@ -26,6 +26,10 @@ const {
     UserWishlists
 } = require('../db')
 
+const {
+    generateNewID,
+} = require("../utils/misc")
+
 const main = async () => {
     const start = new Date()
     console.log('Connecting Mongoose')
@@ -586,10 +590,12 @@ const transferUserInventories = async (db) => {
     for (let ui = await oldInventories.next(); ui != null; ui = await oldInventories.next()) {
         console.log(`Processing User Inventory ${count}`)
         let type = getType(ui.id)
+        let newID = generateNewID()
         const userInventory = await new UserInventories()
+        userInventory.id = newID
         userInventory.userID = ui.userid
         userInventory.itemID = ui.id
-        userInventory.colID = ui.col
+        userInventory.collectionID = ui.col
         userInventory.acquired = ui.acquired
         userInventory.cards = ui.cards
         userInventory.type = type
@@ -679,10 +685,10 @@ const transferUserStats = async (db) => {
         newStat.lemonIn = us.lemonin
         newStat.lemonOut = us.lemonout
         newStat.store = us.store
-        newStat.store1 = us.store1
-        newStat.store2 = us.store2
-        newStat.store3 = us.store3
-        newStat.store4 = us.store4
+        newStat.storePlot = us.store1
+        newStat.storeRecipe = us.store2
+        newStat.storeTicket = us.store3
+        newStat.storeBonus = us.store4
         newStat.t1Quests = us.t1quests
         newStat.t2Quests = us.t2quests
         newStat.t3Quests = us.t3quests

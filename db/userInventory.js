@@ -1,13 +1,14 @@
 const {model, Schema} = require('mongoose')
 
 const schema = new Schema({
-    userID:     { type: String, index: true },
-    itemID:     { type: String },
-    colID:      { type: String },
-    type:       { type: String },
+    id:                 { type: String, required: true },
+    userID:             { type: String, index: true },
+    itemID:             { type: String },
+    collectionID:       { type: String },
+    type:               { type: String },
 
-    acquired:   { type: Date },
+    acquired:           { type: Date },
 
-    cards:      { type: Array },
+    cards:              { type: Array },
 })
 module.exports = model('UserInventory', schema)

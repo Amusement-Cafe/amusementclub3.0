@@ -46,7 +46,7 @@ const mainSelect = async (ctx) => {
     if (inv.length === 0) {
         return ctx.send(ctx, `something went wrong`, 'red')
     }
-    const selects = menus[type].filter(x => inv.some(y => x.value === y.itemID))
+    const selects = menus[type].filter(x => inv.some(y => x.value.split('-')[0] === y.itemID))
     const selection = new Selection(`inventoryItem`).setOptions(selects)
 
     return ctx.send(ctx, {
@@ -63,9 +63,21 @@ const mainSelect = async (ctx) => {
 const itemSelect = async (ctx) => {
     let inv = await getUserInventory(ctx)
     const item = ctx.arguments[0]
-    inv = inv.filter(x => item === x.itemID)
+    console.log(inv)
+    console.log(item)
+    inv = inv.filter(x => item.split('-')[0] === x.itemID)
+    console.log(inv)
     if (inv.length === 0) {
         return ctx.send(ctx, `something went wrong`, 'red')
+    }
+    switch (item.split('-')[1]) {
+        case 'ticket':
+            await ticketSelect(ctx, inv)
+            break
+        case 'bonus':
+        case 'building':
+        case 'recipe':
+            break
     }
     return ctx.send(ctx, {
         embed: {
@@ -78,7 +90,33 @@ const itemSelect = async (ctx) => {
 }
 
 
-const ticketSelect = async (ctx) => {}
+const ticketSelect = async (ctx, inv) => {
+    const item = ctx.items[ctx.arguments[0].split('-')[0]]
+    console.log(inv)
+    let invItems = inv.reduce((acc, current) => {
+        const exists = acc.find(item => item.collectionID === current.collectionID)
+        if (!exists) {
+            return acc.concat([current])
+        } else {
+            return acc
+        }
+    }, [])
+    if (invItems.length > 1) {
+        console.log(invItems)
+        console.log('more than one')
+    } else {
+        console.log(invItems)
+        console.log('only one')
+    }
+
+    return ctx.send(ctx, {
+        pages: invItems,
+        switchPage: (data) => console.log(data),
+        embed: {
+            description: 'test'
+        }
+    })
+}
 
 const blueprintSelect = async (ctx) => {}
 

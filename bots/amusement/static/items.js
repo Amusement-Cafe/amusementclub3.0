@@ -2,286 +2,293 @@ const items = {
     //Tickets
     ticket1x1: {
         cost: 1,
-        itemID: '',
+        itemID: 'ticket1x1',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'ticket',
+        displayName: ''
     },
     ticket1x2: {
         cost: 1,
-        itemID: '',
+        itemID: 'ticket1x2',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'ticket',
+        displayName: ''
     },
     ticket1x3: {
         cost: 1,
-        itemID: '',
+        itemID: 'ticket1x3',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'ticket',
+        displayName: ''
     },
     ticket3x1s: {
         cost: 1,
-        itemID: '',
+        itemID: 'ticket3x1s',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'ticket',
+        single: true,
+        displayName: ''
     },
     ticket3x2s: {
         cost: 1,
-        itemID: '',
+        itemID: 'ticket3x2s',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'ticket',
+        single: true,
+        displayName: ''
     },
     ticket3x3s: {
         cost: 1,
-        itemID: '',
+        itemID: 'ticket3x3s',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'ticket',
+        single: true,
+        displayName: ''
     },
     ticket3x1r: {
         cost: 1,
-        itemID: '',
+        itemID: 'ticket3x1r',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'ticket',
+        displayName: ''
     },
     ticket3x2r: {
         cost: 1,
-        itemID: '',
+        itemID: 'ticket3x2r',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'ticket',
+        displayName: ''
     },
     ticket3x3r: {
         cost: 1,
-        itemID: '',
+        itemID: 'ticket3x3r',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'ticket',
+        displayName: ''
     },
     //Recipes
-    memoryval: {
+    memoryVal: {
         cost: 1,
-        itemID: '',
+        itemID: 'memoryVal',
         uses: 0,
         active: true,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    memoryhall: {
+    memoryHall: {
         cost: 1,
-        itemID: '',
+        itemID: 'memoryHall',
         uses: 0,
         active: true,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    memoryxmas: {
+    memoryXmas: {
         cost: 1,
-        itemID: '',
+        itemID: 'memoryXmas',
         uses: 0,
         active: true,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    memorybday: {
+    memoryBday: {
         cost: 1,
-        itemID: '',
+        itemID: 'memoryBday',
         uses: 0,
         active: true,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    tohrugift: {
+    tohruGift: {
         cost: 1,
-        itemID: '',
+        itemID: 'tohruGift',
         uses: 0,
-        active: true,
+        active: false,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    cakeday: {
+    cakeDay: {
         cost: 1,
-        itemID: '',
+        itemID: 'cakeDay',
         uses: 0,
-        active: true,
+        active: false,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    holygrail: {
+    holyGrail: {
         cost: 1,
-        itemID: '',
+        itemID: 'holyGrail',
         uses: 0,
-        active: true,
+        active: false,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    skyfriend: {
+    skyFriend: {
         cost: 1,
-        itemID: '',
+        itemID: 'skyFriend',
         uses: 0,
-        active: true,
+        active: false,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    cherrybloss: {
+    cherryBloss: {
         cost: 1,
-        itemID: '',
+        itemID: 'cherryBloss',
         uses: 0,
-        active: true,
+        active: false,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    onvictory: {
+    onVictory: {
         cost: 1,
-        itemID: '',
+        itemID: 'onVictory',
         uses: 0,
-        active: true,
+        active: false,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    rulerjeanne: {
+    rulerJeanne: {
         cost: 1,
-        itemID: '',
+        itemID: 'rulerJeanne',
         uses: 0,
-        active: true,
+        active: false,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    spellcard: {
+    spellCard: {
         cost: 1,
-        itemID: '',
+        itemID: 'spellCard',
         uses: 0,
-        active: true,
+        active: false,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    festivewish: {
+    festiveWish: {
         cost: 1,
-        itemID: '',
+        itemID: 'festiveWish',
         uses: 0,
-        active: true,
+        active: false,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    enayano: {
+    enAyano: {
         cost: 1,
-        itemID: '',
+        itemID: 'enAyano',
         uses: 0,
         active: true,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    pbocchi: {
+    pBocchi: {
         cost: 1,
-        itemID: '',
+        itemID: 'pBocchi',
         uses: 0,
         active: true,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    spaceunity: {
+    spaceUnity: {
         cost: 1,
-        itemID: '',
+        itemID: 'spaceUnity',
         uses: 0,
         active: true,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    judgeday: {
+    judgeDay: {
         cost: 1,
-        itemID: '',
+        itemID: 'judgeDay',
         uses: 0,
         active: true,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
-    claimrecall: {
+    claimRecall: {
         cost: 1,
-        itemID: '',
+        itemID: 'claimRecall',
         uses: 0,
         active: true,
         requires: [],
-        type: ''
+        type: 'recipe',
+        displayName: ''
     },
     //Plot Buildings
     castle: {
         cost: 1,
-        itemID: '',
+        itemID: 'castle',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'blueprint',
+        displayName: ''
     },
-    gbank: {
+    gBank: {
         cost: 1,
-        itemID: '',
+        itemID: 'gbank',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'blueprint',
+        displayName: ''
     },
     tavern: {
         cost: 1,
-        itemID: '',
+        itemID: 'tavern',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'blueprint',
+        displayName: ''
     },
-    smithhub: {
+    smithHub: {
         cost: 1,
-        itemID: '',
+        itemID: 'smithhub',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'blueprint',
+        displayName: ''
     },
-    auchouse: {
+    aucHouse: {
         cost: 1,
-        itemID: '',
+        itemID: 'aucHouse',
         uses: 0,
-        active: true,
-        requires: [],
-        type: ''
+        type: 'blueprint',
+        displayName: ''
     },
     //Bonus
-    legendswapper: {
-        cost: 1,
-        itemID: '',
+    legendSwapper: {
+        cost: 1000000000,
+        itemID: 'legendSwapper',
         uses: 0,
         active: true,
-        requires: [],
-        type: ''
+        type: 'bonus',
+        displayName: ''
     },
     slotUpgrade: {
         cost: 1,
-        itemID: '',
+        itemID: 'slotUpgrade',
         uses: 0,
         active: true,
-        requires: [],
-        type: ''
+        type: 'bonus',
+        displayName: ''
     },
     effectIncrease: {
         cost: 1,
-        itemID: '',
+        itemID: 'effectIncrease',
         uses: 0,
         active: true,
-        requires: [],
-        type: ''
+        type: 'bonus',
+        displayName: ''
     },
 }
 

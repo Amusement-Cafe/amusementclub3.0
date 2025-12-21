@@ -1,47 +1,47 @@
 {
   "mainMenu": {
-    "title": "Main Menu Title",
-    "description": "Select A Store Category Below"
+    "title": "Main Menu",
+    "description": "Select an item category from the selection menu below!"
   },
 
 
 
 
   "bonus": {
-    "title": "Bonus Menu Title",
-    "description": "Select A Store Category Below"
+    "title": "Bonus Items",
+    "description": "Select an item from the selection menu below!"
   },
   "effects": {
-    "title": "Effects Menu Title",
-    "description": "Select A Store Category Below"
+    "title": "Effect Recipes",
+    "description": "Select an item from the selection menu below!"
   },
   "guild": {
-    "title": "Guild Menu Title",
-    "description": "Select A Store Category Below"
+    "title": "Guild Buildings",
+    "description": "Select an item from the selection menu below!"
   },
   "tickets": {
-    "title": "Tickets Menu Title",
-    "description": "Select A Store Category Below"
+    "title": "Claim Tickets",
+    "description": "Select an item from the selection menu below!"
   },
   "plots": {
-    "title": "Plots Menu Title",
-    "description": "Select A Store Category Below"
+    "title": "Plot Buildings",
+    "description": "Select an item from the selection menu below!"
   },
 
 
 
 
   "slotUpgrade": {
-    "title": "Slot Upgrade Title",
-    "description": "Select A Store Category Below"
+    "title": "Slot Upgrade",
+    "description": "Slot upgrade thing, might get removed?"
   },
-  "legendarySwapper": {
-    "title": "Legendary Swapper Title",
-    "description": "Select A Store Category Below"
+  "legendSwapper": {
+    "title": "Legendary Swapper",
+    "description": "The legendary card swapper"
   },
   "effectIncrease": {
-    "title": "Effect Increase Title",
-    "description": "Select A Store Category Below"
+    "title": "Effect Increase",
+    "description": "Effect Increase thing"
   },
 
 
@@ -49,35 +49,35 @@
 
   "tohruGift": {
     "title": "Gift from Tohru",
-    "description": "Buy below, soon"
+    "description": "Gift from Tohru"
   },
   "cakeDay": {
     "title": "Cake Day",
-    "description": "Select A Store Category Below"
+    "description": "Cake Day"
   },
   "holyGrail": {
     "title": "Holy Grail",
-    "description": "Select A Store Category Below"
+    "description": "Holy Grail"
   },
   "skyFriend": {
     "title": "Skies of Friendship",
-    "description": "Select A Store Category Below"
+    "description": "Skies of Friendship"
   },
   "cherryBlossom": {
     "title": "Cherry Blossoms",
-    "description": "Select A Store Category Below"
+    "description": "Cherry Blossoms"
   },
   "onVictory": {
     "title": "Onwards to Victory",
-    "description": "Select A Store Category Below"
+    "description": "Onwards to Victory"
   },
   "rulerJeanne": {
     "title": "The Ruler Jeanne",
-    "description": "Select A Store Category Below"
+    "description": "The Ruler Jeanne"
   },
   "spellCard": {
     "title": "Impossible Spell Card",
-    "description": "Select A Store Category Below"
+    "description": "Impossible Spell Card"
   },
 
 
@@ -85,39 +85,39 @@
 
   "enAyano": {
     "title": "Enlightened Ayano",
-    "description": "Select A Store Category Below"
+    "description": "Enlightened Ayano"
   },
   "pBocchi": {
     "title": "Powerful Bocchi",
-    "description": "Select A Store Category Below"
+    "description": "Powerful Bocchi"
   },
   "spaceUnity": {
     "title": "Space Unity",
-    "description": "Select A Store Category Below"
+    "description": "Space Unity"
   },
   "judgeDay": {
     "title": "Judgment Day",
-    "description": "Select A Store Category Below"
+    "description": "Judgment Day"
   },
   "claimRecall": {
     "title": "Claim Recall",
-    "description": "Select A Store Category Below"
+    "description": "Claim Recall"
   },
   "memoryXmas": {
     "title": "Memories of Christmas Cheer",
-    "description": "Select A Store Category Below"
+    "description": "Memories of Christmas Cheer"
   },
   "memoryHall": {
     "title": "Memories of Halloween Frights",
-    "description": "Select A Store Category Below"
+    "description": "Memories of Halloween Frights"
   },
   "memoryBday": {
     "title": "Memories of Birthdays Past",
-    "description": "Select A Store Category Below"
+    "description": "Memories of Birthdays Past"
   },
   "memoryVal": {
     "title": "Memories of Valentines Day",
-    "description": "Select A Store Category Below"
+    "description": "Memories of Valentines Day"
   },
 
 
@@ -125,27 +125,27 @@
 
   "lemonadeStand": {
     "title": "Lemonade Stand",
-    "description": "Select A Store Category Below"
+    "description": "Lemonade Stand"
   },
   "processingPlant": {
     "title": "Processing Plant",
-    "description": "Select A Store Category Below"
+    "description": "Processing Plant"
   },
   "pachinkoHall": {
     "title": "Pachinko Hall",
-    "description": "Select A Store Category Below"
+    "description": "Pachinko Hall"
   },
   "arcadeCenter": {
     "title": "Arcade Center",
-    "description": "Select A Store Category Below"
+    "description": "Arcade Center"
   },
   "pamperCentral": {
     "title": "Pamper Central",
-    "description": "Select A Store Category Below"
+    "description": "Pamper Central"
   },
   "discountCenter": {
     "title": "Discount Center",
-    "description": "Select A Store Category Below"
+    "description": "Discount Center"
   },
 
 
@@ -153,39 +153,39 @@
 
   "ticket1x1": {
     "title": "Single One Star Claim Ticket",
-    "description": "Select A Store Category Below"
+    "description": "Single One Star Claim Ticket"
   },
   "ticket1x2": {
     "title": "Single Two Star Claim Ticket",
-    "description": "Select A Store Category Below"
+    "description": "Single Two Star Claim Ticket"
   },
   "ticket1x3": {
     "title": "Single Three Star Claim Ticket",
-    "description": "Select A Store Category Below"
+    "description": "Single Three Star Claim Ticket"
   },
   "ticket3x1s": {
     "title": "Triple One Star Claim Ticket, Single Collection",
-    "description": "Select A Store Category Below"
+    "description": "Triple One Star Claim Ticket, Single Collection"
   },
   "ticket3x2s": {
     "title": "Triple Two Star Claim Ticket, Single Collection",
-    "description": "Select A Store Category Below"
+    "description": "Triple Two Star Claim Ticket, Single Collection"
   },
   "ticket3x3s": {
     "title": "Triple Three Star Claim Ticket, Single Collection",
-    "description": "Select A Store Category Below"
+    "description": "Triple Three Star Claim Ticket, Single Collection"
   },
   "ticket3x1r": {
     "title": "Triple Random One Star Claim Ticket",
-    "description": "Select A Store Category Below"
+    "description": "Triple Random One Star Claim Ticket"
   },
   "ticket3x2r": {
     "title": "Triple Random Two Star Claim Ticket",
-    "description": "Select A Store Category Below"
+    "description": "Triple Random Two Star Claim Ticket"
   },
   "ticket3x3r": {
     "title": "Triple Random Three Star Claim Ticket",
-    "description": "Select A Store Category Below"
+    "description": "Triple Random Three Star Claim Ticket"
   },
 
 
@@ -193,22 +193,22 @@
 
   "castle": {
     "title": "Main Menu Title",
-    "description": "Select A Store Category Below"
+    "description": ""
   },
   "gachaBank": {
     "title": "Main Menu Title",
-    "description": "Select A Store Category Below"
+    "description": ""
   },
   "tavern": {
     "title": "Main Menu Title",
-    "description": "Select A Store Category Below"
+    "description": ""
   },
   "smithHub": {
     "title": "Main Menu Title",
-    "description": "Select A Store Category Below"
+    "description": ""
   },
   "auctionHouse": {
     "title": "Main Menu Title",
-    "description": "Select A Store Category Below"
+    "description": ""
   }
 }

@@ -201,7 +201,7 @@
     {
         "description": "",
         "label": "Legendary Card Swapper",
-        "value": "legendarySwapper-bonus"
+        "value": "legendSwapper-bonus"
     }
 ],
     "guild": [
