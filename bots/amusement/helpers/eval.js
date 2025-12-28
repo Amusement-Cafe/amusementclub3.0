@@ -17,8 +17,13 @@ const evalCards = async (ctx) => {
     }
     processing = true
     const start = new Date()
-    console.log('Attempting Card Eval Updates\nGathering Cards....')
-    const cards = await Cards.find()
+    const queryTime = new Date()
+    queryTime.setTime(start.getTime() - (1000 * 60 * 60 * 24 * 7))
+    const cards = await Cards.find({lastUpdatedEval: {$lt: queryTime}})
+    if (cards.length === 0) {
+        return
+    }
+    console.log('Attempting Card Eval Updates')
     console.log("Cards gathered, updating evals")
     await Promise.all(cards.map(async (card) => {
         if (card.lastUpdatedEval && card.lastUpdatedEval >= (Date.now() - (1000 * 60 * 60 * 24 * 7)))
@@ -46,7 +51,7 @@ const evalCards = async (ctx) => {
         price = price * ageModifier * totalCopiesModifier * wishlistModifier * botSaleModifier * ownerCountModifier * hoardRatio
         card.eval = Math.abs(Math.round(price)) || -1
         console.log(card.eval)
-        // card.lastUpdatedEval = Date.now()
+        card.lastUpdatedEval = Date.now()
         await card.save()
     }))
 

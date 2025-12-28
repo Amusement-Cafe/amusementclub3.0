@@ -3,7 +3,7 @@ const {evalCards} = require('../helpers/eval')
 let tickArray
 
 const evalQueue = (ctx) => {
-    // evalCards(ctx)
+    evalCards(ctx)
 }
 
 const startTicks = (ctx) => {
