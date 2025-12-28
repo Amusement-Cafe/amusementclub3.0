@@ -101,7 +101,7 @@ const sell = async (ctx, many = false) => {
 
     cost = `${ctx.fmtNum(cost)}${ctx.symbols.tomato}`
 
-    let title = toUser? `${toUser.username}, ${ctx.user.username} wants to sell you ${amountDisplay? amountDisplay: saleCards.length} cards for ${cost}`: `${ctx.user.username}, you are trying to sell ${amountDisplay? amountDisplay: saleCards.length} to the bot for ${cost}`
+    let title = toUser? `${toUser.username}, ${ctx.user.username} wants to sell you ${amountDisplay? amountDisplay: saleCards.length} cards for ${cost}`: `${ctx.user.username}, you are trying to sell ${amountDisplay? amountDisplay: saleCards.length} card(s) to the bot for ${cost}`
 
     let perms = {pages: [ctx.user.userID], cfm: [ctx.user.userID], dcl: [ctx.user.userID]}
 

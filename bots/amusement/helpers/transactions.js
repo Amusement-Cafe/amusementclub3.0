@@ -33,7 +33,8 @@ const createTransaction = async (ctx, cardIDs, toID = 'bot', cost) => {
 }
 
 const completeTransaction = async (ctx, decline = false, parent = true, extra = false) => {
-    ctx.arguments = ctx.arguments.replaceAll(/O/g, "-")
+    console.log(ctx.arguments)
+    ctx.arguments = ctx.arguments[0].replaceAll(/O/g, "-")
     const transaction = await Transaction.findOne({transactionID: ctx.arguments})
 
     if (!transaction || transaction.status === 'completed') {
@@ -79,7 +80,7 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
         })
     }
 
-    if (ctx.user.userID !== transaction.toID) {
+    if (ctx.user.userID !== transaction.toID && transaction.toID !== 'bot') {
         extra? null: await ctx.interaction.defer(64)
         return ctx.interaction.createFollowup({
             embeds: [{
@@ -92,7 +93,7 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
     let toUser = await fetchUser(transaction.toID)
     let fromUser = await fetchUser(transaction.fromID)
 
-    if (toUser.tomatoes < transaction.cost) {
+    if (toUser && toUser.tomatoes < transaction.cost) {
         return ctx.send(ctx, {
             embed: {
                 description: `You don't have enough tomatoes to accept this transaction!\nYou need **${ctx.fmtNum(transaction.cost - ctx.user.tomatoes)}**${ctx.symbols.tomato} more tomatoes to accept this transaction.`,
@@ -101,17 +102,22 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
             parent: !extra
         })
     }
+    let toName = 'bot'
 
-    toUser.tomatoes -= transaction.cost
+    if (toUser) {
+        toUser.tomatoes -= transaction.cost
+        await addUserCards(toUser.userID, transaction.cardIDs)
+        await toUser.save()
+        toName = toUser.username
+    }
+
     fromUser.tomatoes += transaction.cost
     await removeUserCards(fromUser.userID, transaction.cardIDs)
-    await addUserCards(toUser.userID, transaction.cardIDs)
-    await toUser.save()
     await fromUser.save()
 
     return ctx.send(ctx, {
         embed: {
-            description: `${ctx.boldName(fromUser.username)} sold ${ctx.boldName(transaction.cardIDs.length)} card(s) to ${ctx.boldName(toUser.username)} for ${ctx.boldName(ctx.fmtNum(transaction.cost))}${ctx.symbols.tomato}`,
+            description: `${ctx.boldName(fromUser.username)} sold ${ctx.boldName(transaction.cardIDs.length)} card(s) to ${ctx.boldName(toName)} for ${ctx.boldName(ctx.fmtNum(transaction.cost))}${ctx.symbols.tomato}`,
             color: ctx.colors.green
         },
         parent: !extra
