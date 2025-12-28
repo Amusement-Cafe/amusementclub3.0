@@ -110,7 +110,7 @@ const ctxFiller = async (ctx, bot) => {
             const amount = card.amount && card.amount > 1? `(x${card.amount})`: ''
             const locked = card.locked? ' `🔒`': ''
             const fav = card.fav? ' `❤`' : ''
-            return `[${rarity}]${ctx.args.fmtOptions.locked? locked: ''}${ctx.args.fmtOptions.fav? fav: ''} [${card.displayName}](${card.cardURL}) \`[${card.collectionID}]\`${ctx.args.fmtOptions.amount? amount: ''}${ctx.args.fmtOptions.eval? ` ${eval}`: ''}`
+            return `[${rarity}]${ctx.args.fmtOptions.locked? locked: ''}${ctx.args.fmtOptions.fav? fav: ''} [${card.displayName}](${card.cardURL}) \`[${card.collectionID}]\`${ctx.args.fmtOptions.amount? amount: ''}${ctx.args.fmtOptions.eval? ` ${eval}${ctx.symbols.tomato}`: ''}`
         },
         getPages: (array, split = 10, maxCharacters = 4096) => {
             let count = 0, page = 0
