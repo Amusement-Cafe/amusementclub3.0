@@ -100,10 +100,14 @@ const ticketSelect = async (ctx, inv) => {
     let buttons = [homeButton]
     let pgnButtons = []
     if (invItems.length > 1) {
-        pgnButtons.push(new Button(`ticket_page-1-${item.itemID}-${item.type}`).setLabel('Next').setStyle(1))
+        pgnButtons.push(new Button(`ticket_page-first-${item.itemID}-${item.type}`).setLabel('First').setStyle(1))
+
         if (invItems.length > 2){
-            pgnButtons.push(new Button(`ticket_page-${invItems.length - 1}-${item.itemID}-${item.type}`).setLabel('Last').setStyle(1))
+            pgnButtons.push(new Button(`ticket_page-${invItems.length - 1}-${item.itemID}-${item.type}`).setLabel('Back').setStyle(1))
         }
+        pgnButtons.push(new Button(`ticket_page-1-${item.itemID}-${item.type}`).setLabel('Next').setStyle(1))
+        pgnButtons.push(new Button(`ticket_page-last-${item.itemID}-${item.type}`).setLabel('Last').setStyle(1))
+
     }
 
 
@@ -120,7 +124,8 @@ const ticketSelect = async (ctx, inv) => {
 }
 
 const ticketPage = async (ctx) => {
-    let page = Number(ctx.arguments.shift())
+    let page = ctx.arguments.shift()
+
 
     let itemID = ctx.arguments.shift()
     let type = ctx.arguments.shift()
@@ -134,6 +139,10 @@ const ticketPage = async (ctx) => {
             return acc
         }
     }, [])
+    if (page === 'first' || page === 'last') {
+        page = page === 'first'? 0: invItems.length - 1
+    }
+    page = Number(page)
     if (page < 0) {
         page = invItems.length - 1
     }
@@ -149,14 +158,10 @@ const ticketPage = async (ctx) => {
     }
     let pgnButtons = []
     if (invItems.length > 1) {
+        pgnButtons.push(new Button(`ticket_page-first-${itemID}-${type}`).setLabel('First').setStyle(1))
         pgnButtons.push(new Button(`ticket_page-${page - 1 < 0? invItems.length - 1: page - 1}-${itemID}-${type}`).setLabel('Back').setStyle(1))
         pgnButtons.push(new Button(`ticket_page-${page + 1}-${itemID}-${type}`).setLabel('Next').setStyle(1))
-        if (page > 1) {
-            pgnButtons.push(new Button(`ticket_page-0-${itemID}-${type}`).setLabel('First').setStyle(1))
-        }
-        if (page !== invItems.length - 2 && page !== invItems.length - 1 && page !== 0) {
-            pgnButtons.push(new Button(`ticket_page-${invItems.length - 1}-${itemID}-${type}`).setLabel('Last').setStyle(1))
-        }
+        pgnButtons.push(new Button(`ticket_page-last-${itemID}-${type}`).setLabel('Last').setStyle(1))
     }
     return ctx.send(ctx, {
         pages: pages,
