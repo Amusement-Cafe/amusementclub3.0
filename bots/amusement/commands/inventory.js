@@ -89,14 +89,7 @@ const itemSelect = async (ctx) => {
 
 const ticketSelect = async (ctx, inv) => {
     const item = ctx.items[ctx.arguments[0].split('-')[0]]
-    let invItems = inv.reduce((acc, current) => {
-        const exists = acc.find(item => item.collectionID === current.collectionID)
-        if (!exists) {
-            return acc.concat([current])
-        } else {
-            return acc
-        }
-    }, [])
+    let invItems = ctx.deDuplicate(inv, 'collectionID')
     let buttons = [homeButton]
     let pgnButtons = []
     if (invItems.length > 1) {
@@ -131,14 +124,7 @@ const ticketPage = async (ctx) => {
     let type = ctx.arguments.shift()
     let inv = await getUserInventory(ctx, type)
     inv = inv.filter(x => x.itemID === itemID)
-    let invItems = inv.reduce((acc, current) => {
-        const exists = acc.find(item => item.collectionID === current.collectionID)
-        if (!exists) {
-            return acc.concat([current])
-        } else {
-            return acc
-        }
-    }, [])
+    let invItems = ctx.deDuplicate(inv, 'collectionID')
     if (page === 'first' || page === 'last') {
         page = page === 'first'? 0: invItems.length - 1
     }

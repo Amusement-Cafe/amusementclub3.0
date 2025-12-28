@@ -112,6 +112,14 @@ const ctxFiller = async (ctx, bot) => {
             const fav = card.fav? ' `❤`' : ''
             return `[${rarity}]${ctx.args.fmtOptions.locked? locked: ''}${ctx.args.fmtOptions.fav? fav: ''} [${card.displayName}](${card.cardURL}) \`[${card.collectionID}]\`${ctx.args.fmtOptions.amount? amount: ''}${ctx.args.fmtOptions.eval? ` ${eval}${ctx.symbols.tomato}`: ''}`
         },
+        deDuplicate: (array, deDupeBy) => array.reduce((acc, current) => {
+            const exists = acc.find(item => item[deDupeBy] === current[deDupeBy])
+            if (!exists) {
+                return acc.concat([current])
+            } else {
+                return acc
+            }
+        }, []),
         getPages: (array, split = 10, maxCharacters = 4096) => {
             let count = 0, page = 0
             const pages = [""]
