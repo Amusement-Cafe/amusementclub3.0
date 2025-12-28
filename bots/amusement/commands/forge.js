@@ -22,6 +22,14 @@ registerReaction(['forge'], async (ctx) => await processForge(ctx), {withCards: 
 const forge = async (ctx) => {
     ctx.userCards[0] = ctx.userCards[0].filter(x => !x.locked)
     ctx.userCards[1] = ctx.userCards[1].filter(x => !x.locked)
+
+    if (ctx.userCards[0].length === 0) {
+        return ctx.send(ctx, `No cards found for query 1! Please try your query again.`, 'red')
+    }
+
+    if (ctx.userCards[1].length === 0) {
+        return ctx.send(ctx, `No cards found for query 2! Please try your query again.`, 'red')
+    }
     ctx.userCards = ctx.userCards.filter(x => x.length > 0)
 
     if (ctx.userCards.length < 2) {
@@ -67,7 +75,7 @@ const forge = async (ctx) => {
 }
 
 const processForge = async (ctx) => {
-    const cardIDs = ctx.arguments.split('c')
+    const cardIDs = ctx.arguments[0].split('c')
     let stillOwned = cardIDs.map(x => ctx.userCards.some(y => x == y.cardID))
 
     let card1 = ctx.cards.find(x => x.cardID == cardIDs[0])
