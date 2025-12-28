@@ -12,6 +12,9 @@ const bestColMatch = (ctx, arg) => {
     if (distance(arg, close) <= 3) {
         return ctx.collections.filter(x => x.aliases.includes(close))
     }
+    const regex = new RegExp(arg, 'gi')
+    const c = ctx.collections.filter(x => x.aliases.some(y => regex.test(y)))
+    return c.sort((a, b) => a.id.length - b.id.length)
 }
 
 const getCommandOptions = async (ctx) => {
@@ -54,6 +57,10 @@ const getCommandOptions = async (ctx) => {
                 case 'user_id': args.userIDs.push(value); break;
             }
         })
+
+        if (args.cardQuery.eval) {
+            args.fmtOptions.eval = true
+        }
     }
 
     args.cols = _.flattenDeep(args.cols).filter(x => x)
@@ -75,11 +82,9 @@ const parseCardArgs = (ctx, user, cardArgs) => {
 
     const args = cardArgs.split(' ').map(x => x.toLowerCase())
     let sort
-
     args.map(x => {
         let subStr = x.substring(1)
         const start = x[0]
-
         if (x === '.') {
             query.lastCard = true
         }
@@ -103,7 +108,8 @@ const parseCardArgs = (ctx, user, cardArgs) => {
                     sort = sortBuilder((a, b) => a.collectionID - b.collectionID, lessThan, sort)
                     break;
                 case 'eval':
-                    sort = sortBuilder((a, b) => evalSort(ctx, a, b), lessThan, sort)
+                    query.eval = true
+                    sort = sortBuilder((a, b) => a.eval - b.eval, lessThan, sort)
                     break;
                 case 'rating':
                     sort = sortBuilder((a, b) => (a.rating || 0) - (b.rating || 0), lessThan, sort)
