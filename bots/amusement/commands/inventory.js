@@ -92,6 +92,7 @@ const ticketSelect = async (ctx, inv) => {
     let invItems = ctx.deDuplicate(inv, 'collectionID')
     let buttons = [homeButton]
     let pgnButtons = []
+
     if (invItems.length > 1) {
         pgnButtons.push(new Button(`ticket_page-first-${item.itemID}-${item.type}`).setLabel('First').setStyle(1))
 
@@ -102,13 +103,33 @@ const ticketSelect = async (ctx, inv) => {
         pgnButtons.push(new Button(`ticket_page-last-${item.itemID}-${item.type}`).setLabel('Last').setStyle(1))
 
     }
+    let sameType = inv.filter(x => {
+        if (!x.collectionID && !invItems[0].collectionID) {
+            return x.itemID === invItems[0].itemID
+        }
+        return x.itemID === invItems[0].itemID && x.collectionID === invItems[0].collectionID
+    })
+    let pages = invItems.map(x => x.collectionID || 'random')
+    pages = pages.map(x => {
+        let amount = 0
+        inv.map(y => {
+            if (!y.collectionID && x === 'random') {
+                amount += 1
+            } else if (y.collectionID === x) {
+                amount += 1
+            }
+        })
+        console.log(amount)
+        return `${x}${amount > 1? ` (x${amount})`: ``}`
+    })
+
 
 
     return ctx.send(ctx, {
-        pages: invItems.map(x => x.collectionID || 'random'),
+        pages: pages,
         embed: {
             title: ctx.items[invItems[0].itemID].itemID,
-            description: invItems[0].collectionID? invItems[0].collectionID: 'random'
+            description: invItems[0].collectionID? invItems[0].collectionID: 'random' + `${sameType.length > 1? ` (x${sameType.length})`: ``}`
         },
         customPgnButtons: pgnButtons.length !== 0? pgnButtons: false,
         customButtons: buttons,
@@ -118,13 +139,14 @@ const ticketSelect = async (ctx, inv) => {
 
 const ticketPage = async (ctx) => {
     let page = ctx.arguments.shift()
-
-
     let itemID = ctx.arguments.shift()
     let type = ctx.arguments.shift()
+
     let inv = await getUserInventory(ctx, type)
     inv = inv.filter(x => x.itemID === itemID)
+
     let invItems = ctx.deDuplicate(inv, 'collectionID')
+
     if (page === 'first' || page === 'last') {
         page = page === 'first'? 0: invItems.length - 1
     }
@@ -135,13 +157,30 @@ const ticketPage = async (ctx) => {
     if (page > invItems.length - 1) {
         page = 0
     }
+
     let filteredItem = invItems[page]
+    let sameType = inv.filter(x => x.collectionID && x.collectionID === filteredItem.collectionID)
+
     let pages = invItems.map(x => x.collectionID || 'random')
     let index = pages.findIndex(item => filteredItem.collectionID === item)
     if (index !== -1) {
         const [removedItem] = pages.splice(index, 1)
         pages.unshift(removedItem)
     }
+    pages = pages.map(x => {
+        let amount = 0
+        inv.map(y => {
+            if (!y.collectionID && x === 'random') {
+                amount += 1
+            } else if (y.collectionID === x) {
+                amount += 1
+            }
+        })
+        console.log(amount)
+        return `${x}${amount > 1? ` (x${amount})`: ``}`
+    })
+
+
     let pgnButtons = []
     if (invItems.length > 1) {
         pgnButtons.push(new Button(`ticket_page-first-${itemID}-${type}`).setLabel('First').setStyle(1))
@@ -153,7 +192,7 @@ const ticketPage = async (ctx) => {
         pages: pages,
         embed: {
             title: ctx.items[invItems[0].itemID].itemID,
-            description: pages[0],
+            description: pages[0] + `${sameType.length > 1? ` (x${sameType.length})`: ``}`,
             footer: {
                 text: `Page ${page+1}/${invItems.length}`,
             }
