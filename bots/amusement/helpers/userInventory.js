@@ -16,7 +16,7 @@ const getUserInventory = async (ctx, type) => {
 
 const addItem = async (ctx, item, collection) => {
     let newItem = await new UserInventory()
-    newItem.id = encodeUUID(generateNewID())
+    newItem.id = generateNewID()
     newItem.userID = ctx.user.userID
     newItem.itemID = item.itemID
     newItem.type = item.type

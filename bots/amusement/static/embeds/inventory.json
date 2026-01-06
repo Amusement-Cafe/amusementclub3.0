@@ -1,7 +1,71 @@
 {
-  "all": {},
-  "tickets": {},
-  "blueprints": {},
-  "bonus": {},
-  "recipe": {}
+  "all": {
+    "color": 12942336,
+    "title": "Inventory Main Page",
+    "description": "Please select a category from the selection menu below.\n-# Note: Only categories of items you own will be displayed"
+  },
+  "ticket": {
+    "all" : {
+      "color": 12942336,
+      "title": "Tickets",
+      "description": "Claim tickets are purchasable with lemons `\uD83C\uDF4B` acquired via plots.\nEach claim ticket can be used to acquire random cards from either:\n- For single tickets, A singular collection for as many cards as the ticket supplies (e.g. 3x3s supplies 3 3 star cards all of the same collection)\n- For random tickets, A randomized collection for as many cards as the ticket supplies (e.g. 3x3r supplies 3 3 star cards all of a randomly chosen collection)\nTickets purchased from the store will only ever contain collections available to claim normally. Occasionally there will be tickets given out as rewards or gifts that can contain any collection in the bot."
+    },
+    "ticket1x1": {
+      "title": "Single One Star Claim Ticket",
+      "description": "Single One Star Claim Ticket"
+    },
+    "ticket1x2": {
+      "title": "Single Two Star Claim Ticket",
+      "description": "Single Two Star Claim Ticket"
+    },
+    "ticket1x3": {
+      "title": "Single Three Star Claim Ticket",
+      "description": "Single Three Star Claim Ticket"
+    },
+    "ticket3x1s": {
+      "title": "Triple One Star Claim Ticket, Single Collection",
+      "description": "Triple One Star Claim Ticket, Single Collection"
+    },
+    "ticket3x2s": {
+      "title": "Triple Two Star Claim Ticket, Single Collection",
+      "description": "Triple Two Star Claim Ticket, Single Collection"
+    },
+    "ticket3x3s": {
+      "title": "Triple Three Star Claim Ticket, Single Collection",
+      "description": "Triple Three Star Claim Ticket, Single Collection"
+    },
+    "ticket3x1r": {
+      "title": "Triple Random One Star Claim Ticket",
+      "description": "Triple Random One Star Claim Ticket"
+    },
+    "ticket3x2r": {
+      "title": "Triple Random Two Star Claim Ticket",
+      "description": "Triple Random Two Star Claim Ticket"
+    },
+    "ticket3x3r": {
+      "title": "Triple Random Three Star Claim Ticket",
+      "description": "Triple Random Three Star Claim Ticket"
+    }
+  },
+  "blueprint": {
+    "all" : {
+      "color": 12942336,
+      "title": "Blueprints",
+      "description": "Plot blueprints are purchasable with lemons `\uD83C\uDF4B` acquired via plots.\nBlueprints are used to construct buildings on empty plots in guilds. To begin you require a Castle in each guild as a basis for the remainder of your plots. Each building provides lemons based on various actions taken in a guild, or other benefits over time such as card generation or recipe generation."
+    }
+  },
+  "bonus": {
+    "all" : {
+      "color": 12942336,
+      "title": "Bonus (Misc)",
+      "description": "Bonus items are purchasable with lemons `\uD83C\uDF4B` acquired via plots.\nI have no idea what to put here yet."
+    }
+  },
+  "recipe": {
+    "all" : {
+      "color": 12942336,
+      "title": "Effect Recipes",
+      "description": "\nEffect recipes are purchasable with tomatoes `\uD83C\uDF45`.\nRecipes purchased from the store all require a certain amount of cards to create into effects. These effects provide some extra benefits or features for having created them and last either a limited amount of time or uses. \n\nSpecial limited recipes can be discovered that provide a more powerful or longer lasting variant of normal effects. These require specific cards to create the effect, and cannot be used if the normal variant is already created. As of initial release, these recipes are not yet acquirable."
+    }
+  }
 }

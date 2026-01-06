@@ -11,6 +11,8 @@ const getUserStats = async (ctx) => {
     return userStats
 }
 
+const getAllUserStats = async (ctx) => UserStats.find({userID: ctx.user.userID})
+
 const updateUserStats = async (ctx, stat, amount) => {
     ctx.stats[stat] += amount
     await ctx.stats.save()
@@ -28,5 +30,6 @@ const createUserStats = async (ctx) => {
 module.exports = {
     createUserStats,
     getUserStats,
+    getAllUserStats,
     updateUserStats,
 }

@@ -71,7 +71,7 @@ const switchPage = async (ctx, newPage) => {
 
     if(pgn.embed.footer.text.startsWith('Page'))
         pgn.embed.footer.text = `Page ${pgn.pageNum + 1}/${pgn.pages.length}`
-    await ctx.interaction.editParent({ embeds: [pgn.embed] })
+    await ctx.interaction.editParent({ embeds: [pgn.embed], components: pgn.components })
 }
 
 const cfmResolve = async (ctx, confirm) => {

@@ -12,16 +12,19 @@ const {
     Selection
 } = require('../helpers/componentBuilders')
 
+const {
+    ticketSelect
+} = require("../helpers/tickets")
+
+const embeds = require('../static/embeds/inventory.json')
 const menus = require('../static/menus/inventory/inventory.json')
 
 const homeButton = new Button('inv_home').setLabel('Home Page').setStyle(2)
 
 registerBotCommand(['inventory'], async (ctx) => await inventoryStart(ctx))
-
 registerReaction(['inventoryMain'], async (ctx) => await mainSelect(ctx))
 registerReaction(['inventoryItem'], async (ctx) => await itemSelect(ctx))
 registerReaction(['inv', 'home'], async (ctx) => await inventoryStart(ctx, true))
-registerReaction(['ticket', 'page'], async (ctx) => await ticketPage(ctx))
 
 const inventoryStart = async (ctx, back = false) => {
     const inv = await getUserInventory(ctx)
@@ -33,9 +36,7 @@ const inventoryStart = async (ctx, back = false) => {
     }
     return await ctx.send(ctx, {
         selection: [menu],
-        embed: {
-            description: 'Test'
-        },
+        embed: embeds.all,
         parent: back
     })
 }
@@ -51,10 +52,7 @@ const mainSelect = async (ctx) => {
     const selection = new Selection(`inventoryItem`).setOptions(selects)
 
     return ctx.send(ctx, {
-        embed: {
-            description: `Not tired anymore, no embed ideas though`,
-            color: ctx.colors.deepgreen
-        },
+        embed: embeds[type].all,
         selection: [selection],
         customButtons: [homeButton],
         parent: true
@@ -83,123 +81,6 @@ const itemSelect = async (ctx) => {
         },
         customButtons: [homeButton],
         parent: true
-    })
-}
-
-
-const ticketSelect = async (ctx, inv) => {
-    const item = ctx.items[ctx.arguments[0].split('-')[0]]
-    let invItems = ctx.deDuplicate(inv, 'collectionID')
-    let buttons = [homeButton]
-    let pgnButtons = []
-
-    if (invItems.length > 1) {
-        pgnButtons.push(new Button(`ticket_page-first-${item.itemID}-${item.type}`).setLabel('First').setStyle(1))
-
-        if (invItems.length > 2){
-            pgnButtons.push(new Button(`ticket_page-${invItems.length - 1}-${item.itemID}-${item.type}`).setLabel('Back').setStyle(1))
-        }
-        pgnButtons.push(new Button(`ticket_page-1-${item.itemID}-${item.type}`).setLabel('Next').setStyle(1))
-        pgnButtons.push(new Button(`ticket_page-last-${item.itemID}-${item.type}`).setLabel('Last').setStyle(1))
-
-    }
-    let sameType = inv.filter(x => {
-        if (!x.collectionID && !invItems[0].collectionID) {
-            return x.itemID === invItems[0].itemID
-        }
-        return x.itemID === invItems[0].itemID && x.collectionID === invItems[0].collectionID
-    })
-    let pages = invItems.map(x => x.collectionID || 'random')
-    pages = pages.map(x => {
-        let amount = 0
-        inv.map(y => {
-            if (!y.collectionID && x === 'random') {
-                amount += 1
-            } else if (y.collectionID === x) {
-                amount += 1
-            }
-        })
-        console.log(amount)
-        return `${x}${amount > 1? ` (x${amount})`: ``}`
-    })
-
-
-
-    return ctx.send(ctx, {
-        pages: pages,
-        embed: {
-            title: ctx.items[invItems[0].itemID].itemID,
-            description: invItems[0].collectionID? invItems[0].collectionID: 'random' + `${sameType.length > 1? ` (x${sameType.length})`: ``}`
-        },
-        customPgnButtons: pgnButtons.length !== 0? pgnButtons: false,
-        customButtons: buttons,
-        parent: true
-    })
-}
-
-const ticketPage = async (ctx) => {
-    let page = ctx.arguments.shift()
-    let itemID = ctx.arguments.shift()
-    let type = ctx.arguments.shift()
-
-    let inv = await getUserInventory(ctx, type)
-    inv = inv.filter(x => x.itemID === itemID)
-
-    let invItems = ctx.deDuplicate(inv, 'collectionID')
-
-    if (page === 'first' || page === 'last') {
-        page = page === 'first'? 0: invItems.length - 1
-    }
-    page = Number(page)
-    if (page < 0) {
-        page = invItems.length - 1
-    }
-    if (page > invItems.length - 1) {
-        page = 0
-    }
-
-    let filteredItem = invItems[page]
-    let sameType = inv.filter(x => x.collectionID && x.collectionID === filteredItem.collectionID)
-
-    let pages = invItems.map(x => x.collectionID || 'random')
-    let index = pages.findIndex(item => filteredItem.collectionID === item)
-    if (index !== -1) {
-        const [removedItem] = pages.splice(index, 1)
-        pages.unshift(removedItem)
-    }
-    pages = pages.map(x => {
-        let amount = 0
-        inv.map(y => {
-            if (!y.collectionID && x === 'random') {
-                amount += 1
-            } else if (y.collectionID === x) {
-                amount += 1
-            }
-        })
-        console.log(amount)
-        return `${x}${amount > 1? ` (x${amount})`: ``}`
-    })
-
-
-    let pgnButtons = []
-    if (invItems.length > 1) {
-        pgnButtons.push(new Button(`ticket_page-first-${itemID}-${type}`).setLabel('First').setStyle(1))
-        pgnButtons.push(new Button(`ticket_page-${page - 1 < 0? invItems.length - 1: page - 1}-${itemID}-${type}`).setLabel('Back').setStyle(1))
-        pgnButtons.push(new Button(`ticket_page-${page + 1}-${itemID}-${type}`).setLabel('Next').setStyle(1))
-        pgnButtons.push(new Button(`ticket_page-last-${itemID}-${type}`).setLabel('Last').setStyle(1))
-    }
-    return ctx.send(ctx, {
-        pages: pages,
-        embed: {
-            title: ctx.items[invItems[0].itemID].itemID,
-            description: pages[0] + `${sameType.length > 1? ` (x${sameType.length})`: ``}`,
-            footer: {
-                text: `Page ${page+1}/${invItems.length}`,
-            }
-        },
-        parent: true,
-        customButtons: [homeButton],
-        customPgnButtons: pgnButtons
     })
 }
 
