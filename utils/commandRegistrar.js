@@ -146,8 +146,8 @@ const handleReaction = async (input, ctx) => {
     if (!oldInteract) {
         oldInteract = {
             permissions: {
-                pages: [ctx.interaction.message.interactionMetadata.user.id],
-                decline: [ctx.interaction.message.interactionMetadata.user.id]
+                pages: [ctx.interaction.message.interactionMetadata?.user.id || ctx.interaction.user.id],
+                decline: [ctx.interaction.message.interactionMetadata?.user.id]
             }
         }
     }

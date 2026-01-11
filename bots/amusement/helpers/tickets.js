@@ -20,6 +20,7 @@ const homeButton = new Button('inv_home').setLabel('Home Page').setStyle(2)
 
 registerReaction(['ticket', 'page'], async (ctx) => await ticketPage(ctx))
 registerReaction(['ticket', 'redeem'], async (ctx) => await ticketRedemption(ctx))
+registerReaction(['claimed', 'pages'], async (ctx) => await ticketPages(ctx))
 
 const ticketPage = async (ctx) => {
     let buttons = [homeButton]
@@ -169,17 +170,53 @@ const ticketRedemption = async (ctx) => {
         let cardPool = ctx.cards.filter(x => x.collectionID === newCollection.collectionID && x.rarity === rarity)
         addedCards.push(_.sample(cardPool))
     }
-    await addUserCards(ctx.user.userID, addedCards.map(x => x.cardID))
+    let addedIDList = addedCards.map(x => x.cardID)
+    await addUserCards(ctx.user.userID, addedIDList)
+    let components = []
+    if (addedIDList.length > 1) {
+        let nextPage = new Button(`claimed_pages-1-${addedIDList.join('-')}`).setLabel('Next').setStyle(1)
+        let lastPage = new Button(`claimed_pages-2-${addedIDList.join('-')}`).setLabel('Back').setStyle(1)
+        components = [
+            {
+                type: 1,
+                components: [lastPage, nextPage]
+            }
+        ]
+    }
+
     await ctx.interaction.channel.createMessage({
         embeds: [
             {
                 description: `${ctx.boldName(ctx.user.username)}, you used ${ctx.boldName(item.itemID)} and got \n${addedCards.map(x => ctx.formatName(ctx, x)).join('\n')}!`,
-                color: ctx.colors.deepgreen
+                color: ctx.colors.deepgreen,
+                image: {url: addedCards[0].cardURL},
+                footer: addedIDList.length > 1? {text: `Page 1/${addedIDList.length}`}: undefined
             }
         ],
+        components: components,
         messageReference: {messageID: ctx.interaction.message.id}
     })
     return await ticketPage(ctx)
+}
+
+const ticketPages = async (ctx) => {
+    let page = Number(ctx.arguments.shift())
+    let card = ctx.cards.filter(x => x.cardID === Number(ctx.arguments[page]))[0]
+    let backNum = page - 1 < 0? ctx.arguments.length - 1: page - 1
+    let nextNum = page + 1 > ctx.arguments.length - 1? 0: page + 1
+    let nextPage = new Button(`claimed_pages-${nextNum}-${ctx.arguments.join('-')}`).setLabel('Next').setStyle(1)
+    let backPage = new Button(`claimed_pages-${backNum}-${ctx.arguments.join('-')}`).setLabel('Back').setStyle(1)
+    let embed = ctx.interaction.message.embeds[0]
+    if (!embed.image) {
+        embed.image = {url: null}
+    }
+    embed.image.url = card.cardURL
+    embed.footer.text = `Page ${page+1}/${ctx.arguments.length}`
+    await ctx.send(ctx, {
+        embed: embed,
+        customButtons: [backPage, nextPage],
+        parent: true
+    })
 }
 
 module.exports = {
