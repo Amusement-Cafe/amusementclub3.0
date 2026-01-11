@@ -1,4 +1,6 @@
 const {registerReaction} = require("../../../utils/commandRegistrar")
+const _ = require('lodash')
+
 const {
     getUserInventory,
     removeItem,
@@ -7,6 +9,12 @@ const {
 const {
     Button
 } = require("./componentBuilders")
+
+const {
+    addUserCards
+} = require("./userCard")
+
+const invMain = require("../commands/inventory")
 
 const homeButton = new Button('inv_home').setLabel('Home Page').setStyle(2)
 
@@ -55,6 +63,9 @@ const ticketPage = async (ctx) => {
         })
         return `${x}${amount > 1? ` (x${amount})`: ``}`
     })
+    if (pages.length === 0) {
+        return await invMain.Home(ctx, true)
+    }
 
     let pgnButtons = []
     if (invItems.length > 1) {
@@ -142,6 +153,32 @@ const ticketRedemption = async (ctx) => {
     item = item.shift()
     ctx.arguments = [ctx.arguments[0], item.itemID, item.type]
     await removeItem(ctx, item)
+    let collection = item.collectionID? ctx.collections.filter(x => x.collectionID === item.collectionID)[0]: 'random'
+    let itemIDSplit = item.itemID.substring(6).split('x')
+    itemIDSplit[1] = itemIDSplit[1].substring(0, 1)
+    let count = Number(itemIDSplit[0])
+    let rarity = Number(itemIDSplit[1])
+    let addedCards = []
+    let newCollection
+    for (let i = 0; i < count; i++) {
+        if (collection === 'random') {
+            newCollection = _.sample(ctx.collections.filter(x => x.inClaimPool))
+        } else {
+            newCollection = collection
+        }
+        let cardPool = ctx.cards.filter(x => x.collectionID === newCollection.collectionID && x.rarity === rarity)
+        addedCards.push(_.sample(cardPool))
+    }
+    await addUserCards(ctx.user.userID, addedCards.map(x => x.cardID))
+    await ctx.interaction.channel.createMessage({
+        embeds: [
+            {
+                description: `${ctx.boldName(ctx.user.username)}, you used ${ctx.boldName(item.itemID)} and got \n${addedCards.map(x => ctx.formatName(ctx, x)).join('\n')}!`,
+                color: ctx.colors.deepgreen
+            }
+        ],
+        messageReference: {messageID: ctx.interaction.message.id}
+    })
     return await ticketPage(ctx)
 }
 

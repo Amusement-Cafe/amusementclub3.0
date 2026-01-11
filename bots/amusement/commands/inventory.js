@@ -89,3 +89,5 @@ const blueprintSelect = async (ctx) => {}
 const recipeSelect = async (ctx) => {}
 
 const bonusSelect = async (ctx) => {}
+
+exports.Home = inventoryStart
