@@ -34,11 +34,11 @@ const addItem = async (ctx, item, collection) => {
 }
 
 const removeItem = async (ctx, item) => {
-    let userItem = await UserInventory.find({userID: ctx.user.userID, itemID: item.itemID})
+    let userItem = await UserInventory.findOne({userID: ctx.user.userID, id: item.id})
     if (!userItem) {
         return ctx.send(ctx, `Something has gone wrong removing your item, please try again!`, 'red')
     }
-    await UserInventory.deleteOne(userItem)
+    await UserInventory.deleteOne({userID: userItem.userID, id: userItem.id})
 }
 
 module.exports = {

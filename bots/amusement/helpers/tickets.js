@@ -1,11 +1,13 @@
 const {registerReaction} = require("../../../utils/commandRegistrar")
 const {
-    getUserInventory
+    getUserInventory,
+    removeItem,
 } = require("./userInventory")
 
 const {
     Button
 } = require("./componentBuilders")
+
 const homeButton = new Button('inv_home').setLabel('Home Page').setStyle(2)
 
 registerReaction(['ticket', 'page'], async (ctx) => await ticketPage(ctx))
@@ -20,8 +22,7 @@ const ticketPage = async (ctx) => {
     let inv = await getUserInventory(ctx, type)
     inv = inv.filter(x => x.itemID === itemID)
 
-    let invItems = ctx.deDuplicate(inv, 'collectionID')
-
+    let invItems = ctx.deDuplicate(inv, 'collectionID').sort((a, b) => a.collectionID.localeCompare(b.collectionID))
     if (page === 'first' || page === 'last') {
         page = page === 'first'? 0: invItems.length - 1
     }
@@ -32,7 +33,6 @@ const ticketPage = async (ctx) => {
     if (page > invItems.length - 1) {
         page = 0
     }
-
     let filteredItem = invItems[page]
     let sameType = inv.filter(x => x.collectionID && x.collectionID === filteredItem.collectionID)
 
@@ -41,6 +41,8 @@ const ticketPage = async (ctx) => {
     if (index !== -1) {
         const [removedItem] = pages.splice(index, 1)
         pages.unshift(removedItem)
+    } else {
+        index = 0
     }
     pages = pages.map(x => {
         let amount = 0
@@ -54,7 +56,6 @@ const ticketPage = async (ctx) => {
         return `${x}${amount > 1? ` (x${amount})`: ``}`
     })
 
-
     let pgnButtons = []
     if (invItems.length > 1) {
         pgnButtons.push(new Button(`ticket_page-first-${itemID}-${type}`).setLabel('First').setStyle(1))
@@ -63,7 +64,7 @@ const ticketPage = async (ctx) => {
         pgnButtons.push(new Button(`ticket_page-last-${itemID}-${type}`).setLabel('Last').setStyle(1))
     }
     buttons.push(
-        new Button(`ticket_redeem-${invItems[index].id.replaceAll('-', 'O')}`).setLabel('Redeem Ticket').setStyle(3)
+        new Button(`ticket_redeem-${index}-${invItems[index].id.replaceAll('-', 'O')}`).setLabel('Redeem Ticket').setStyle(3)
     )
     return ctx.send(ctx, {
         pages: pages,
@@ -82,7 +83,7 @@ const ticketPage = async (ctx) => {
 
 const ticketSelect = async (ctx, inv) => {
     const item = ctx.items[ctx.arguments[0].split('-')[0]]
-    let invItems = ctx.deDuplicate(inv, 'collectionID')
+    let invItems = ctx.deDuplicate(inv, 'collectionID').sort((a, b) => a.collectionID.localeCompare(b.collectionID))
     let buttons = [homeButton]
     let pgnButtons = []
 
@@ -116,7 +117,7 @@ const ticketSelect = async (ctx, inv) => {
     })
 
     buttons.push(
-        new Button(`ticket_redeem-${invItems[0].id.replaceAll('-', 'O')}`).setLabel('Redeem Ticket').setStyle(3)
+        new Button(`ticket_redeem-first-${invItems[0].id.replaceAll('-', 'O')}`).setLabel('Redeem Ticket').setStyle(3)
     )
 
     return ctx.send(ctx, {
@@ -133,7 +134,15 @@ const ticketSelect = async (ctx, inv) => {
 
 
 const ticketRedemption = async (ctx) => {
-    console.log(ctx.arguments)
+    let item = await getUserInventory(ctx, 'ticket')
+    item = item.filter(x => x.id === ctx.arguments[1].replaceAll('O', '-'))
+    if (item.length === 0) {
+        return
+    }
+    item = item.shift()
+    ctx.arguments = [ctx.arguments[0], item.itemID, item.type]
+    await removeItem(ctx, item)
+    return await ticketPage(ctx)
 }
 
 module.exports = {
