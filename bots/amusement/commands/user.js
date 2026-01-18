@@ -29,10 +29,9 @@ registerBotCommand(['cards', 'global'], async (ctx) => await cards(ctx), { globa
 
 
 const daily = async (ctx) => {
-    let nextUserDaily = new Date(ctx.user.lastDaily).getTime() + ctx.hourToMS(20)
-    console.log(nextUserDaily)
-    if (ctx.user.lastDaily < nextUserDaily) {
-        return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you can claim your daily <t:${Math.floor(nextUserDaily / 1000)}:R>`, 'red')
+    let nextDailyMS = ctx.user.lastDaily.getTime() + ctx.hourToMS(20)
+    if (new Date() < new Date(nextDailyMS)) {
+        return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you can claim your daily <t:${Math.floor(nextDailyMS / 1000)}:R>`, 'red')
     }
     ctx.user.tomatoes += 750
     ctx.user.lastDaily = new Date()
@@ -47,6 +46,9 @@ const balance = async (ctx) => {
 }
 
 const cards = async (ctx) => {
+    if (ctx.userCards.length === 0) {
+        return ctx.send(ctx, `You have no cards matching your card query! Please try your command again.`, 'red')
+    }
     const pages = ctx.getPages(ctx.userCards.map(x => ctx.formatName(ctx, x)), 15)
     return await ctx.send(ctx, {
         embed: {

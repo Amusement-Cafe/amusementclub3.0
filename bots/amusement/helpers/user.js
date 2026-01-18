@@ -12,6 +12,7 @@ const fetchOrCreateUser = async (interaction) => {
         user.lastDaily = (new Date() - 86400001)
         await user.save()
 
+        //Todo branch off to a new user tutorial and invalidate original command
         
     }
 
