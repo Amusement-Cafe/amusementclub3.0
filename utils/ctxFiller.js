@@ -68,8 +68,8 @@ const ctxFiller = async (ctx, bot) => {
         userCards = await withCards(ctx, args)
     }
 
-    if (ctx.cmdOptions?.globalCards) {
-        globalCards = await withGlobalCards()
+    if (ctx.cmdOptions?.globalCards || ctx.options.card_query) {
+        globalCards = await withGlobalCards(ctx, args)
     }
 
     let userStats = await getUserStats(ctx)

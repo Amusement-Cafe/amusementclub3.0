@@ -237,6 +237,64 @@
           "required": false
         }
       ]
+    },
+    {
+      "type": 1,
+      "name": "eval",
+      "description": "Top Level Eval",
+      "options": [
+        {
+          "type": 1,
+          "name": "one",
+          "description": "a",
+          "options": [
+            {
+              "type": 3,
+              "name": "card_query",
+              "description": "The card query to filter for your card to sell",
+              "required": true
+            },
+            {
+              "type": 6,
+              "name": "user_id",
+              "description": "The user you want to sell to, ID or mention accepted"
+            },
+            {
+              "type": 4,
+              "name": "amount",
+              "description": "The quantity of the card you want to sell"
+            }
+          ]
+        },
+        {
+          "type": 1,
+          "name": "many",
+          "description": "b",
+          "options": [
+            {
+              "type": 3,
+              "name": "card_query",
+              "description": "The card query to filter for your cards to sell",
+              "required": true
+            },
+            {
+              "type": 6,
+              "name": "user_id",
+              "description": "The user you want to sell to, ID or mention accepted"
+            },
+            {
+              "type": 4,
+              "name": "amount",
+              "description": "The limit of the cards you want to sell"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "stats",
+      "description": "Browse the stats."
     }
   ]
 }

@@ -9,6 +9,7 @@
 	"author": "Demonic Moo",
 	"license": "MPL2.0",
 	"dependencies": {
+		"ascii-table3": "^1.0.1",
 		"express": "^4.21.2",
 		"fastest-levenshtein": "^1.0.16",
 		"lodash": "^4.17.21",

@@ -112,7 +112,6 @@ const purchaseTicket = async (ctx, item) => {
     if (ctx.user.lemons < item.cost) {
         return ctx.send(ctx, `You have insufficient lemons to purchase ${ctx.boldName(ctx.arguments[0])}`, 'red')
     }
-    console.log(item)
     await addItem(ctx, item)
     await ctx.interaction.channel.createMessage({
         embeds: [
