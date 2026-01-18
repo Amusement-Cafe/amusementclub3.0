@@ -153,7 +153,6 @@ const ticketRedemption = async (ctx) => {
     }
     item = item.shift()
     ctx.arguments = [ctx.arguments[0], item.itemID, item.type]
-    await removeItem(ctx, item)
     let collection = item.collectionID? ctx.collections.filter(x => x.collectionID === item.collectionID)[0]: 'random'
     let itemIDSplit = item.itemID.substring(6).split('x')
     itemIDSplit[1] = itemIDSplit[1].substring(0, 1)
@@ -161,17 +160,20 @@ const ticketRedemption = async (ctx) => {
     let rarity = Number(itemIDSplit[1])
     let addedCards = []
     let newCollection
-    for (let i = 0; i < count; i++) {
+    while (addedCards.length < count) {
         if (collection === 'random') {
             newCollection = _.sample(ctx.collections.filter(x => x.inClaimPool))
         } else {
             newCollection = collection
         }
         let cardPool = ctx.cards.filter(x => x.collectionID === newCollection.collectionID && x.rarity === rarity)
-        addedCards.push(_.sample(cardPool))
+        if (cardPool.length > 0) {
+            addedCards.push(_.sample(cardPool))
+        }
     }
     let addedIDList = addedCards.map(x => x.cardID)
     await addUserCards(ctx.user.userID, addedIDList)
+    await removeItem(ctx, item)
     let components = []
     if (addedIDList.length > 1) {
         let nextPage = new Button(`claimed_pages-1-${addedIDList.join('-')}`).setLabel('Next').setStyle(1)
@@ -187,7 +189,7 @@ const ticketRedemption = async (ctx) => {
     await ctx.interaction.channel.createMessage({
         embeds: [
             {
-                description: `${ctx.boldName(ctx.user.username)}, you used ${ctx.boldName(item.itemID)} and got \n${addedCards.map(x => ctx.formatName(ctx, x)).join('\n')}!`,
+                description: `${ctx.boldName(ctx.user.username)}, you used a ${ctx.boldName(ctx.items[item.itemID].displayName)} and got \n${addedCards.map(x => ctx.formatName(ctx, x)).join('\n')}!`,
                 color: ctx.colors.deepgreen,
                 image: {url: addedCards[0].cardURL},
                 footer: addedIDList.length > 1? {text: `Page 1/${addedIDList.length}`}: undefined
