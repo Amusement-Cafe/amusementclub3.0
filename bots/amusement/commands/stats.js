@@ -5,7 +5,8 @@ const {
 } = require("ascii-table3")
 
 const {
-    registerBotCommand
+    registerBotCommand,
+    registerReaction,
 } = require('../../../utils/commandRegistrar')
 
 const {
@@ -13,7 +14,12 @@ const {
     mapStatToName,
 } = require('../helpers/stats')
 
+const {
+    Button
+} = require("../helpers/componentBuilders")
+
 registerBotCommand('stats', async (ctx) => await stats(ctx))
+registerReaction(['stat', 'page'], async (ctx) => await stats(ctx))
 
 let weekStart = () => {
     const date = new Date()
@@ -31,14 +37,22 @@ let monthStart = () => {
     return new Date(date)
 }
 
-const stats = async (ctx, page = 0) => {
+const stats = async (ctx) => {
+    let page = 0
+    let parent
+    if (ctx.arguments) {
+        page = Number(ctx.arguments[0])
+        parent = true
+    }
     const statArray = [{}, {}, {}, {}]
-    let weeklyTime = weekStart()
-    let monthlyTime = monthStart()
+    const weeklyTime = weekStart()
+    const monthlyTime = monthStart()
     const allStats = await getAllUserStats(ctx)
+
     let dailyStats = allStats[allStats.length - 1]
     let monthlyStats = allStats.filter(x => x.daily >= monthlyTime)
     let weeklyStats = monthlyStats.filter(x => x.daily >= weeklyTime)
+
     const keys = _.keys(dailyStats)
     _.pull(keys, '_id', 'daily', 'userID', '__v')
     keys.map(x => {
@@ -58,12 +72,13 @@ const stats = async (ctx, page = 0) => {
             statArray[3][x] = allAmount
         }
     })
+
     let types = ['daily', 'weekly', 'monthly', 'allTime']
     let pages = []
     for (let stat in statArray) {
         const type = types[stat]
         let table = new AsciiTable3(`Your ${type} stats!`)
-        table.setStyle('unicode-round')
+        table.setStyle(`unicode-${ctx.user.preferences.display.tables}`)
         if (statArray[stat].length === 0) {
             table.addRow('No data to display for this table!')
             pages.push(`\`\`\`${table.toString()}\`\`\``)
@@ -84,10 +99,22 @@ const stats = async (ctx, page = 0) => {
         table.setAlignRight(2)
         pages.push(`\`\`\`${table.toString()}\`\`\``)
     }
+
+    const back = new Button(`stat_page-${page - 1 < 0? 3: page - 1}`).setStyle(1).setLabel('Back')
+    const next = new Button(`stat_page-${page + 1 > 3? 0: page + 1}`).setStyle(1).setLabel('Next')
+
+    let display = _.pullAt(pages, page)
+    pages.unshift(display[0])
+
     return ctx.send(ctx, {
         pages,
+        customPgnButtons: [back, next],
         embed: {
             description: 'stat',
-        }
+            footer: {
+                text: `Page ${page+1}/4`,
+            }
+        },
+        parent: parent,
     })
 }

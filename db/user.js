@@ -89,6 +89,9 @@ const schema = new Schema({
             card:       { type: String, default: '' },
             favComplete:{ type: String, default: '' },
             favClout:   { type: String, default: '' },
+        },
+        display:    {
+            tables:     { type: String, default: 'round' },
         }
     },
 
