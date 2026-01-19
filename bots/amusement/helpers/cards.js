@@ -1,5 +1,5 @@
 const withGlobalCards = async (ctx, args) => {
-    let filteredGlobal = ctx.cards
+    let filteredGlobal = [...ctx.cards]
     args.cardQuery?.filters?.map(x => {
         filteredGlobal = filteredGlobal.filter(x)
         return filteredGlobal
