@@ -246,46 +246,46 @@
         {
           "type": 1,
           "name": "one",
-          "description": "a",
+          "description": "Eval a singular card from a query",
           "options": [
             {
               "type": 3,
               "name": "card_query",
-              "description": "The card query to filter for your card to sell",
+              "description": "The card query to filter for the card you want to check eval on",
               "required": true
             },
             {
-              "type": 6,
-              "name": "user_id",
-              "description": "The user you want to sell to, ID or mention accepted"
+              "type": 5,
+              "name": "global",
+              "description": "Set to true to check eval for any card in bot and not just your own"
             },
             {
-              "type": 4,
-              "name": "amount",
-              "description": "The quantity of the card you want to sell"
+              "type": 5,
+              "name": "multi",
+              "description": "Whether to include all copies of the card you own in the eval response"
             }
           ]
         },
         {
           "type": 1,
           "name": "many",
-          "description": "b",
+          "description": "Eval multiple cards in a query",
           "options": [
             {
               "type": 3,
               "name": "card_query",
-              "description": "The card query to filter for your cards to sell",
+              "description": "The card query to filter for the cards you want to check eval on",
               "required": true
             },
             {
-              "type": 6,
-              "name": "user_id",
-              "description": "The user you want to sell to, ID or mention accepted"
+              "type": 5,
+              "name": "global",
+              "description": "Set to true to check eval for any cards in bot and not just your own"
             },
             {
-              "type": 4,
-              "name": "amount",
-              "description": "The limit of the cards you want to sell"
+              "type": 5,
+              "name": "multi",
+              "description": "Whether to include all copies of the cards you own in the eval response"
             }
           ]
         }
@@ -295,6 +295,23 @@
       "type": 1,
       "name": "stats",
       "description": "Browse the stats."
+    },
+    {
+      "type": 1,
+      "name": "help",
+      "description": "Access the help menus"
+    },
+    {
+      "type": 1,
+      "name": "miss",
+      "description": "Check your missing cards",
+      "options": [
+        {
+          "type": 3,
+          "name": "card_query",
+          "description": "Filter for specific cards"
+        }
+      ]
     }
   ]
 }

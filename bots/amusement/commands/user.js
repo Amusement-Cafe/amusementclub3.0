@@ -1,9 +1,12 @@
 const {registerBotCommand} = require('../../../utils/commandRegistrar')
+
 const {
     getUserStats,
 } = require("../helpers/stats")
 
-
+const {
+    calculateClaimCost
+} = require('../helpers/claim')
 
 registerBotCommand('daily', async (ctx) => await daily(ctx))
 
@@ -13,7 +16,7 @@ registerBotCommand('profile', async (ctx) => await showProfile(ctx))
 
 registerBotCommand('has', async (ctx) => await userHas(ctx))
 
-registerBotCommand('miss', async (ctx) => await userMissing(ctx))
+registerBotCommand('miss', async (ctx) => await userMissing(ctx), {withCards: true, globalCards: true})
 
 registerBotCommand('achievements', async (ctx) => await userAchievements(ctx))
 
@@ -42,7 +45,29 @@ const daily = async (ctx) => {
 }
 
 const balance = async (ctx) => {
-    await ctx.send(ctx, `Your balance is currently\n- ${ctx.fmtNum(ctx.user.tomatoes)}${ctx.symbols.tomato}\n- ${ctx.fmtNum(ctx.user.lemons)}${ctx.symbols.lemon}\n- ${ctx.fmtNum(ctx.user.promoBal)}${ctx.symbols.promo}`)
+    let activePromo = ctx.promos.some(x=> x.starts < new Date() && x.expires > new Date() && !x.isBoost && !x.isDiscount && !x.isBonus)
+    let text = `Your balance is currently\n`
+    text += `- ${ctx.boldName(ctx.fmtNum(ctx.user.tomatoes))}${ctx.symbols.tomato}\n`
+    text += `- ${ctx.boldName(ctx.fmtNum(ctx.user.lemons))}${ctx.symbols.lemon}\n`
+    if (activePromo) {
+        text += `- ${ctx.boldName(ctx.fmtNum(ctx.user.promoBal))}${ctx.symbols.promo}\n`
+    }
+    text += `Your next claim will cost ${ctx.boldName(ctx.fmtNum(calculateClaimCost(ctx, 1, ctx.stats.claims)))}${ctx.symbols.tomato}\n`
+    let max = 1
+    while (calculateClaimCost(ctx, max, ctx.stats.claims) < ctx.user.tomatoes) {
+        max++
+    }
+    text += `You can claim ${ctx.boldName(ctx.fmtNum(max - 1))} more cards with your balance`
+    if (activePromo) {
+        text += `\n\n`
+        text += `Your next promo claim will cost ${ctx.boldName(ctx.fmtNum(calculateClaimCost(ctx, 1, ctx.stats.promoClaims, true)))}${ctx.symbols.promo}\n`
+        max = 1
+        while (calculateClaimCost(ctx, max, ctx.stats.promoClaims) < ctx.user.promoBal) {
+            max++
+        }
+        text += `You can claim ${ctx.boldName(ctx.fmtNum(max-1))} more promo cards with your balance`
+    }
+    await ctx.send(ctx, text)
 }
 
 const cards = async (ctx) => {
@@ -62,7 +87,17 @@ const showProfile = async (ctx) => {}
 
 const userHas = async (ctx) => {}
 
-const userMissing = async (ctx) => {}
+const userMissing = async (ctx) => {
+    const cardIDs = ctx.userCards.map(x => x.cardID)
+    const missing = ctx.globalCards.filter(x => !cardIDs.includes(x.cardID)).filter(x => x.canDrop).sort(ctx.args.cardQuery.sort)
+    const pages = ctx.getPages(missing.map(x => ctx.formatName(ctx, x)), 15)
+    return ctx.send(ctx, {
+        pages,
+        embed: {
+            description: 'miss'
+        }
+    })
+}
 
 const userAchievements = async (ctx) => {}
 
