@@ -95,9 +95,9 @@ const refresh = async (ctx, global = true) => {
     const slashCommands = require("../static/commands.json")
 
     if (!global) {
-        await ctx.bot.application.bulkEditGuildCommands('651599467174428703', slashCommands.general)
+        await ctx.bot.application.bulkEditGuildCommands('651599467174428703', slashCommands.admin)
     } else {
-        await ctx.bot.application.bulkEditGlobalCommands(slashCommands.admin)
+        await ctx.bot.application.bulkEditGlobalCommands(slashCommands.general)
     }
 
     return ctx.send(ctx, `updating ${global? 'global': 'admin'} commands!`)
