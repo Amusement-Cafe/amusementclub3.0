@@ -13,19 +13,18 @@ const eval = async (ctx, many = false, global = false) => {
     if (!multi || global) {
         ctx.args.fmtOptions.amount = false
     }
+
     if (global) {
         if (!many) {
             return ctx.send(ctx, `${ctx.formatName(ctx, ctx.globalCards[0])} is worth ${ctx.boldName(ctx.fmtNum(ctx.globalCards[0].eval))} ${ctx.symbols.tomato}`, 'blue')
         }
         evals = ctx.globalCards.reduce((acc, card) => {return acc + card.eval}, 0)
-        return ctx.send(ctx, `Your query consisting of ${ctx.boldName(ctx.fmtNum(ctx.globalCards))} card(s) is worth ${ctx.boldName(ctx.fmtNum(evals))} ${ctx.symbols.tomato}`)
+        return ctx.send(ctx, `Your query consisting of ${ctx.boldName(ctx.fmtNum(ctx.globalCards.length))} card(s) is worth ${ctx.boldName(ctx.fmtNum(evals))} ${ctx.symbols.tomato}`)
     }
-
-
 
     if (!many) {
         return ctx.send(ctx, `${ctx.formatName(ctx, ctx.userCards[0])} is worth ${ctx.boldName(ctx.fmtNum(ctx.userCards[0].eval * (multi? ctx.userCards[0].amount: 1)))} ${ctx.symbols.tomato}`, 'blue')
     }
     evals = ctx.userCards.reduce((acc, card) => {return acc + (multi? card.amount * card.eval: card.eval)}, 0)
-    return ctx.send(ctx, `Your query consisting of ${ctx.boldName(ctx.fmtNum(ctx.userCards))} card(s) is worth ${ctx.boldName(ctx.fmtNum(evals))} ${ctx.symbols.tomato}`)
+    return ctx.send(ctx, `Your query consisting of ${ctx.boldName(ctx.fmtNum(ctx.userCards.length))} card(s) is worth ${ctx.boldName(ctx.fmtNum(evals))} ${ctx.symbols.tomato}`)
 }
