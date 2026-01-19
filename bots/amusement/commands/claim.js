@@ -1,8 +1,14 @@
 const _ = require("lodash")
 
+const Claims = require("../../../db/claim")
+
 const {
     registerBotCommand
 } = require('../../../utils/commandRegistrar')
+
+const {
+    generateNewID
+} = require("../../../utils/misc")
 
 const {
     addUserCards
@@ -75,12 +81,14 @@ const claimNormal = async (ctx) => {
 
     const newCards = claimed.filter(x => x.count === 1)
     const ownedCards = claimed.filter(x => x.count > 1)
+    const cardIDs = claimed.map(x => x.cardID)
 
-    await addUserCards(ctx.user.userID, claimed.map(x => x.cardID))
+    await addUserCards(ctx.user.userID, cardIDs)
     await ctx.updateStat(ctx, 'totalRegularClaims', claims)
     await ctx.updateStat(ctx, 'claims', claims)
     ctx.user.tomatoes -= price
     await ctx.user.save()
+    await ctx.updateStat(ctx, 'tomatoOut', price)
 
     let fields = []
     let desc = `${ctx.boldName(ctx.user.username)}, you claimed:\n`
@@ -103,6 +111,12 @@ const claimNormal = async (ctx) => {
         Your next claim will cost ${ctx.boldName(ctx.fmtNum(calculateClaimCost(ctx, 1, ctx.stats.claims)))}${ctx.symbols.tomato}`.replace(/\s\s+/gm, '\n')
     })
 
+    const claim = new Claims()
+    claim.claimID = generateNewID()
+    claim.cardIDs = cardIDs
+    claim.userID = ctx.user.userID
+    claim.cost = price
+    await claim.save()
     _.pull(processing, ctx.user.userID)
 
     return ctx.send(ctx, {
