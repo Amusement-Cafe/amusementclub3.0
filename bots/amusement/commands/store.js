@@ -25,7 +25,8 @@ registerReaction(['storeItem'], async (ctx) => await displayItem(ctx))
 registerReaction(['storeBuy'], async (ctx) => await buyItem(ctx))
 
 const storeStart = async (ctx, back = false) => {
-    const mainMenu = new Selection('storeMenu').setOptions(menus.all)
+    const menuList = menus.all.map(({disabled, ...allElse}) => disabled? false: allElse).filter(x=> x)
+    const mainMenu = new Selection('storeMenu').setOptions(menuList)
     await ctx.send(ctx, {
         embed: embeds.mainMenu,
         selection: [mainMenu],

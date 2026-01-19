@@ -3,27 +3,32 @@
     {
         "description": "Display The Effect Recipe Store",
         "label": "Effect Recipes",
-        "value": "effects"
+        "value": "effects",
+        "disabled": true
     },
     {
         "description": "Display The Claim Ticket Store",
         "label": "Claim Tickets",
-        "value": "tickets"
+        "value": "tickets",
+        "disabled": false
     },
     {
         "description": "Display The Plot Building Store",
         "label": "Plot Buildings",
-        "value": "plots"
+        "value": "plots",
+        "disabled": true
     },
     {
         "description": "Display The Bonus Store",
         "label": "Bonus/Misc Items",
-        "value": "bonus"
+        "value": "bonus",
+        "disabled": true
     },
     {
         "description": "Display The Guild Building Store",
         "label": "Guild Buildings",
-        "value": "guild"
+        "value": "guild",
+        "disabled": true
     }
 ],
     "effects": [
