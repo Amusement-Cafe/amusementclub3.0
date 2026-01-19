@@ -28,7 +28,7 @@ registerBotCommand(['diff', 'from'], async (ctx) => await userDiff(ctx, true))
 
 registerBotCommand(['cards'], async (ctx) => await cards(ctx), {withCards: true})
 
-registerBotCommand(['cards', 'global'], async (ctx) => await cards(ctx), { global: true })
+registerBotCommand(['cards', 'global'], async (ctx) => await cards(ctx, true), { globalCards: true })
 
 
 const daily = async (ctx) => {
@@ -70,14 +70,18 @@ const balance = async (ctx) => {
     await ctx.send(ctx, text)
 }
 
-const cards = async (ctx) => {
-    if (ctx.userCards.length === 0) {
-        return ctx.send(ctx, `You have no cards matching your card query! Please try your command again.`, 'red')
+const cards = async (ctx, global = false) => {
+    let cardsChecked = global? ctx.globalCards: ctx.userCards
+    let errorResponse = global? `There are no cards in the bot that match your query! Please try your command again`: `You have no cards matching your card query! Please try your command again.`
+    if (cardsChecked.length === 0) {
+        return ctx.send(ctx, errorResponse, 'red')
     }
-    const pages = ctx.getPages(ctx.userCards.map(x => ctx.formatName(ctx, x)), 15)
+    const pages = ctx.getPages(cardsChecked.map(x => ctx.formatName(ctx, x)), 15)
+
+    let title = global? `Matched cards from database (${ctx.fmtNum(cardsChecked.length)} results)`: `${ctx.user.username}, your cards (${ctx.fmtNum(cardsChecked.length)} results)`
     return await ctx.send(ctx, {
         embed: {
-          title: `${ctx.user.username}, your cards (${ctx.fmtNum(ctx.userCards.length)} results)`
+          title: title
         },
         pages,
     })

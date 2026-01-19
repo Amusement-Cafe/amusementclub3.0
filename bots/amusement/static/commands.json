@@ -134,6 +134,11 @@
           "type": 3,
           "name": "card_query",
           "description": "Filter for specific cards"
+        },
+        {
+          "type": 5,
+          "name": "global",
+          "description": "Set to true to check for any cards in bot and not just your own"
         }
       ]
     },
