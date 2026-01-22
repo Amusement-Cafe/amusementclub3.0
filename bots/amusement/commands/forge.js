@@ -89,7 +89,7 @@ const processForge = async (ctx) => {
     }
 
     let isPromo = ctx.collections.some(x => x.collectionID === card1.collectionID && card2.collectionID === x.collectionID && x.promo)
-    let newCard = ctx.cards.filter(x => x.rarity === card1.rarity && x.cardID !== card1.cardID && x.cardID !== card2.cardID && isPromo? !x.canDrop: x.canDrop)
+    let newCard = ctx.cards.filter(x => x.rarity === card1.rarity && (x.cardID !== card1.cardID && x.cardID !== card2.cardID)).filter(x => isPromo? !x.canDrop: x.canDrop)
     let cost = card1.rarity * 250
 
     if (isPromo || card1.collectionID === card2.collectionID) {
@@ -103,14 +103,14 @@ const processForge = async (ctx) => {
     ctx.user.tomatoes -= cost
     await ctx.user.save()
 
-    let alreadyOwned = ctx.userCards.some(x => x.cardID === newCard.cardID)
+    let alreadyOwned = ctx.userCards.find(x => x.cardID === newCard.cardID)
 
     await removeUserCards(ctx.user.userID, cardIDs)
     await addUserCards(ctx.user.userID, [newCard.cardID])
-
+    ctx.args.fmtOptions.amount = false
     return ctx.send(ctx, {
         embed: {
-            description: `${ctx.boldName(ctx.user.username)}, you got ${ctx.formatName(ctx, newCard)}!${alreadyOwned? '\n*You already own this card*': ''}`,
+            description: `${ctx.boldName(ctx.user.username)}, you got ${ctx.formatName(ctx, alreadyOwned? alreadyOwned: newCard)}!${alreadyOwned? '\n*You already own this card*': ''}`,
             color: ctx.colors.green,
             image: {
                 url: newCard.cardURL,
