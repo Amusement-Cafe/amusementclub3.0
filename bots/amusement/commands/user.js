@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 const {registerBotCommand} = require('../../../utils/commandRegistrar')
 
 const {
@@ -7,6 +9,13 @@ const {
 const {
     calculateClaimCost
 } = require('../helpers/claim')
+
+const {
+    fetchUser
+} = require("../helpers/user")
+const {
+    getUserCardsLean, mergeUserCards,
+} = require("../helpers/userCard")
 
 registerBotCommand('daily', async (ctx) => await daily(ctx))
 
@@ -107,4 +116,29 @@ const userAchievements = async (ctx) => {}
 
 const listQuests = async (ctx) => {}
 
-const userDiff = async (ctx, from = false) => {}
+const userDiff = async (ctx, from = false) => {
+    const otherUser = await fetchUser(ctx.args.userIDs[0])
+    if (!otherUser) {
+        return ctx.send(ctx, `Temp error if not found`, 'red')
+    }
+    let otherUserCards = await mergeUserCards(ctx, await getUserCardsLean(ctx, otherUser.userID))
+    ctx.args.cardQuery?.filters?.map(x => {
+        otherUserCards = otherUserCards.filter(x)
+        return otherUserCards
+    })
+    otherUserCards.sort(ctx.args.cardQuery.sort)
+    let fromList = from? otherUserCards: ctx.userCards
+    let toList = from? ctx.userCards: otherUserCards
+    let diff = _.differenceBy(fromList, toList, 'cardID')
+    if (diff.length === 0) {
+        return ctx.send(ctx, `No different cards found to display!`, 'red')
+    }
+    const pages = ctx.getPages(diff.map(x => ctx.formatName(ctx, x)), 15)
+    return ctx.send(ctx, {
+        pages,
+        embed: {
+            description: 'miss',
+            title: `Missing cards ${from? 'FROM': 'FOR'} ${otherUser.username} (${ctx.fmtNum(diff.length)} results)`
+        }
+    })
+}

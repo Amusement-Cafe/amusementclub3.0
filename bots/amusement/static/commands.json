@@ -317,6 +317,51 @@
           "description": "Filter for specific cards"
         }
       ]
+    },
+    {
+      "type": 1,
+      "name": "diff",
+      "description": "Top Level Diff",
+      "options": [
+        {
+          "type": 1,
+          "name": "from",
+          "description": "Diff placeholder text",
+          "options": [
+            {
+              "type": 3,
+              "name": "card_query",
+              "description": "The card query to filter for your card to sell",
+              "required": true
+            },
+            {
+              "type": 6,
+              "name": "user_id",
+              "description": "The user you want to sell to, ID or mention accepted",
+              "required": true
+            }
+          ]
+        },
+        {
+          "type": 1,
+          "name": "for",
+          "description": "Diff placeholder text",
+          "options": [
+            {
+              "type": 3,
+              "name": "card_query",
+              "description": "The card query to filter for your cards to sell",
+              "required": true
+            },
+            {
+              "type": 6,
+              "name": "user_id",
+              "description": "The user you want to sell to, ID or mention accepted",
+              "required": true
+            }
+          ]
+        }
+      ]
     }
   ]
 }
