@@ -14,6 +14,8 @@ const {
     addUserCards
 } = require("../helpers/userCard")
 
+let pricePerRarity = 250
+
 
 registerBotCommand(['forge'], async (ctx) => await forge(ctx), {withCards: true})
 
@@ -58,7 +60,7 @@ const forge = async (ctx) => {
 
     return ctx.send(ctx, {
         embed: {
-            description: `Do you want to forge ${ctx.formatName(ctx, forge1)} and ${ctx.formatName(ctx, forge2)}? This action will cost ${ctx.boldName(ctx.fmtNum(forge1.rarity * 250))}${ctx.symbols.tomato}`,
+            description: `Do you want to forge ${ctx.formatName(ctx, forge1)} and ${ctx.formatName(ctx, forge2)}? This action will cost ${ctx.boldName(ctx.fmtNum(forge1.rarity * pricePerRarity))}${ctx.symbols.tomato}`,
             color: ctx.colors.yellow
         },
         customButtons: [cfmForge, dclForge],
@@ -90,7 +92,7 @@ const processForge = async (ctx) => {
 
     let isPromo = ctx.collections.some(x => x.collectionID === card1.collectionID && card2.collectionID === x.collectionID && x.promo)
     let newCard = ctx.cards.filter(x => x.rarity === card1.rarity && (x.cardID !== card1.cardID && x.cardID !== card2.cardID)).filter(x => isPromo? !x.canDrop: x.canDrop)
-    let cost = card1.rarity * 250
+    let cost = card1.rarity * pricePerRarity
 
     if (isPromo || card1.collectionID === card2.collectionID) {
         newCard = newCard.filter(x => x.collectionID === card1.collectionID)
@@ -100,6 +102,7 @@ const processForge = async (ctx) => {
 
     await ctx.updateStat(ctx, `forge`, 1)
     await ctx.updateStat(ctx, `forge${card1.rarity}`, 1)
+    await ctx.updateStat(ctx, 'tomatoOut', cost)
     ctx.user.tomatoes -= cost
     await ctx.user.save()
 
