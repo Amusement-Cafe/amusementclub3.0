@@ -3,7 +3,7 @@ const UserCards = require('../../../db/userCard')
 
 const withCards = async (ctx, args) => {
     let userCards
-    userCards = await getUserCardsLean(ctx, ctx.user)
+    userCards = await getUserCardsLean(ctx)
     userCards  = await mergeUserCards(ctx, userCards)
     if (args.forgeQuery1) {
         let forgeCards1 = userCards
@@ -63,8 +63,18 @@ const removeUserCards = async (userID, cardIDs) => {
     return update
 }
 
-const getUserCards = (ctx) => UserCards.find({userID: ctx.user.userID})
-const getUserCardsLean = (ctx) => UserCards.find({userID: ctx.user.userID}).lean()
+const getUserCards = (ctx, otherID = false) => {
+    if (otherID) {
+        return UserCards.find({userID: otherID})
+    }
+    return UserCards.find({userID: ctx.user.userID})
+}
+const getUserCardsLean = (ctx, otherID = false) => {
+    if (otherID) {
+        return UserCards.find({userID: otherID}).lean()
+    }
+    return UserCards.find({userID: ctx.user.userID}).lean()
+}
 
 const mergeUserCards = async (ctx, userCards) => {
     const merged = []
