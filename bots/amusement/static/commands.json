@@ -362,6 +362,33 @@
           ]
         }
       ]
+    },
+    {
+      "type": 1,
+      "name": "transactions",
+      "description": "Transactions and stuff, please let me remember to go through these later",
+      "options": [
+        {
+          "type": 3,
+          "name": "card_query",
+          "description": "The card query to filter for your card to sell"
+        },
+        {
+          "type": 5,
+          "name": "auctions",
+          "description": "Whether to include all copies of the cards you own in the eval response"
+        },
+        {
+          "type": 5,
+          "name": "received",
+          "description": "Whether to include all copies of the cards you own in the eval response"
+        },
+        {
+          "type": 5,
+          "name": "pending",
+          "description": "Whether to include all copies of the cards you own in the eval response"
+        }
+      ]
     }
   ]
 }

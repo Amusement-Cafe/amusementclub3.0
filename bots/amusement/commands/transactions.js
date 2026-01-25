@@ -1,27 +1,36 @@
-const {registerBotCommand} = require('../../../utils/commandRegistrar')
+const {
+    registerBotCommand,
+    registerReaction,
+} = require('../../../utils/commandRegistrar')
 
 const {
     createTransaction,
     completeTransaction,
-    listTransactions,
+    formatTransactions,
+    getUserTransactions,
+    formatTransactionInfo,
 } = require('../helpers/transactions')
 
 const {
     fetchUser
 } = require("../helpers/user")
+const {Button} = require("../helpers/componentBuilders");
 
+let transactionPages = []
 
 registerBotCommand(['sell', 'one'], async (ctx) => await sell(ctx), { withCards: true })
 
 registerBotCommand(['sell', 'many'], async (ctx) => await sell(ctx, true))
 
-registerBotCommand(['transaction', 'confirm'], async (ctx) => await finalizeTransaction(ctx))
+registerBotCommand(['transactions'], async (ctx) => await listTransaction(ctx))
 
-registerBotCommand(['transaction', 'decline'], async (ctx) => await finalizeTransaction(ctx, false))
+registerReaction(['trans', 'cfm'], async (ctx) => await completeTransaction(ctx))
+registerReaction(['trans', 'dcl'], async (ctx) => await completeTransaction(ctx, true))
 
-registerBotCommand(['transaction', 'list'], async (ctx) => await listTransaction(ctx))
-
-registerBotCommand(['transaction', 'info'], async (ctx) => await transactionInfo(ctx))
+registerReaction(['trans', 'list'], async (ctx) => await listTransactionPage(ctx))
+registerReaction(['trans', 'custom'], async (ctx) => await listTransactionCustomPage(ctx))
+registerReaction(['trans', 'modal'], async (ctx) => await listTransactionModal(ctx))
+registerReaction(['trans', 'info'], async (ctx) => await showTransactionInfo(ctx))
 
 const sell = async (ctx, many = false) => {
     let saleCards, toUser, amountDisplay
@@ -125,8 +134,196 @@ const sell = async (ctx, many = false) => {
     })
 }
 
-const finalizeTransaction = async (ctx, confirm = true) => {}
+const listTransaction = async (ctx) => {
+    filterTransactionPages(ctx)
+    let userTransactions = await getUserTransactions(ctx)
+    let pageArray = []
+    if (ctx.args?.auctions !== undefined) {
+        let operator = (x) => ctx.args.auctions? x.status === 'auction': x.status !== 'auction'
+        userTransactions = userTransactions.filter(x => operator(x))
+    }
+    if (ctx.args?.received !== undefined) {
+        let operator = (x) => ctx.args.received? x.toID === ctx.user.userID: x.toID !== ctx.user.userID
+        userTransactions = userTransactions.filter(x => operator(x))
+    }
+    if (ctx.args?.pending !== undefined) {
+        let operator = (x) => ctx.args.pending? x.status === 'pending': x.status !== 'pending'
+        userTransactions = userTransactions.filter(x => operator(x))
+    }
+    if (ctx.options?.card_query) {
+        let globalIDs = ctx.globalCards.map(x => x.cardID)
+        let operator = (x) => x.cardIDs.some(y => globalIDs.includes(y))
+        userTransactions = userTransactions.filter(x => operator(x))
+    }
+    if (userTransactions.length === 0) {
+        return ctx.send(ctx, `There are no transactions to list with your query!`, 'red')
+    }
+    userTransactions.sort((a, b) => b.dateCreated - a.dateCreated)
+    await Promise.all(userTransactions.map(async (x, i) => {
+        pageArray[i] = await formatTransactions(ctx, x)
+    }))
 
-const listTransaction = async (ctx) => {}
+    const customPgnButtons = []
+    const pages = ctx.getPages(pageArray)
 
-const transactionInfo = async (ctx) => {}
+    if (pages.length > 1) {
+        customPgnButtons.push(new Button(`trans_list-${ctx.user.userID}-last`).setStyle(1).setLabel('Back'))
+        customPgnButtons.push(new Button(`trans_list-${ctx.user.userID}-1`).setStyle(1).setLabel('Next'))
+    }
+    if (pages.length >= 15) {
+        customPgnButtons.push(new Button(`trans_modal-${ctx.user.userID}`).setStyle(2).setLabel('Jump To...'))
+    }
+
+    const customButtons = []
+    customButtons.push(new Button(`trans_info-${ctx.user.userID}-0`).setStyle(2).setLabel('Show Info'))
+
+    const msg = await ctx.send(ctx, {
+        pages,
+        embed: {
+            title: `${ctx.user.username}, your transactions (${userTransactions.length} results)`,
+            description: `${userTransactions.length}`
+        },
+        customPgnButtons,
+        customButtons
+    })
+    transactionPages.push({userID: ctx.user.userID, messageID: msg.message.id, pageList: pages, transactions: userTransactions, lastUsed: new Date()})
+}
+
+const listTransactionPage = async (ctx, modalPage) => {
+    filterTransactionPages(ctx, true)
+    let activeEntry = transactionPages.findIndex(x => x.userID === ctx.arguments[0]) >= 0? transactionPages.findIndex(x => x.userID === ctx.user.userID): false
+    if (activeEntry === false) {
+        await ctx.send(ctx, {
+            embed: ctx.interaction.message.embeds[0],
+            parent: true
+        })
+        return ctx.interaction.channel.createMessage({
+            embeds: [
+                {
+                    description: `The transactions list you have attempted to interact with has expired. They expire after 15 minutes of inactivity or after a bot restart. Please run the command again!`,
+                    color: ctx.colors.red
+                }
+            ],
+            messageReference: {messageID: ctx.interaction.message.id}
+        })
+    }
+    let entry = transactionPages[activeEntry]
+    entry.lastUsed = new Date()
+    transactionPages[activeEntry] = entry
+    let page = modalPage || ctx.arguments.pop()
+    page = page === 'first'? 0: page === 'last'? entry.pageList.length - 1 : Number(page)
+    const customPgnButtons = []
+    const nextPage = page + 1 >= entry.pageList.length? 'first': page + 1
+    const backPage = page - 1 < 0? 'last' : page - 1
+    customPgnButtons.push(new Button(`trans_list-${ctx.user.userID}-${backPage}`).setStyle(1).setLabel('Back'))
+    customPgnButtons.push(new Button(`trans_list-${ctx.user.userID}-${nextPage}`).setStyle(1).setLabel('Next'))
+    if (entry.pageList.length >= 15) {
+        customPgnButtons.push(new Button(`trans_modal-${ctx.user.userID}`).setStyle(2).setLabel('Jump To...'))
+    }
+    let pages = [...entry.pageList]
+    if (page !== -1) {
+        const [removedItem] = pages.splice(page, 1)
+        pages.unshift(removedItem)
+    }
+    const customButtons = []
+    customButtons.push(new Button(`trans_info-${ctx.user.userID}-${page * 10}`).setStyle(2).setLabel('Show Info'))
+    return ctx.send(ctx, {
+        pages,
+        embed: {
+            title: `${ctx.user.username}, your transactions (${entry.transactions.length} results)`,
+            description: 'Processing...',
+            footer: {
+                text: `Page ${page + 1}/${entry.pageList.length}`,
+            }
+        },
+        customPgnButtons,
+        customButtons,
+        parent: true
+    })
+}
+
+const listTransactionCustomPage = async (ctx) => {
+    return listTransactionPage(ctx, isNaN(Number(ctx.options.pageNumber))? 0: Number(ctx.options.pageNumber) - 1)
+}
+
+const listTransactionModal = async (ctx) => {
+
+    return ctx.interaction.createModal({
+        title: 'Enter Your Page Number',
+        customID: `trans_custom-${ctx.user.userID}`,
+        components: [
+            {
+                type: 1,
+                components: [
+                    {
+                        type: 4,
+                        customID: 'pageNumber',
+                        label: 'Page Number',
+                        style: 1,
+                        minLength: 1,
+                        maxLength: 6,
+                        placeholder: 'Enter the page number to navigate to',
+                        required: true
+                    }
+                ]
+            },
+        ]
+    })
+}
+
+const showTransactionInfo = async (ctx) => {
+    let activeEntry = transactionPages.findIndex(x => x.userID === ctx.arguments[0]) >= 0? transactionPages.findIndex(x => x.userID === ctx.user.userID): false
+    if (activeEntry === false) {
+        await ctx.send(ctx, {
+            embed: ctx.interaction.message.embeds[0],
+            parent: true
+        })
+        return ctx.interaction.channel.createMessage({
+            embeds: [
+                {
+                    description: `The transactions list you have attempted to interact with has expired. They expire after 15 minutes of inactivity or after a bot restart. Please run the command again!`,
+                    color: ctx.colors.red
+                }
+            ],
+            messageReference: {messageID: ctx.interaction.message.id}
+        })
+    }
+    let entry = transactionPages[activeEntry]
+    entry.lastUsed = new Date()
+    if (!entry.infoPages) {
+        entry.infoPages = []
+        await Promise.all(entry.transactions.map(async (x, i) => entry.infoPages[i] = await formatTransactionInfo(ctx, x)))
+    }
+    transactionPages[activeEntry] = entry
+    let page = ctx.arguments.pop()
+    page = page === 'first'? 0: page === 'last'? entry.pageList.length - 1 : Number(page)
+    const customPgnButtons = []
+    const nextPage = page + 1 >= entry.pageList.length? 'first': page + 1
+    const backPage = page - 1 < 0? 'last' : page - 1
+    customPgnButtons.push(new Button(`trans_info-${ctx.user.userID}-${backPage}`).setStyle(1).setLabel('Back'))
+    customPgnButtons.push(new Button(`trans_info-${ctx.user.userID}-${nextPage}`).setStyle(1).setLabel('Next'))
+    let pages = [...entry.infoPages]
+    if (page !== -1) {
+        const [removedItem] = pages.splice(page, 1)
+        pages.unshift(removedItem)
+    }
+    const customButtons = []
+    customButtons.push(new Button(`trans_list-${ctx.user.userID}-${Math.floor(page / 10)}`))
+    if (pages.length >= 15) {
+        customPgnButtons.push(new Button(`trans_info_custom-${ctx.user.userID}`))
+    }
+    return ctx.send(ctx, {
+        pages,
+        embed: {
+            title: `Transaction #${page + 1}`,
+            description: 'Test Info',
+            footer: {
+                text: `Page ${page + 1}/${entry.infoPages.length}`,
+            }
+        },
+        customPgnButtons,
+        customButtons
+    })
+}
+
+const filterTransactionPages = (ctx) => transactionPages = transactionPages.filter(x => (ctx.minToMS(15) + new Date(x.lastUsed).getTime()) > new Date().getTime())

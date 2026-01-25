@@ -12,7 +12,6 @@ const {
     removeUserCards,
 } = require("./userCard")
 
-
 const createTransaction = async (ctx, cardIDs, toID = 'bot', cost) => {
     if (toID !== 'bot' || !toID) {
         toID = toID.userID
@@ -125,12 +124,24 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
 
 }
 
-const listTransactions = async () => {
+const getUserTransactions = async (ctx, lean = true, otherID = false) => lean? Transaction.find({$or: [{fromID: otherID? otherID: ctx.user.userID}, {toID: otherID? otherID: ctx.user.userID}]}).lean(): Transaction.find({$or: [{fromID: otherID? otherID: ctx.user.userID}, {toID: otherID? otherID: ctx.user.userID}]})
 
+const formatTransactions = async (ctx, transaction) => {
+    let from = transaction.fromID === ctx.user.userID
+    const symbol = transaction.status === 'completed'? ctx.symbols.accept: transaction.status === 'pending'? ctx.symbols.pending: transaction.status === 'auction'? ctx.symbols.auctionTrans: ctx.symbols.decline
+    const cardDisplay = transaction.cardIDs.length > 1? `${ctx.fmtNum(transaction.cardIDs.length)} cards`: ctx.formatName(ctx, ctx.cards[transaction.cardIDs[0]])
+    const otherUser = await fetchUser(from? transaction.toID: transaction.fromID)
+    return `[~${ctx.timeDisplay(ctx, transaction.dateCreated)}] ${symbol} ${cardDisplay} ${from? '`->`': '`<-`'} **${otherUser? otherUser.username: 'BOT'}**`
+}
+let num = 0
+const formatTransactionInfo = async (ctx, transaction) => {
+    return num++
 }
 
 module.exports = {
     createTransaction,
     completeTransaction,
-    listTransactions,
+    getUserTransactions,
+    formatTransactions,
+    formatTransactionInfo,
 }

@@ -37,6 +37,7 @@ const getCommandOptions = async (ctx) => {
         Object.entries(ctx.options).forEach(([name, value]) => {
             switch (name) {
                 case 'alias': args.aliases = value.split(' '); break;
+                case 'auctions': args.auctions = value; break;
                 case 'card_query': args.cardQuery = parseCardArgs(ctx, ctx.user, value); break;
                 case 'card_query_1': args.forgeQuery1 = parseCardArgs(ctx, ctx.user, value); break;
                 case 'card_query_2': args.forgeQuery2 = parseCardArgs(ctx, ctx.user, value); break;
@@ -52,7 +53,9 @@ const getCommandOptions = async (ctx) => {
                     args.colQuery = value;
                     break;
                 case 'count': args.count = value; break;
+                case 'pending': args.pending = value; break;
                 case 'promo': args.promo = value; break;
+                case 'received': args.received = value; break;
                 case 'remove': args.remove = value; break;
                 case 'user_id': args.userIDs.push(value); break;
             }
