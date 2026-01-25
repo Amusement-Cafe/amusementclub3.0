@@ -59,7 +59,7 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
     extra? await ctx.interaction.defer(64): null
 
     if (decline) {
-        transaction.status = 'completed'
+        transaction.status = 'declined'
         await transaction.save()
         if (ctx.user.userID !== transaction.fromID) {
             return ctx.send(ctx, {
@@ -114,6 +114,9 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
     await removeUserCards(fromUser.userID, transaction.cardIDs)
     await fromUser.save()
 
+    transaction.status = 'confirmed'
+    await transaction.save()
+
     return ctx.send(ctx, {
         embed: {
             description: `${ctx.boldName(fromUser.username)} sold ${ctx.boldName(transaction.cardIDs.length)} card(s) to ${ctx.boldName(toName)} for ${ctx.boldName(ctx.fmtNum(transaction.cost))}${ctx.symbols.tomato}`,
@@ -128,14 +131,31 @@ const getUserTransactions = async (ctx, lean = true, otherID = false) => lean? T
 
 const formatTransactions = async (ctx, transaction) => {
     let from = transaction.fromID === ctx.user.userID
-    const symbol = transaction.status === 'completed'? ctx.symbols.accept: transaction.status === 'pending'? ctx.symbols.pending: transaction.status === 'auction'? ctx.symbols.auctionTrans: ctx.symbols.decline
+    const symbol = transaction.status === 'confirmed'? ctx.symbols.accept: transaction.status === 'pending'? ctx.symbols.pending: transaction.status === 'auction'? ctx.symbols.auctionTrans: ctx.symbols.decline
     const cardDisplay = transaction.cardIDs.length > 1? `${ctx.fmtNum(transaction.cardIDs.length)} cards`: ctx.formatName(ctx, ctx.cards[transaction.cardIDs[0]])
     const otherUser = await fetchUser(from? transaction.toID: transaction.fromID)
     return `[~${ctx.timeDisplay(ctx, transaction.dateCreated)}] ${symbol} ${cardDisplay} ${from? '`->`': '`<-`'} **${otherUser? otherUser.username: 'BOT'}**`
 }
-let num = 0
-const formatTransactionInfo = async (ctx, transaction) => {
-    return num++
+const formatTransactionInfo = async (ctx, transaction, index) => {
+    const fromUser = await fetchUser(transaction.fromID)
+    const toUser = await fetchUser(transaction.toID)
+    const symbol = transaction.status === 'confirmed'? ctx.symbols.accept: transaction.status === 'pending'? ctx.symbols.pending: transaction.status === 'auction'? ctx.symbols.auctionTrans: ctx.symbols.decline
+    const embed = {}
+    embed.title = `Transaction [${transaction.transactionID}] (${ctx.timeDisplay(ctx, transaction.dateCreated)})`
+    embed.description = `Cards: ${ctx.boldName(transaction.cardIDs.length)}
+    Price: ${ctx.boldName(ctx.fmtNum(transaction.cost))}
+    From: ${fromUser.username}
+    To: ${toUser.username}
+    On server: There are no servers atm
+    Status: ${symbol}${transaction.status}
+    Date: <t:${Math.floor(new Date(transaction.dateCreated).getTime() / 1000)}:F>`.replace(/\s\s+/gm, '\n')
+    embed.fields = []
+    embed.fields.push({
+        name: `Cards`,
+        value: transaction.cardIDs.map(x => ctx.formatName(ctx, ctx.cards[x])).slice(0, 10)[0]
+    })
+    embed.color = ctx.colors.blue
+    return embed
 }
 
 module.exports = {

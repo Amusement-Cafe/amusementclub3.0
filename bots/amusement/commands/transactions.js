@@ -30,7 +30,11 @@ registerReaction(['trans', 'dcl'], async (ctx) => await completeTransaction(ctx,
 registerReaction(['trans', 'list'], async (ctx) => await listTransactionPage(ctx))
 registerReaction(['trans', 'custom'], async (ctx) => await listTransactionCustomPage(ctx))
 registerReaction(['trans', 'modal'], async (ctx) => await listTransactionModal(ctx))
+
 registerReaction(['trans', 'info'], async (ctx) => await showTransactionInfo(ctx))
+registerReaction(['trans', 'info', 'custom'], async (ctx) => await showCustomTransactionInfo(ctx))
+registerReaction(['trans', 'info', 'modal'], async (ctx) => await showCustomTransactionInfoModal(ctx))
+
 
 const sell = async (ctx, many = false) => {
     let saleCards, toUser, amountDisplay
@@ -135,7 +139,8 @@ const sell = async (ctx, many = false) => {
 }
 
 const listTransaction = async (ctx) => {
-    filterTransactionPages(ctx)
+    timeoutTransactionPages(ctx)
+    filterDuplicatePages(ctx)
     let userTransactions = await getUserTransactions(ctx)
     let pageArray = []
     if (ctx.args?.auctions !== undefined) {
@@ -190,7 +195,7 @@ const listTransaction = async (ctx) => {
 }
 
 const listTransactionPage = async (ctx, modalPage) => {
-    filterTransactionPages(ctx, true)
+    timeoutTransactionPages(ctx)
     let activeEntry = transactionPages.findIndex(x => x.userID === ctx.arguments[0]) >= 0? transactionPages.findIndex(x => x.userID === ctx.user.userID): false
     if (activeEntry === false) {
         await ctx.send(ctx, {
@@ -210,7 +215,7 @@ const listTransactionPage = async (ctx, modalPage) => {
     let entry = transactionPages[activeEntry]
     entry.lastUsed = new Date()
     transactionPages[activeEntry] = entry
-    let page = modalPage || ctx.arguments.pop()
+    let page = modalPage !== undefined? modalPage: ctx.arguments.pop()
     page = page === 'first'? 0: page === 'last'? entry.pageList.length - 1 : Number(page)
     const customPgnButtons = []
     const nextPage = page + 1 >= entry.pageList.length? 'first': page + 1
@@ -247,7 +252,15 @@ const listTransactionCustomPage = async (ctx) => {
 }
 
 const listTransactionModal = async (ctx) => {
-
+    if (ctx.arguments[0] !== ctx.user.userID) {
+        await ctx.interaction.defer(64)
+        return ctx.interaction.createFollowup({
+            embeds: [{
+                description: `${ctx.user.username}, you cannot interact with another user's interaction!`,
+                color: ctx.colors.red
+            }]
+        })
+    }
     return ctx.interaction.createModal({
         title: 'Enter Your Page Number',
         customID: `trans_custom-${ctx.user.userID}`,
@@ -271,7 +284,7 @@ const listTransactionModal = async (ctx) => {
     })
 }
 
-const showTransactionInfo = async (ctx) => {
+const showTransactionInfo = async (ctx, modalPage) => {
     let activeEntry = transactionPages.findIndex(x => x.userID === ctx.arguments[0]) >= 0? transactionPages.findIndex(x => x.userID === ctx.user.userID): false
     if (activeEntry === false) {
         await ctx.send(ctx, {
@@ -292,13 +305,13 @@ const showTransactionInfo = async (ctx) => {
     entry.lastUsed = new Date()
     if (!entry.infoPages) {
         entry.infoPages = []
-        await Promise.all(entry.transactions.map(async (x, i) => entry.infoPages[i] = await formatTransactionInfo(ctx, x)))
+        await Promise.all(entry.transactions.map(async (x, i) => entry.infoPages[i] = await formatTransactionInfo(ctx, x, i)))
     }
     transactionPages[activeEntry] = entry
-    let page = ctx.arguments.pop()
-    page = page === 'first'? 0: page === 'last'? entry.pageList.length - 1 : Number(page)
+    let page = modalPage !== undefined? modalPage: ctx.arguments.pop()
+    page = page === 'first'? 0: page === 'last'? entry.infoPages.length - 1 : Number(page)
     const customPgnButtons = []
-    const nextPage = page + 1 >= entry.pageList.length? 'first': page + 1
+    const nextPage = page + 1 >= entry.infoPages.length? 'first': page + 1
     const backPage = page - 1 < 0? 'last' : page - 1
     customPgnButtons.push(new Button(`trans_info-${ctx.user.userID}-${backPage}`).setStyle(1).setLabel('Back'))
     customPgnButtons.push(new Button(`trans_info-${ctx.user.userID}-${nextPage}`).setStyle(1).setLabel('Next'))
@@ -308,10 +321,12 @@ const showTransactionInfo = async (ctx) => {
         pages.unshift(removedItem)
     }
     const customButtons = []
-    customButtons.push(new Button(`trans_list-${ctx.user.userID}-${Math.floor(page / 10)}`))
     if (pages.length >= 15) {
-        customPgnButtons.push(new Button(`trans_info_custom-${ctx.user.userID}`))
+        customPgnButtons.push(new Button(`trans_info_modal-${ctx.user.userID}`).setStyle(2).setLabel('Jump To...'))
     }
+    customButtons.push(new Button(`trans_cfm-${entry.transactions[page].transactionID.replaceAll(/-/g, "O")}`).setStyle(3).setLabel('Accept').setOff(entry.transactions[page].toID !== ctx.user.userID || entry.transactions[page].status !== 'pending'))
+    customButtons.push(new Button(`trans_dcl-${entry.transactions[page].transactionID.replaceAll(/-/g, "O")}`).setStyle(4).setLabel('Decline').setOff(entry.transactions[page].status !== 'pending'))
+    customButtons.push(new Button(`trans_list-${ctx.user.userID}-${Math.floor(page / 10)}`).setStyle(2).setLabel('Show Pages'))
     return ctx.send(ctx, {
         pages,
         embed: {
@@ -321,9 +336,49 @@ const showTransactionInfo = async (ctx) => {
                 text: `Page ${page + 1}/${entry.infoPages.length}`,
             }
         },
+        switchPage: (data) => data.embed = data.pages[data.pageNum],
         customPgnButtons,
-        customButtons
+        customButtons,
+        parent: true
     })
 }
 
-const filterTransactionPages = (ctx) => transactionPages = transactionPages.filter(x => (ctx.minToMS(15) + new Date(x.lastUsed).getTime()) > new Date().getTime())
+const showCustomTransactionInfo = async (ctx) => {
+    return showTransactionInfo(ctx, isNaN(Number(ctx.options.pageNumber))? 0: Number(ctx.options.pageNumber) - 1)
+}
+
+const showCustomTransactionInfoModal = async (ctx) => {
+    if (ctx.arguments[0] !== ctx.user.userID) {
+        await ctx.interaction.defer(64)
+        return ctx.interaction.createFollowup({
+            embeds: [{
+                description: `${ctx.user.username}, you cannot interact with another user's interaction!`,
+                color: ctx.colors.red
+            }]
+        })
+    }
+    return ctx.interaction.createModal({
+        title: 'Enter Your Page Number',
+        customID: `trans_info_custom-${ctx.user.userID}`,
+        components: [
+            {
+                type: 1,
+                components: [
+                    {
+                        type: 4,
+                        customID: 'pageNumber',
+                        label: 'Page Number',
+                        style: 1,
+                        minLength: 1,
+                        maxLength: 6,
+                        placeholder: 'Enter the page number to navigate to',
+                        required: true
+                    }
+                ]
+            },
+        ]
+    })
+}
+
+const timeoutTransactionPages = (ctx) => transactionPages = transactionPages.filter(x => (ctx.minToMS(15) + new Date(x.lastUsed).getTime()) > new Date().getTime())
+const filterDuplicatePages = (ctx) => transactionPages = transactionPages.filter(x => ctx.user.userID !== x.userID)
