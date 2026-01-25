@@ -5,21 +5,21 @@ const items = {
         itemID: 'ticket1x1',
         uses: 0,
         type: 'ticket',
-        displayName: ''
+        displayName: '1x `★` Claim Ticket'
     },
     ticket1x2: {
         cost: 1,
         itemID: 'ticket1x2',
         uses: 0,
         type: 'ticket',
-        displayName: ''
+        displayName: '1x `★★` Claim Ticket'
     },
     ticket1x3: {
         cost: 1,
         itemID: 'ticket1x3',
         uses: 0,
         type: 'ticket',
-        displayName: ''
+        displayName: '1x `★★★` Claim Ticket'
     },
     ticket3x1s: {
         cost: 1,
@@ -27,7 +27,7 @@ const items = {
         uses: 0,
         type: 'ticket',
         single: true,
-        displayName: ''
+        displayName: '3x `★` Claim Ticket'
     },
     ticket3x2s: {
         cost: 1,
@@ -35,7 +35,7 @@ const items = {
         uses: 0,
         type: 'ticket',
         single: true,
-        displayName: ''
+        displayName: '3x `★★` Claim Ticket'
     },
     ticket3x3s: {
         cost: 1,
@@ -43,28 +43,70 @@ const items = {
         uses: 0,
         type: 'ticket',
         single: true,
-        displayName: ''
+        displayName: '3x `★★★` Claim Ticket'
     },
     ticket3x1r: {
         cost: 1,
         itemID: 'ticket3x1r',
         uses: 0,
         type: 'ticket',
-        displayName: ''
+        displayName: '3x Random `★` Claim Ticket'
     },
     ticket3x2r: {
         cost: 1,
         itemID: 'ticket3x2r',
         uses: 0,
         type: 'ticket',
-        displayName: ''
+        displayName: '3x Random `★★` Claim Ticket'
     },
     ticket3x3r: {
         cost: 1,
         itemID: 'ticket3x3r',
         uses: 0,
         type: 'ticket',
-        displayName: ''
+        displayName: '3x Random `★★★` Claim Ticket'
+    },
+    ticket1x5s: {
+        cost: 1,
+        itemID: 'ticket1x5s',
+        uses: 0,
+        type: 'ticket',
+        displayName: '1x `★★★★★` Claim Ticket'
+    },
+    ticket1x5r: {
+        cost: 1,
+        itemID: 'ticket1x5r',
+        uses: 0,
+        type: 'ticket',
+        displayName: '1x Random `★★★★★` Claim Ticket'
+    },
+    ticket2x5r: {
+        cost: 1,
+        itemID: 'ticket2x5r',
+        uses: 0,
+        type: 'ticket',
+        displayName: '2x Random `★★★★★` Claim Ticket'
+    },
+    ticket3x5r: {
+        cost: 1,
+        itemID: 'ticket3x5r',
+        uses: 0,
+        type: 'ticket',
+        displayName: '3x Random `★★★★★` Claim Ticket'
+    },
+    ticket4x5r: {
+        cost: 1,
+        itemID: 'ticket4x5r',
+        uses: 0,
+        type: 'ticket',
+        displayName: '4x Random `★★★★★` Claim Ticket'
+    },
+    ticket5x5r: {
+        cost: 1,
+        itemID: 'ticket5x5r',
+        uses: 0,
+        type: 'ticket',
+        displayName: '5x Random `★★★★★` Claim Ticket'
     },
     //Recipes
     memoryVal: {
@@ -239,7 +281,7 @@ const items = {
     },
     gBank: {
         cost: 1,
-        itemID: 'gbank',
+        itemID: 'gBank',
         uses: 0,
         type: 'blueprint',
         displayName: ''
@@ -253,7 +295,7 @@ const items = {
     },
     smithHub: {
         cost: 1,
-        itemID: 'smithhub',
+        itemID: 'smithHub',
         uses: 0,
         type: 'blueprint',
         displayName: ''

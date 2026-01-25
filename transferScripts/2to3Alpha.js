@@ -33,17 +33,17 @@ const {
 const main = async () => {
     const start = new Date()
     console.log('Connecting Mongoose')
-    const mcn = await mongoose.connect('mongodb://127.0.0.1:27017/amuse3')
+    const mcn = await mongoose.connect('mongodb://192.168.1.247:27017/amuse3')
     console.log('Mongoose Connected')
-    const dbc = await MongoClient.connect('mongodb://127.0.0.1:27017/')
+    const dbc = await MongoClient.connect('mongodb://192.168.1.247:27017/')
     console.log('MongoDB Connected')
     const db = dbc.db('amusement2')
     console.log('Starting Transfers')
     await transferAnnouncements(db)
     await transferAuctions(db)
+    await transferCollections(db)
     await transferCards(db)
     await transferClaims(db)
-    await transferCollections(db)
     await transferGuilds(db)
     await transferGuildBuildings(db)
     await transferGuildUsers(db)
@@ -66,6 +66,45 @@ const main = async () => {
     const timeTaken = (end - start) / 1000 / 60
     console.log(`Process took ${timeTaken} minutes to complete, or ${timeTaken / 60} hours`)
     process.exit(0)
+}
+
+const newItemID = {
+    castle: 'castle',
+    gbank: 'gBank',
+    tavern: 'tavern',
+    smithhub: 'smithHub',
+    auchouse: 'aucHouse',
+    tohrugift: 'tohruGift',
+    cakeday: 'cakeDay',
+    holygrail: 'holyGrail',
+    skyfriend: 'skyFriend',
+    cherrybloss: 'cherryBloss',
+    onvictory: 'onVictory',
+    rulerjeanne: 'rulerJeanne',
+    spellcard: 'spellCard',
+    festivewish: 'festiveWish',
+    enayano: 'enAyano',
+    pbocchi: 'pBocchi',
+    spaceunity: 'spaceUnity',
+    judgeday: 'judgeDay',
+    claimrecall: 'claimRecall',
+    memoryxmas: 'memoryXmas',
+    memoryhall: 'memoryHall',
+    memoryval: 'memoryVal',
+    memorybday: 'memoryBday',
+    legendticket: 'ticket1x5s',
+    ticket1x1: 'ticket1x1',
+    ticket1x2: 'ticket1x2',
+    ticket1x3: 'ticket1x3',
+    ticket3x1s: 'ticket3x1s',
+    ticket3x2s: 'ticket3x2s',
+    ticket3x3s: 'ticket3x3s',
+    ticket3x1r: 'ticket3x1r',
+    ticket3x2r: 'ticket3x2r',
+    ticket3x3r: 'ticket3x3r',
+    slotupgrade: 'slotUpgrade',
+    effectincrease: 'effectIncrease',
+    legendswapper: 'legendSwapper',
 }
 
 const transferAnnouncements = async (db) => {
@@ -94,7 +133,7 @@ const transferAuctions = async (db) => {
     for (let a = await auctions.next(); a != null; a = await auctions.next()) {
         console.log(`Processing Auction ${count}`)
         const auction = await new Auctions()
-        auction.auctionID = a.id
+        auction.auctionID = generateNewID()
         auction.ended = a.finished
         auction.cancelled = a.cancelled
         auction.price = a.price
@@ -110,71 +149,6 @@ const transferAuctions = async (db) => {
         count++
     }
     console.log('Finished Processing Auctions')
-}
-
-const transferCards = async (db) => {
-    const cardJSON = require('../../ayano/data/cards.json')
-    const colJSON = require('../../ayano/data/collections.json')
-    const cardInfos = db.collection('cardinfos').find()
-    console.log('Processing Cards')
-    let count = 1
-    for (let c = await cardInfos.next(); c != null; c = await cardInfos.next()) {
-        console.log(`Processing Card ${count}`)
-        let json = cardJSON.find(x => x.id === c.id)
-        let col = colJSON.find(x => x.id === json?.col)
-        const card = await new Cards()
-        card.cardID = json.id
-        card.rarity = json.level
-        card.animated = json.animated
-        card.collectionID = json.col
-        card.cardName = json.name.replaceAll('_', ' ')
-        card.displayName = card.cardName.split(' ').map(s => s[0].toUpperCase() + s.slice(1).toLowerCase()).join(' ')
-        card.cardURL = `https://c.amu.cards/id/${card.cardID}${card.animated? '.gif': ''}`
-        card.added = c.meta.added
-        card.lastUpdatedEval = new Date(0)
-        card.eval = -1
-        card.ratingSum = c.ratingsum
-        card.timesRated = c.usercount
-        card.ownerCount = c.ownercount
-        card.canDrop = !col.promo || json.level !== 5
-        card.meta = {
-            booruID: c.meta.booruid,
-            booruScore: c.meta.booruscore,
-            booruRating: c.meta.boorurating,
-
-            artist: c.meta.artist,
-            pixivID: c.meta.pixivid,
-            source: c.meta.source,
-            image: c.meta.image,
-
-            userID: c.meta.author,
-            contributor: c.meta.contributor
-        }
-        await card.save()
-        count++
-    }
-    console.log('Finished Processing Cards')
-}
-
-const transferClaims = async (db) => {
-    const oldClaims = db.collection('claims').find()
-    console.log('Processing Claims')
-    let count = 1
-    for (let c = await oldClaims.next(); c != null; c = await oldClaims.next()) {
-        console.log(`Processing Claim ${count}`)
-        const claim = await new Claims()
-        claim.claimID = c.id
-        claim.userID = c.user
-        claim.guildID = c.guild
-        claim.cardIDs = c.cards
-        claim.cost = c.cost
-        claim.promo = c.promo
-        claim.lockCol = c.lock
-        claim.timeClaimed = c.date
-        await claim.save()
-        count++
-    }
-    console.log('Finished Processing Claims')
 }
 
 const transferCollections = async (db) => {
@@ -202,6 +176,70 @@ const transferCollections = async (db) => {
         count++
     }))
     console.log(`Finished Processing Collections`)
+}
+
+const transferCards = async (db) => {
+    const cardJSON = require('../../ayano/data/cards.json')
+    const cardInfos = db.collection('cardinfos').find()
+    console.log('Processing Cards')
+    let count = 1
+    for (let c = await cardInfos.next(); c != null; c = await cardInfos.next()) {
+        console.log(`Processing Card ${count}`)
+        let json = cardJSON.find(x => x.id === c.id)
+        let newCol = await Collections.findOne({collectionID: json.col})
+        const card = await new Cards()
+        card.cardID = json.id
+        card.rarity = json.level
+        card.animated = json.animated
+        card.collectionID = json.col
+        card.cardName = json.name.replaceAll('_', ' ')
+        card.displayName = card.cardName.split(' ').map(s => s[0].toUpperCase() + s.slice(1).toLowerCase()).join(' ')
+        card.cardURL = `https://c.amu.cards/id/${card.cardID}${card.animated? '.gif': ''}`
+        card.added = c.meta.added
+        card.lastUpdatedEval = new Date(0)
+        card.eval = -1
+        card.ratingSum = c.ratingsum
+        card.timesRated = c.usercount
+        card.ownerCount = c.ownercount
+        card.canDrop = newCol.inClaimPool? true: json.level !== 5
+        card.meta = {
+            booruID: c.meta.booruid,
+            booruScore: c.meta.booruscore,
+            booruRating: c.meta.boorurating,
+
+            artist: c.meta.artist,
+            pixivID: c.meta.pixivid,
+            source: c.meta.source,
+            image: c.meta.image,
+
+            userID: c.meta.author,
+            contributor: c.meta.contributor
+        }
+        await card.save()
+        count++
+    }
+    console.log('Finished Processing Cards')
+}
+
+const transferClaims = async (db) => {
+    const oldClaims = db.collection('claims').find()
+    console.log('Processing Claims')
+    let count = 1
+    for (let c = await oldClaims.next(); c != null; c = await oldClaims.next()) {
+        console.log(`Processing Claim ${count}`)
+        const claim = await new Claims()
+        claim.claimID = generateNewID()
+        claim.userID = c.user
+        claim.guildID = c.guild
+        claim.cardIDs = c.cards
+        claim.cost = c.cost
+        claim.promo = c.promo
+        claim.lockCol = c.lock
+        claim.timeClaimed = c.date
+        await claim.save()
+        count++
+    }
+    console.log('Finished Processing Claims')
 }
 
 const transferGuilds = async (db) => {
@@ -524,7 +562,7 @@ const transferUserEffects = async (db) => {
         console.log(`Processing UserEffects ${count}`)
         const userEffect = await new UserEffects()
         userEffect.userID = ue.userid
-        userEffect.effectID = ue.id
+        userEffect.effectID = newItemID[ue.id]
         userEffect.usesLeft = ue.uses
         userEffect.cooldownEnds = ue.cooldownends
         userEffect.expires = ue.expires
@@ -585,6 +623,7 @@ const transferUserInventories = async (db) => {
                 break;
         }
     }
+
     console.log('Processing UserInventories')
     let count = 1
     for (let ui = await oldInventories.next(); ui != null; ui = await oldInventories.next()) {
@@ -594,7 +633,7 @@ const transferUserInventories = async (db) => {
         const userInventory = await new UserInventories()
         userInventory.id = newID
         userInventory.userID = ui.userid
-        userInventory.itemID = ui.id
+        userInventory.itemID = newItemID[ui.id]
         userInventory.collectionID = ui.col
         userInventory.acquired = ui.acquired
         userInventory.cards = ui.cards
@@ -632,7 +671,7 @@ const transferUserSlots = async (db) => {
         console.log(`Processing User Slot ${count}`)
         const userSlot = await new UserSlots()
         userSlot.userID = us.discord_id
-        userSlot.effectName = us.effect_name
+        userSlot.effectName = newItemID[us.effect_name]
         userSlot.slotExpires = us.slot_expires
         userSlot.cooldown = us.cooldown
         userSlot.active = us.is_active

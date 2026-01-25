@@ -25,7 +25,7 @@
     {
       "description": "View or use your Legendary Claim Ticket(s)",
       "label": "Legendary Claim Ticket",
-      "value": "legendTicket-ticket"
+      "value": "ticket1x5s-ticket"
     },
     {
       "description": "View or use your 1 Star Claim Ticket(s)",
@@ -71,6 +71,11 @@
       "description": "View or use your Triple Random 3 Star Claim Ticket(s)",
       "label": "Triple Random 3 Star Claim Ticket",
       "value": "ticket3x3r-ticket"
+    },
+    {
+      "description": "View or use your Quintuple Random 5 Star Claim Ticket(s)",
+      "label": "Quintuple Random 5 Star Claim Ticket",
+      "value": "ticket5x5r-ticket"
     }
   ],
   "blueprint": [
