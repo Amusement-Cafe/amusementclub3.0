@@ -94,6 +94,59 @@ const ctxFiller = async (ctx, bot) => {
         minToMS: (minutes) => minutes * 60 * 1000,
         hourToMS: (hours) => hours * 60 * 60 * 1000,
         dayToMS: (days) => days * 24 * 60 * 60 * 1000,
+        timeDiff: (ms) => {
+            let seconds = Math.floor(ms / 1000)
+
+            const years = Math.floor(seconds / 31536000)
+            seconds %= 31536000
+
+            const months = Math.floor(seconds / 2592000)
+            seconds %= 2592000
+
+            const weeks = Math.floor(seconds / 604800)
+            seconds %= 604800
+
+            const days = Math.floor(seconds / 86400)
+            seconds %= 86400
+
+            const hours = Math.floor(seconds / 3600)
+            seconds %= 3600
+
+            const minutes = Math.floor(seconds / 60)
+            seconds %= 60
+
+            return { years, months, weeks, days, hours, minutes, seconds }
+        },
+        timeDisplay: (ctx, time) => {
+            const roundHalf = (num) => Math.round(num * 2) / 2
+            const diff = ctx.timeDiff(Date.now() - time)
+
+            if (diff.years) {
+                return `${roundHalf(diff.years + (diff.months * 30 + diff.weeks * 7 + diff.days) / 365)}y`
+            }
+
+            if (diff.months) {
+                return `${roundHalf(diff.months + (diff.weeks * 7 + diff.days) / 30)}mo`
+            }
+
+            if (diff.weeks) {
+                return `${diff.weeks}w`
+            }
+
+            if (diff.days) {
+                return `${diff.days}d`
+            }
+
+            if (diff.hours) {
+                return `${roundHalf(diff.hours + diff.minutes / 60 + diff.seconds / 3600)}h`
+            }
+
+            if (diff.minutes) {
+                return `${diff.minutes}m`
+            }
+
+            return `${diff.seconds}s`
+        },
         toEmbed: (user, string, color = 2067276) => {
             if (typeof string === 'object') {
                 string.description = `**${user.username}**, ${string.description}`
@@ -157,7 +210,9 @@ const ctxFiller = async (ctx, bot) => {
             auctionHasBid: '`🔷`',
             auctionOwn: '`🔸`',
             auctionIcon: '`▫️`',
+            auctionTrans: '`🔨`',
             accept: '`✅`',
+            pending: '`❗`',
             decline: '`❌`',
             promo: '`✨`'
         }
