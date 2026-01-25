@@ -157,8 +157,10 @@ const sendInteraction = async (ctx, args, color = 'green') => {
         interaction.components.push({ type: 1, components: buttons })
     }
 
-    if (interaction.customButtons)
-        interaction.components.push({ type: 1, components: interaction.customButtons})
+    if (interaction.customButtons) {
+        let chunk = _.chunk(interaction.customButtons, 5)
+        chunk.map(x => interaction.components.push({type: 1, components: x}))
+    }
 
     if(interaction.checks && await interaction.checks())
         return await interaction.onError(ctx.interaction)
