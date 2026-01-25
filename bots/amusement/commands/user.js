@@ -13,8 +13,10 @@ const {
 const {
     fetchUser
 } = require("../helpers/user")
+
 const {
-    getUserCardsLean, mergeUserCards,
+    getUserCardsLean,
+    mergeUserCards,
 } = require("../helpers/userCard")
 
 registerBotCommand('daily', async (ctx) => await daily(ctx))
