@@ -177,22 +177,6 @@ const invalidateOld = async (ctx, user) => {
     }
 }
 
-// rct('pgn', async (ctx) => {
-//     const type = ctx.id.pop()
-//     if (type === 'first') await switchPage(ctx, cur => 0)
-//     if (type === 'last') await switchPage(ctx, cur => Infinity)
-//     if (type === 'next') await switchPage(ctx, cur => cur + 1)
-//     if (type === 'back') await switchPage(ctx, cur => cur - 1)
-//     // if (type === 'end')
-// })
-//
-// rct('cfm', async (ctx, user, args) => {
-//     ctx.id.pop() === 'cfm'? await cfmResolve(ctx, true): await cfmResolve(ctx, false)
-// })
-
-
-
-
 module.exports = {
     send,
     sendInteraction,
