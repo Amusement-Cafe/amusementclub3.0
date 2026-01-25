@@ -7,19 +7,8 @@ const {
     switchPage,
 } = require("./messageCreation")
 
-const {
-    completeTransaction
-} = require("../bots/amusement/helpers/transactions")
-
-registerReaction('cfm', async (ctx) => {
-    await cfmResolve(ctx, true)
-})
-registerReaction('dcl', async (ctx) => {
-    await cfmResolve(ctx, false)
-})
-
-registerReaction(['trans', 'cfm'], async (ctx) => await completeTransaction(ctx))
-registerReaction(['trans', 'dcl'], async (ctx) => await completeTransaction(ctx, true))
+registerReaction('cfm', async (ctx) => await cfmResolve(ctx, true))
+registerReaction('dcl', async (ctx) => await cfmResolve(ctx, false))
 
 registerReaction(['pgn', 'next'], async (ctx) => await switchPage(ctx, cur => cur + 1))
 registerReaction(['pgn', 'back'], async (ctx) =>  await switchPage(ctx, cur => cur - 1))
