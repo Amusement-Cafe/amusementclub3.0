@@ -79,12 +79,12 @@ const stats = async (ctx) => {
         const type = types[stat]
         let table = new AsciiTable3(`Your ${type} stats!`)
         table.setStyle(`unicode-${ctx.user.preferences.display.tables}`)
-        if (statArray[stat].length === 0) {
+        if (!Object.keys(statArray[stat]).length) {
             table.addRow('No data to display for this table!')
             pages.push(`\`\`\`${table.toString()}\`\`\``)
             continue
         }
-        if (stat === 3) {
+        if (stat == 3) {
             const allStat = mapStatToName(ctx, 'totalDailies', allStats.length)
             table.addRow(allStat.name, allStat.count)
         }

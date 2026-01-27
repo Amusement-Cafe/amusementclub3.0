@@ -156,6 +156,11 @@
         },
         {
           "type": 5,
+          "name": "any",
+          "description": "Another Description"
+        },
+        {
+          "type": 5,
           "name": "promo",
           "description": "Another Description"
         }
@@ -387,6 +392,155 @@
           "type": 5,
           "name": "pending",
           "description": "Whether to include all copies of the cards you own in the eval response"
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "summon",
+      "description": "Summon a card you own",
+      "options": [
+        {
+          "type": 3,
+          "name": "card_query",
+          "description": "The card query to filter for the card you want to summon",
+          "required": false
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "guild",
+      "description": "Top Level Guild",
+      "options": [
+        {
+          "type": 1,
+          "name": "info",
+          "description": "info placeholder text",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "lock",
+          "description": "lock placeholder text",
+          "options": [
+            {
+              "type": 3,
+              "name": "collection",
+              "description": "The collection you want to lock the server to",
+              "required": true
+            }
+          ]
+        },
+        {
+          "type": 1,
+          "name": "unlock",
+          "description": "unlock placeholder text",
+          "options": []
+        },
+        {
+          "type": 1,
+          "name": "donate",
+          "description": "Donate tomatoes to the guild balance",
+          "options": [
+            {
+              "type": 4,
+              "name": "amount",
+              "description": "The number of tomatoes you want to donate"
+            }
+          ]
+        },
+        {
+          "type": 1,
+          "name": "convert",
+          "description": "Convert guild lemons to tomatoes",
+          "options": [
+            {
+              "type": 4,
+              "name": "amount",
+              "description": "The number of lemons you want to convert",
+              "required": true
+            }
+          ]
+        },
+        {
+          "type": 2,
+          "name": "set",
+          "description": "Top Level Set",
+          "options": [
+            {
+              "type": 1,
+              "name": "tax",
+              "description": "Set the claim tax for the current guild",
+              "options": [
+                {
+                  "type": 4,
+                  "name": "tax_percentage",
+                  "description": "A whole number to equal the tax percent you want to set",
+                  "minValue": 0,
+                  "maxValue": 100
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "name": "report",
+              "description": "Set the report channel for the current guild",
+              "options": []
+            }
+          ]
+        },
+        {
+          "type": 2,
+          "name": "structure",
+          "description": "Top Level Structure",
+          "options": [
+            {
+              "type": 1,
+              "name": "upgrade",
+              "description": "Upgrade a guild building",
+              "options": []
+            },
+            {
+              "type": 1,
+              "name": "downgrade",
+              "description": "Downgrade a guild building",
+              "options": []
+            }
+          ]
+        },
+        {
+          "type": 2,
+          "name": "managers",
+          "description": "Top Level Managers",
+          "options": [
+            {
+              "type": 1,
+              "name": "add",
+              "description": "Add a user to the guild managers list",
+              "options": [
+                {
+                  "type": 6,
+                  "name": "user_id",
+                  "description": "The user you want to add as manager",
+                  "required": true
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "name": "remove",
+              "description": "Remove a user from the guild managers list",
+              "options": [
+                {
+                  "type": 6,
+                  "name": "user_id",
+                  "description": "The user you want to remove from managers",
+                  "required": true
+                }
+              ]
+            }
+          ]
         }
       ]
     }

@@ -5,6 +5,7 @@ const calculateClaimCost = (ctx, count, claimCount, promo = false) => {
     let price = 0
     let base = promo? 25: 50
     let cost = activeDiscount && !promo? Math.floor(base * (activeDiscount.discount/ 100)): base
+    cost = ctx.isGuildDM(ctx)? cost: cost + ((ctx.guild.tax / 100) * cost)
     let claims = claimCount || 0
     for (let i = 0; i < count; i++) {
         claims++

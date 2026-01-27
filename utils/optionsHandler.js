@@ -37,6 +37,8 @@ const getCommandOptions = async (ctx) => {
         Object.entries(ctx.options).forEach(([name, value]) => {
             switch (name) {
                 case 'alias': args.aliases = value.split(' '); break;
+                case 'amount': args.amount = value; break;
+                case 'any': args.any = value; break;
                 case 'auctions': args.auctions = value; break;
                 case 'card_query': args.cardQuery = parseCardArgs(ctx, ctx.user, value); break;
                 case 'card_query_1': args.forgeQuery1 = parseCardArgs(ctx, ctx.user, value); break;
@@ -57,6 +59,7 @@ const getCommandOptions = async (ctx) => {
                 case 'promo': args.promo = value; break;
                 case 'received': args.received = value; break;
                 case 'remove': args.remove = value; break;
+                case 'tax_percentage': args.tax = value; break;
                 case 'user_id': args.userIDs.push(value); break;
             }
         })
@@ -154,7 +157,7 @@ const parseCardArgs = (ctx, user, cardArgs) => {
                         query.userQuery = true
                         break;
                     case 'new':
-                        query.filters.push(card => flag? card.obtained > user.lastDaily: card.obtained <= user.lastDaily)
+                        query.filters.push(card => flag? card.acquired > user.lastDaily: card.acquired <= user.lastDaily)
                         query.userQuery = true
                         break;
                     case 'rated':

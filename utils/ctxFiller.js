@@ -1,5 +1,7 @@
 const Emitter = require('events')
 
+const _ = require('lodash')
+
 const {
     getCommandOptions
 } = require("./optionsHandler")
@@ -30,6 +32,14 @@ const {
 } = require("../bots/amusement/helpers/cards")
 
 const {
+    fetchOrCreateGuild
+} = require("../bots/amusement/helpers/guild")
+
+const {
+    fetchOrCreateGuildUser
+} = require("../bots/amusement/helpers/guildUser")
+
+const {
     Collections,
     Cards,
     Promos
@@ -38,7 +48,6 @@ const {
 const {
     items
 } = require('../bots/amusement/static/items')
-
 
 
 let globalContext = {}
@@ -60,6 +69,7 @@ const getContext = async (bot) => {
 }
 
 const ctxFiller = async (ctx, bot) => {
+    ctx.cards = [...ctx.cards]
     let args = await getCommandOptions(ctx, ctx.user)
 
     let userCards, globalCards
@@ -73,7 +83,7 @@ const ctxFiller = async (ctx, bot) => {
     }
 
     let userStats = await getUserStats(ctx)
-    return Object.assign({}, ctx, {
+    let newCTX = Object.assign({}, ctx, {
         args,
         items,
         stats: userStats,
@@ -194,6 +204,7 @@ const ctxFiller = async (ctx, bot) => {
         boldName: (name) => {
             return `**${name}**`
         },
+        isGuildDM: (ctx) => ctx.guild === 'DM',
         colors: {
             red: 14356753,
             yellow: 16756480,
@@ -217,6 +228,11 @@ const ctxFiller = async (ctx, bot) => {
             promo: '`✨`'
         }
     })
+    newCTX.guild = await fetchOrCreateGuild(newCTX)
+    if (!newCTX.isGuildDM(newCTX)) {
+        newCTX.guildUser = await fetchOrCreateGuildUser(newCTX)
+    }
+    return newCTX
 }
 
 module.exports = {
