@@ -305,7 +305,8 @@ const showTransactionInfo = async (ctx, modalPage) => {
     entry.lastUsed = new Date()
     if (!entry.infoPages) {
         entry.infoPages = []
-        await Promise.all(entry.transactions.map(async (x, i) => entry.infoPages[i] = await formatTransactionInfo(ctx, x, i)))
+        let entryLength = entry.transactions.length
+        await Promise.all(entry.transactions.map(async (x, i) => entry.infoPages[i] = await formatTransactionInfo(ctx, x, i, entryLength)))
     }
     transactionPages[activeEntry] = entry
     let page = modalPage !== undefined? modalPage: ctx.arguments.pop()
