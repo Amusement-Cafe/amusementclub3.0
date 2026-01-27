@@ -1,0 +1,154 @@
+{
+  "all": [
+    {
+      "description": "Display All Notification Preferences",
+      "label": "Notification Preferences",
+      "value": "notify"
+    },
+    {
+      "description": "Display All Interaction Preferences",
+      "label": "Interaction Preferences",
+      "value": "interact"
+    },
+    {
+      "description": "Display All Profile Preferences",
+      "label": "Profile Preferences",
+      "value": "profile"
+    },
+    {
+      "description": "Display All Display Preferences",
+      "label": "Display Preferences",
+      "value": "display"
+    }
+  ],
+  "interact": [
+    {
+      "description": "This option changes whether another user can use the /has command on you",
+      "label": "Can Has",
+      "value": "interact_canHas"
+    },
+    {
+      "description": "This option changes whether another user can use the /diff command on you",
+      "label": "Can Diff",
+      "value": "interact_canDiff"
+    },
+    {
+      "description": "This option changes whether another user can sell cards to you",
+      "label": "Can Sell",
+      "value": "interact_canSell"
+    }
+  ],
+  "notify": [
+    {
+      "description": "This option changes whether you receive a DM when your auction receives an initial bid",
+      "label": "First Bid On Your Auctions",
+      "value": "notify_aucBidMe"
+    },
+    {
+      "description": "This option changes whether you receive a DM when you are outbid on an auction",
+      "label": "Outbid On Auction Notification",
+      "value": "notify_aucOutbid"
+    },
+    {
+      "description": "This option changes whether you receive a DM when your auction receives a new highest bid",
+      "label": "New Bid On Auction Notification",
+      "value": "notify_aucNewBid"
+    },
+    {
+      "description": "This option changes whether you receive a DM when your auction ends",
+      "label": "Auction End Notification",
+      "value": "notify_aucEnd"
+    },
+    {
+      "description": "This option changes whether you receive a DM when a new bot announcement is made",
+      "label": "New Bot Announcements",
+      "value": "notify_announce"
+    },
+    {
+      "description": "This option changes whether you receive a DM when your daily is ready",
+      "label": "Daily Ready Notifications",
+      "value": "notify_daily"
+    },
+    {
+      "description": "This option changes whether you receive a DM when you can vote for the bot",
+      "label": "Vote Ready Notifications",
+      "value": "notify_vote"
+    },
+    {
+      "description": "This option changes whether you receive a DM when a collection is completed or completion is lost",
+      "label": "Collection Completion Status Notifications",
+      "value": "notify_completed"
+    },
+    {
+      "description": "This option changes whether you receive a DM when an effect expires or comes off cooldown",
+      "label": "Effect Expires Or Comes Off Cooldown",
+      "value": "notify_effectEnd"
+    }
+  ],
+  "profile": [
+    {
+      "description": "",
+      "label": "Set a custom bio",
+      "value": "profile_bio"
+    },
+    {
+      "description": "",
+      "label": "Choose a custom title",
+      "value": "profile_title"
+    },
+    {
+      "description": "",
+      "label": "Set a custom color",
+      "value": "profile_color",
+      "premium": true
+    },
+    {
+      "description": "",
+      "label": "Display your favorite card",
+      "value": "profile_favCard",
+      "premium": true
+    },
+    {
+      "description": "",
+      "label": "Set your favorite completed collection",
+      "value": "profile_favComplete",
+      "premium": true
+    },
+    {
+      "description": "",
+      "label": "Set your favorite clouted collection",
+      "value": "profile_favClout",
+      "premium": true
+    }
+  ],
+  "display": [
+    {
+      "description": "",
+      "label": "Set a custom table display style",
+      "value": "display_tables",
+      "premium": true
+    }
+  ],
+  "tables": [
+    {
+      "description": "",
+      "label": "Set your table displays to single line borders",
+      "value": "display_tables_single"
+    },
+    {
+      "description": "",
+      "label": "Set your table displays to double line borders",
+      "value": "display_tables_double"
+    },
+    {
+      "description": "",
+      "label": "Set your table displays to a mix of single and double line borders",
+      "value": "display_tables_mix"
+    },
+    {
+      "description": "",
+      "label": "Set your table displays to round borders",
+      "value": "display_tables_round"
+    }
+  ]
+}

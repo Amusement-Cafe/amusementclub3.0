@@ -313,6 +313,11 @@
     },
     {
       "type": 1,
+      "name": "preferences",
+      "description": "Access the preferences menus"
+    },
+    {
+      "type": 1,
       "name": "miss",
       "description": "Check your missing cards",
       "options": [

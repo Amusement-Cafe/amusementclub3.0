@@ -1,0 +1,98 @@
+{
+  "mainMenu": {
+    "title": "Main Menu Title",
+    "description": "Select A Preference Menu Below"
+  },
+  "aucBidMe": {
+    "title": "Auction First Bid Notification",
+    "description": "Receive a DM notification when one of your auctions receives an initial bid."
+  },
+  "aucOutbid": {
+    "title": "Auction Outbid Notification",
+    "description": "Receive a DM notification when you are outbid on an auction."
+  },
+  "aucNewBid": {
+    "title": "Auction New High Bid Notification",
+    "description": "Receive a DM notification when your previously bid on auction receives a new higher bid."
+  },
+  "aucEnd": {
+    "title": "Auction End Notification",
+    "description": "Receive a DM notification when one of your auctions ends."
+  },
+  "announce": {
+    "title": "Bot Announcement Notification",
+    "description": "Receive a DM notification when there is a new bot announcement or notice."
+  },
+  "daily": {
+    "title": "Daily Ready Notification",
+    "description": "Receive a DM notification when you can claim your `/daily`"
+  },
+  "vote": {
+    "title": "Vote Ready Notification",
+    "description": "Receive a DM notification when you can vote for the bot."
+  },
+  "completed": {
+    "title": "Collection Completion/Incomplete Notification",
+    "description": "Receive a DM notification when you collect all the cards for a collection, as well as when you lose completion for a collection."
+  },
+  "effectEnd": {
+    "title": "Effect Expires/Comes Off Cooldown Notification",
+    "description": "Receive a DM notification when an effect of yours has expired or comes off cooldown."
+  },
+  "canHas": {
+    "title": "Allow Others To Use /has On You",
+    "description": "Enable or disable the ability for other users to use the `/has` command on you."
+  },
+  "canDiff": {
+    "title": "Allow Others To Use /diff On You",
+    "description": "Enable or disable the ability for other users to use the `/diff` command on you."
+  },
+  "canSell": {
+    "title": "Allow Others To Sell You Cards",
+    "description": "Enable or disable the ability for other users to sell you cards via `/sell`"
+  },
+  "bio": {
+    "title": "Bio Setting",
+    "description": "Open the modal below to set your bio"
+  },
+  "title": {
+    "title": "Title Setting",
+    "description": "Use the select menu below to set your title"
+  },
+  "color": {
+    "title": "Color Setting",
+    "description": "Open the modal below to set your color"
+  },
+  "favCard": {
+    "title": "Favorite Card",
+    "description": "Open the modal below to set your Favorite Card"
+  },
+  "favComplete": {
+    "title": "Favorite Completion",
+    "description": "Open the modal below to set your Favorite Collection Completion"
+  },
+  "favClout": {
+    "title": "Favorite Clouted Collection",
+    "description": "Open the modal below to set your Favorite Clouted Collection"
+  },
+  "tables": {
+    "title": "Table Display Setting",
+    "description": "Use the select menu below to change your table display style\nA display of your currently selected option is below"
+  },
+  "notify": {
+    "title": "Notification Options",
+    "description": "Use the select menu below to navigate to a Notification option.\nNotification options manage when the bot will DM you."
+  },
+  "interact": {
+    "title": "Interaction Settings",
+    "description": "Use the select menu below to navigate to an Interaction option.\nInteraction options change how others can interact with you."
+  },
+  "profile": {
+    "title": "Profile Settings",
+    "description": "Use the select menu below to navigate to a Profile option"
+  },
+  "display": {
+    "title": "Display Settings",
+    "description": "Use the select menu below to navigate to a Display option"
+  }
+}
