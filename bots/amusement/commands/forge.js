@@ -82,6 +82,7 @@ const processForge = async (ctx) => {
     let card2 = ctx.cards.find(x => x.cardID == cardIDs[1])
 
     if (stillOwned.some(x => !x) || !card1 || !card2) {
+        await ctx.interaction.defer(64)
         return ctx.send(ctx, {
             description: `Cannot find one of the cards from your forge! Please try your original command again.`,
             color: ctx.colors.red
@@ -91,19 +92,22 @@ const processForge = async (ctx) => {
     let isPromo = ctx.collections.some(x => x.collectionID === card1.collectionID && card2.collectionID === x.collectionID && x.promo)
     let newCard = ctx.cards.filter(x => x.rarity === card1.rarity && (x.cardID !== card1.cardID && x.cardID !== card2.cardID)).filter(x => isPromo? !x.canDrop: x.canDrop)
     let cost = card1.rarity * pricePerRarity
-
     if (isPromo || card1.collectionID === card2.collectionID) {
         newCard = newCard.filter(x => x.collectionID === card1.collectionID)
     }
 
     newCard = _.sample(newCard)
 
+    if (!newCard) {
+        await ctx.interaction.defer(64)
+        return ctx.send(ctx, `Something has gone wrong with this forge, a new card could not be found! Please try your forge again.`, 'red')
+    }
+
     await ctx.updateStat(ctx, `forge`, 1)
     await ctx.updateStat(ctx, `forge${card1.rarity}`, 1)
     await ctx.updateStat(ctx, 'tomatoOut', cost)
     ctx.user.tomatoes -= cost
     await ctx.user.save()
-
     let alreadyOwned = ctx.userCards.find(x => x.cardID === newCard.cardID)
 
     await removeUserCards(ctx.user.userID, cardIDs)
