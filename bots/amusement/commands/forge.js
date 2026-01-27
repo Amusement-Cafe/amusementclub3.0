@@ -39,20 +39,18 @@ const forge = async (ctx) => {
     }
 
     let forge1 = ctx.userCards[0][0]
-    let forge2 = ctx.userCards[1][0]
+    let forge2 = ctx.userCards[1].filter(x => x.rarity === forge1.rarity && x.cardID !== forge1.cardID)
 
-    if (forge1 === forge2 && ctx.userCards[1].length === 1) {
-        return ctx.send(ctx, `You cannot forge the same card with itself! Each card needs to be unique.`, 'red')
+    if (!forge2.length) {
+        return ctx.send(ctx, `Cannot find enough unique cards to forge! The only found card was ${ctx.formatName(ctx, forge1)}`, 'red')
     }
+    forge2 = forge2[0]
+
     if (forge1.rarity !== forge2.rarity) {
         return ctx.send(ctx, `Both cards need to be the same rarity to forge!`, 'red')
     }
     if (forge1.rarity === 5 || forge2.rarity === 5) {
         return ctx.send(ctx, `You cannot forge legendary cards!`, 'red')
-    }
-
-    if (forge1 === forge2) {
-        forge2 = ctx.userCards[1][1]
     }
 
     let cfmForge = new Button(`forge-${forge1.cardID}c${forge2.cardID}`).setLabel('Confirm').setStyle(3)
