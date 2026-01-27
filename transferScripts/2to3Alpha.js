@@ -163,7 +163,7 @@ const transferCollections = async (db) => {
         newCol.origin = col.origin
         newCol.aliases = col.aliases
         newCol.promo = col.promo || false
-        if (newCol.promo) {
+        if (newCol.promo || col.rarity < 0) {
             newCol.inClaimPool = false
         }
         newCol.compressed = col.compressed
@@ -201,7 +201,7 @@ const transferCards = async (db) => {
         card.ratingSum = c.ratingsum
         card.timesRated = c.usercount
         card.ownerCount = c.ownercount
-        card.canDrop = newCol.inClaimPool? true: json.level !== 5
+        card.canDrop = newCol.inClaimPool && json.level !== 5
         card.meta = {
             booruID: c.meta.booruid,
             booruScore: c.meta.booruscore,
