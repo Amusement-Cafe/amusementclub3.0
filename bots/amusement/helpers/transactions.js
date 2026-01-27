@@ -22,7 +22,7 @@ const createTransaction = async (ctx, cardIDs, toID = 'bot', cost) => {
     trans.fromID = ctx.user.userID
     trans.toID = toID
     trans.status = 'pending'
-    trans.guildID = ctx.guildID? ctx.guildID : 'DM'
+    trans.guildID = ctx.isGuildDM(ctx)? ctx.guild: ctx.guild.guildID
     trans.cost = cost
     trans.cardIDs = cardIDs
     trans.dateCreated = new Date()
@@ -36,7 +36,7 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
     ctx.arguments = ctx.arguments[0].replaceAll(/O/g, "-")
     const transaction = await Transaction.findOne({transactionID: ctx.arguments})
 
-    if (!transaction || transaction.status === 'completed') {
+    if (!transaction || transaction.status === 'confirmed') {
         return ctx.send(ctx, {
             embed: {
                 description: `Transaction cannot be found or it is already completed!`,
@@ -136,7 +136,7 @@ const formatTransactions = async (ctx, transaction) => {
     const otherUser = await fetchUser(from? transaction.toID: transaction.fromID)
     return `[~${ctx.timeDisplay(ctx, transaction.dateCreated)}] ${symbol} ${cardDisplay} ${from? '`->`': '`<-`'} **${otherUser? otherUser.username: 'BOT'}**`
 }
-const formatTransactionInfo = async (ctx, transaction, index) => {
+const formatTransactionInfo = async (ctx, transaction, index, length) => {
     const fromUser = await fetchUser(transaction.fromID)
     const toUser = await fetchUser(transaction.toID)
     const symbol = transaction.status === 'confirmed'? ctx.symbols.accept: transaction.status === 'pending'? ctx.symbols.pending: transaction.status === 'auction'? ctx.symbols.auctionTrans: ctx.symbols.decline
@@ -155,6 +155,7 @@ const formatTransactionInfo = async (ctx, transaction, index) => {
         value: transaction.cardIDs.map(x => ctx.formatName(ctx, ctx.cards[x])).slice(0, 10)[0]
     })
     embed.color = ctx.colors.blue
+    embed.footer = {text: `Page ${index + 1}/${length}`}
     return embed
 }
 
