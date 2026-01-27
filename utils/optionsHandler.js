@@ -48,6 +48,7 @@ const getCommandOptions = async (ctx) => {
                         let close = closest(x, _.flattenDeep(ctx.collections.map(y => y.aliases)))
 
                         if (distance(x, close) <= 3) {
+                            close = ctx.collections.find(y => y.aliases.includes(close)).collectionID
                             return close
                         }
                         return false
