@@ -25,6 +25,7 @@ const eval = async (ctx, many = false, global = false) => {
     if (!many) {
         return ctx.send(ctx, `${ctx.formatName(ctx, ctx.userCards[0])} is worth ${ctx.boldName(ctx.fmtNum(ctx.userCards[0].eval * (multi? ctx.userCards[0].amount: 1)))} ${ctx.symbols.tomato}`, 'blue')
     }
-    evals = ctx.userCards.reduce((acc, card) => {return acc + (multi? card.amount * card.eval: card.eval)}, 0)
-    return ctx.send(ctx, `Your query consisting of ${ctx.boldName(ctx.fmtNum(ctx.userCards.length))} card(s) is worth ${ctx.boldName(ctx.fmtNum(evals))} ${ctx.symbols.tomato}`)
+    let totalCopies = 0
+    evals = ctx.userCards.reduce((acc, card) => {totalCopies += card.amount; return acc + (multi? card.amount * card.eval: card.eval)}, 0)
+    return ctx.send(ctx, `Your query consisting of ${ctx.boldName(ctx.fmtNum(totalCopies))} card is worth ${ctx.boldName(ctx.fmtNum(evals))} ${ctx.symbols.tomato}`)
 }
