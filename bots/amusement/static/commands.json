@@ -548,6 +548,19 @@
           ]
         }
       ]
+    },
+    {
+      "type": 1,
+      "name": "info",
+      "description": "View info about a card",
+      "options": [
+        {
+          "type": 3,
+          "name": "card_query",
+          "description": "Filter for a specific card",
+          "required": true
+        }
+      ]
     }
   ]
 }
