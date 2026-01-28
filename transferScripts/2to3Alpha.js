@@ -61,7 +61,7 @@ const main = async () => {
     await transferUserSlots(db)
     await transferUserStats(db)
     await transferUserWishlists(db)
-    await updateEvalStats()
+    await updateEvalStats(db)
     const end = new Date()
     const timeTaken = (end - start) / 1000 / 60
     console.log(`Process took ${timeTaken} minutes to complete, or ${timeTaken / 60} hours`)
@@ -201,7 +201,7 @@ const transferCards = async (db) => {
         card.ratingSum = c.ratingsum
         card.timesRated = c.usercount
         card.ownerCount = c.ownercount
-        card.canDrop = newCol.inClaimPool && json.level !== 5
+        card.canDrop = newCol.inClaimPool
         card.meta = {
             booruID: c.meta.booruid,
             booruScore: c.meta.booruscore,
@@ -759,7 +759,7 @@ const transferUserWishlists = async (db) => {
     console.log(`Finished Processing User Wishlists`)
 }
 
-const updateEvalStats = async () => {
+const updateEvalStats = async (db) => {
     console.log('Gathering Wishlists')
     const wishlists = await UserWishlists.find().lean()
     await Promise.all(wishlists.map(async (w, i) => {
@@ -769,6 +769,7 @@ const updateEvalStats = async () => {
     console.log(`Finished Processing User Wishlists`)
     console.log(`Gathering Cards`)
     let cards = await Cards.find()
+    const cardInfos = db.collection('cardinfos').find()
     for (let c of cards) {
         console.log(`Processing card ${c.cardID}`)
         console.log(`Finding card ${c.cardID} in User Cards`)
@@ -805,6 +806,7 @@ const updateEvalStats = async () => {
             })
         }
         console.log(`Finding Card in Auctions`)
+        const oldAucs = cardInfos.filter(x => c.cardID === x.id)
         const cAucs = await Auctions.find({cardID: c.cardID, ended: true, cancelled: false}).lean()
         for (const cAuc of cAucs) {
             if (cAuc.bids.length === 0) {
@@ -819,6 +821,16 @@ const updateEvalStats = async () => {
             }
         }
         c.stats.auctionCount = cAucs.length
+        if (oldAucs) {
+            if (oldAucs.aucevalinfo?.evalprices.length) {
+                oldAucs.aucevalinfo.evalprices.map(x => c.stats.auctionSales.push({cost: x, date: new Date()}))
+
+            }
+
+            if (oldAucs.aucevalinfo?.auccount) {
+                c.stats.auctionCount += oldAucs.aucevalinfo.auccount
+            }
+        }
         console.log(`Finished with card ${c.cardID}`)
         await c.save()
         console.log(`Saved Card ${c.cardID}`)
