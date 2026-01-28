@@ -111,8 +111,8 @@ const setGuildLock = async (ctx, unlock = false) => {
     if (!ctx.args.cols[0]) {
         return ctx.send(ctx, `There was an error finding a collection for \`${ctx.args.colQuery}\`. Please try your search again!`, 'red')
     }
-    let col = getCollectionByAlias(ctx, ctx.args.cols[0])
-    ctx.guild.lockCol = col[0].collectionID
+    let col = ctx.args.cols[0]
+    ctx.guild.lockCol = col.collectionID
     await ctx.guild.save()
     console.log(ctx.args)
     console.log(ctx.args.cols)
