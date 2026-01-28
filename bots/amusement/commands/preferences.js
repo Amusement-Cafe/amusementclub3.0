@@ -55,14 +55,34 @@ const preferenceDisplay = async (ctx) => {
     const [category, preference] = ctx.arguments[0].split('_')
     let embed = Object.assign({}, embeds[preference])
     const customButtons = [home]
-
-    if (category === 'profile') {
-        if (!ctx.user.roles.some(x => x === 'admin')) {
-            await ctx.interaction.defer(64)
-            return ctx.send(ctx, `This is currently an admin only command.`)
-        }
+    let col
+    if (category === 'profile' && preference !== 'title') {
         const openModal = new Button(`preference_modal-${category}-${preference}`).setStyle(1).setLabel('Open Modal')
         customButtons.push(openModal)
+        embed.description +=`\nCurrently this option is set to `
+        switch (preference) {
+            case 'bio':
+                embed.description += ctx.boldName(ctx.user.preferences.profile.bio) || 'nothing!'
+                break;
+            case 'color':
+                embed.description += `${ctx.boldName(ctx.user.preferences.profile.color)}. Which is now the color of the current embed!`
+                embed.color = ctx.user.preferences.profile.color
+                break;
+            case 'favClout':
+                col = ctx.collections.find(x => x.collectionID === ctx.user.preferences.profile.favClout)
+                embed.description += col? ctx.boldName(col.name): ' nothing!'
+                break;
+            case 'favComplete':
+                col = ctx.collections.find(x => x.collectionID === ctx.user.preferences.profile.favComplete)
+                embed.description += col? ctx.boldName(col.name): ' nothing!'
+                break;
+            case 'favCard':
+                embed.description += ctx.user.preferences.profile.card? ctx.formatName(ctx, ctx.cards[ctx.user.preferences.profile.card]): 'nothing!'
+                break
+            default:
+                embed.description += 'ERROR! If you see this, report it!'
+
+        }
         return ctx.send(ctx, {
             embed,
             customButtons,
@@ -83,6 +103,12 @@ const preferenceDisplay = async (ctx) => {
             customButtons,
             embed,
             selection: [select]
+        })
+    } else if (preference === 'title') {
+        return ctx.send(ctx, {
+            embed: {description: `WIP`},
+            parent: true,
+            customButtons,
         })
     } else {
         customButtons.push(new Button(`preference_toggle-${category}-${preference}-test`).setStyle(4).setLabel('Disable').setOff(!ctx.user.preferences[category][preference]))
@@ -116,6 +142,10 @@ const preferenceToggle = async (ctx) => {
 }
 
 const preferenceModal = async (ctx) => {
+    if (!ctx.user.roles.some(x => x === 'admin')) {
+        await ctx.interaction.defer(64)
+        return ctx.send(ctx, `This is currently an admin only modal.`)
+    }
     const [category, preference] = ctx.arguments
     const modal = profileModals[preference]
     return ctx.interaction.createModal({
