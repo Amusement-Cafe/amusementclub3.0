@@ -202,7 +202,7 @@ const parseCardArgs = (ctx, user, cardArgs) => {
     if(query.antiCols.length > 0) query.filters.push(c => !query.antiCols.includes(c.collectionID))
     if(query.antiLevels.length > 0) query.filters.push(c => !query.antiLevels.includes(c.rarity))
     if(query.keywords.length > 0)
-        query.filters.push(c => (new RegExp(`(_|^)${query.keywords.map(k => k.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('.*')}`, 'gi')).test(c.cardName))
+        query.filters.push(c => (new RegExp(`( |^)${query.keywords.map(k => k.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')).join('.*')}`, 'gi')).test(c.cardName))
 
     if (!sort)
         query.sort = firstBy((a, b) => b.rarity - a.rarity).thenBy("collectionID").thenBy("cardName")
