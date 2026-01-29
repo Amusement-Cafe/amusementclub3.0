@@ -561,6 +561,134 @@
           "required": true
         }
       ]
+    },
+    {
+      "type": 1,
+      "name": "fav",
+      "description": "Top Level Fav",
+      "options": [
+        {
+          "type": 1,
+          "name": "one",
+          "description": "Favorite a single card",
+          "options": [
+            {
+              "type": 3,
+              "name": "card_query",
+              "description": "The card query to filter for your card to favorite",
+              "required": true
+            }
+          ]
+        },
+        {
+          "type": 1,
+          "name": "many",
+          "description": "Favorite multiple cards at once",
+          "options": [
+            {
+              "type": 3,
+              "name": "card_query",
+              "description": "The card query to filter for your cards to favorite"
+            }
+          ]
+        },
+        {
+          "type": 2,
+          "name": "remove",
+          "description": "Top Level Fav Remove",
+          "options": [
+            {
+              "type": 1,
+              "name": "one",
+              "description": "Remove a single card from your favorite list",
+              "options": [
+                {
+                  "type": 3,
+                  "name": "card_query",
+                  "description": "The card query to filter for your card to remove",
+                  "required": true
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "name": "many",
+              "description": "Remove multiple cards from your favorite list",
+              "options": [
+                {
+                  "type": 3,
+                  "name": "card_query",
+                  "description": "The card query to filter for your cards to remove from favorites"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "lock",
+      "description": "Top Level Lock",
+      "options": [
+        {
+          "type": 1,
+          "name": "one",
+          "description": "Lock a single card",
+          "options": [
+            {
+              "type": 3,
+              "name": "card_query",
+              "description": "The card query to filter for your card to lock",
+              "required": true
+            }
+          ]
+        },
+        {
+          "type": 1,
+          "name": "many",
+          "description": "Lock multiple cards at once",
+          "options": [
+            {
+              "type": 3,
+              "name": "card_query",
+              "description": "The card query to filter for your cards to lock"
+            }
+          ]
+        },
+        {
+          "type": 2,
+          "name": "remove",
+          "description": "Top Level Lock Remove",
+          "options": [
+            {
+              "type": 1,
+              "name": "one",
+              "description": "Remove a single card from your lock list",
+              "options": [
+                {
+                  "type": 3,
+                  "name": "card_query",
+                  "description": "The card query to filter for your card to remove",
+                  "required": true
+                }
+              ]
+            },
+            {
+              "type": 1,
+              "name": "many",
+              "description": "Remove multiple cards from your lock list",
+              "options": [
+                {
+                  "type": 3,
+                  "name": "card_query",
+                  "description": "The card query to filter for your cards to remove from your lock list"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 }
