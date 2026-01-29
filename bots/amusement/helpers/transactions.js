@@ -140,13 +140,15 @@ const formatTransactionInfo = async (ctx, transaction, index, length) => {
     const fromUser = await fetchUser(transaction.fromID)
     const toUser = await fetchUser(transaction.toID)
     const symbol = transaction.status === 'confirmed'? ctx.symbols.accept: transaction.status === 'pending'? ctx.symbols.pending: transaction.status === 'auction'? ctx.symbols.auctionTrans: ctx.symbols.decline
+    let guild = await ctx.bot.guilds.get(transaction.guildID)
+    let guildName = guild? guild.name: 'DMs or Deleted Server'
     const embed = {}
     embed.title = `Transaction [${transaction.transactionID}] (${ctx.timeDisplay(ctx, transaction.dateCreated)})`
     embed.description = `Cards: ${ctx.boldName(transaction.cardIDs.length)}
     Price: ${ctx.boldName(ctx.fmtNum(transaction.cost))}
     From: ${fromUser.username}
-    To: ${toUser.username}
-    On server: There are no servers atm
+    To: ${ctx.boldName(toUser.username || 'BOT')}
+    On server: ${ctx.boldName(guildName)}
     Status: ${symbol}${transaction.status}
     Date: <t:${Math.floor(new Date(transaction.dateCreated).getTime() / 1000)}:F>`.replace(/\s\s+/gm, '\n')
     embed.fields = []
