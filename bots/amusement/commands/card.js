@@ -28,7 +28,6 @@ const summonCard = async (ctx) => {
 
 const cardInfo = async (ctx) => {
     if (!ctx.globalCards.length) {
-        console.log(ctx.args)
         return ctx.send(ctx, `No cards found matching your query \`${ctx.options.card_query}\`. Please check your query and try again!`, 'red')
     }
     const card = ctx.globalCards[0]
@@ -49,7 +48,11 @@ const cardInfo = async (ctx) => {
     }
 
     if (card.ownerCount > 0) {
-        response.push(`Owner Count: ${ctx.boldName(card.ownerCount)}`)
+        response.push(`Owner Count: ${ctx.boldName(ctx.fmtNum(card.ownerCount))}`)
+    }
+
+    if (card.stats.totalCopies) {
+        response.push(`Total Copies: ${ctx.boldName(ctx.fmtNum(card.stats.totalCopies))}`)
     }
 
     if (card.stats.auctionCount > 0) {
@@ -58,7 +61,6 @@ const cardInfo = async (ctx) => {
             response.push(`Last 3 Auction Prices: ${card.stats.auctionSales.map(x => `${ctx.boldName(ctx.fmtNum(x.cost))}${ctx.symbols.tomato}`).join(' ')}`)
         }
     }
-    console.log(card.stats)
 
     response.push(`CardID: ${ctx.boldName(card.cardID)}`)
     embed.description = response.join('\n')
