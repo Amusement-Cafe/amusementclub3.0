@@ -17,6 +17,8 @@ const embeds = require('../static/embeds/store.json')
 
 const homeButton = new Button('store_all').setLabel('Main Menu').setStyle(2)
 
+const limit = 24
+
 registerBotCommand(['store'], async (ctx) => await storeStart(ctx))
 
 registerReaction(['store', 'all'], async (ctx) => await storeStart(ctx, true))
@@ -72,7 +74,7 @@ const displayItem = async (ctx, disable = false) => {
         style = 4
     }
     if (category === 'ticket') {
-        let limit = 24
+
         if (ctx.stats.storeTicket >= limit) {
             label = 'Daily Purchase Limit Reached'
             disable = true
@@ -112,6 +114,9 @@ const buyItem = async (ctx) => {
 const purchaseTicket = async (ctx, item) => {
     if (ctx.user.lemons < item.cost) {
         return ctx.send(ctx, `You have insufficient lemons to purchase ${ctx.boldName(ctx.arguments[0])}`, 'red')
+    }
+    if (ctx.stats.storeTicket >= limit) {
+        return await displayItem(ctx, false)
     }
     await addItem(ctx, item)
     await ctx.interaction.channel.createMessage({
