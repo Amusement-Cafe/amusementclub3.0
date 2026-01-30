@@ -4,13 +4,13 @@ const UserCards = require('../../../db/userCard')
 registerBotCommand(['fav', 'one'], async (ctx) => await fav(ctx), {withCards: true})
 registerBotCommand(['fav', 'many'], async (ctx) => await fav(ctx, true), {withCards: true})
 
-registerBotCommand(['fav', 'remove', 'one'], async (ctx) => await fav(ctx, true, true), {withCards: true})
+registerBotCommand(['fav', 'remove', 'one'], async (ctx) => await fav(ctx, false, true), {withCards: true})
 registerBotCommand(['fav', 'remove', 'many'], async (ctx) => await fav(ctx, true, true), {withCards: true})
 
 registerBotCommand(['lock', 'one'], async (ctx) => await lock(ctx), {withCards: true})
 registerBotCommand(['lock', 'many'], async (ctx) => await lock(ctx, true), {withCards: true})
 
-registerBotCommand(['lock', 'remove', 'one'], async (ctx) => await lock(ctx, true, true), {withCards: true})
+registerBotCommand(['lock', 'remove', 'one'], async (ctx) => await lock(ctx, false, true), {withCards: true})
 registerBotCommand(['lock', 'remove', 'many'], async (ctx) => await lock(ctx, true, true), {withCards: true})
 
 const fav = async (ctx, many = false, remove = false) => {
@@ -32,7 +32,6 @@ const fav = async (ctx, many = false, remove = false) => {
         },
         confirmation: true,
         onConfirm: () => favOrUnfav(ctx, selection.map(x => x.cardID), remove),
-        onDecline: () => {}
     })
 }
 
@@ -55,7 +54,6 @@ const lock = async (ctx, many = false, remove = false) => {
         },
         confirmation: true,
         onConfirm: () => lockOrUnlock(ctx, selection.map(x => x.cardID), remove),
-        onDecline: () => {}
     })
 }
 
