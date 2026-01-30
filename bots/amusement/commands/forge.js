@@ -82,10 +82,12 @@ const processForge = async (ctx) => {
     let card2 = ctx.cards.find(x => x.cardID == cardIDs[1])
 
     if (stillOwned.some(x => !x) || !card1 || !card2) {
-        await ctx.interaction.defer(64)
         return ctx.send(ctx, {
-            description: `Cannot find one of the cards from your forge! Please try your original command again.`,
-            color: ctx.colors.red
+            embed: {
+                description: `Cannot find one of the cards from your forge! Please try your original command again.`,
+                color: ctx.colors.red
+            },
+            parent: true
         })
     }
 
