@@ -14,7 +14,14 @@ const {
 const {
     fetchUser
 } = require("../helpers/user")
-const {Button} = require("../helpers/componentBuilders");
+
+const {
+    Button
+} = require("../helpers/componentBuilders")
+
+const {
+    generateNewID
+} = require("../../../utils/misc")
 
 let transactionPages = []
 
@@ -90,14 +97,14 @@ const sell = async (ctx, many = false) => {
         return ctx.send(ctx, `Are you sure you want to sell this card?\nThe card you have chosen is locked and cannot be sold unless you use the \`-locked\` query in your card query!`, 'red')
     }
 
+    if (ctx.options.amount && many) {
+        saleCards = saleCards.slice(0, ctx.options.amount < saleCards.length? ctx.options.amount : saleCards.length)
+    }
+
     let cost = saleCards.reduce((a, b) => a + (b.eval), 0)
 
     if (ctx.options.amount && !many) {
         cost = cost * ctx.options.amount
-    }
-
-    if (ctx.options.amount && many) {
-        saleCards = saleCards.slice(0, ctx.options.amount < saleCards.length? ctx.options.amount : saleCards.length)
     }
 
     if (!toUser) {
@@ -139,8 +146,8 @@ const sell = async (ctx, many = false) => {
 }
 
 const listTransaction = async (ctx) => {
-    timeoutTransactionPages(ctx)
-    filterDuplicatePages(ctx)
+    transactionPages = timeoutTransactionPages(ctx)
+    transactionPages = filterDuplicatePages(ctx)
     let userTransactions = await getUserTransactions(ctx)
     let pageArray = []
     if (ctx.args?.auctions !== undefined) {
@@ -171,16 +178,18 @@ const listTransaction = async (ctx) => {
     const customPgnButtons = []
     const pages = ctx.getPages(pageArray)
 
+    const uniqueID = generateNewID()
+    const buttonID = uniqueID.replaceAll(/-/g, "O")
     if (pages.length > 1) {
-        customPgnButtons.push(new Button(`trans_list-${ctx.user.userID}-last`).setStyle(1).setLabel('Back'))
-        customPgnButtons.push(new Button(`trans_list-${ctx.user.userID}-1`).setStyle(1).setLabel('Next'))
+        customPgnButtons.push(new Button(`trans_list-${buttonID}-last`).setStyle(1).setLabel('Back'))
+        customPgnButtons.push(new Button(`trans_list-${buttonID}-1`).setStyle(1).setLabel('Next'))
     }
     if (pages.length >= 15) {
-        customPgnButtons.push(new Button(`trans_modal-${ctx.user.userID}`).setStyle(2).setLabel('Jump To...'))
+        customPgnButtons.push(new Button(`trans_modal-${buttonID}`).setStyle(2).setLabel('Jump To...'))
     }
 
     const customButtons = []
-    customButtons.push(new Button(`trans_info-${ctx.user.userID}-0`).setStyle(2).setLabel('Show Info'))
+    customButtons.push(new Button(`trans_info-${buttonID}-0`).setStyle(2).setLabel('Show Info'))
 
     const msg = await ctx.send(ctx, {
         pages,
@@ -191,12 +200,14 @@ const listTransaction = async (ctx) => {
         customPgnButtons,
         customButtons
     })
-    transactionPages.push({userID: ctx.user.userID, messageID: msg.message.id, pageList: pages, transactions: userTransactions, lastUsed: new Date()})
+    transactionPages.push({userID: ctx.user.userID, messageID: msg.message.id, pageList: pages, transactions: userTransactions, lastUsed: new Date(), uniqueID: uniqueID})
 }
 
 const listTransactionPage = async (ctx, modalPage) => {
     timeoutTransactionPages(ctx)
-    let activeEntry = transactionPages.findIndex(x => x.userID === ctx.arguments[0]) >= 0? transactionPages.findIndex(x => x.userID === ctx.user.userID): false
+    let uniquePagesID = ctx.arguments[0]
+    let activeEntryIndex = transactionPages.findIndex(x => x.uniqueID === uniquePagesID.replaceAll('O', '-')) >= 0? transactionPages.findIndex(x => x.uniqueID === uniquePagesID.replaceAll('O', '-')): false
+    let activeEntry = transactionPages[activeEntryIndex]
     if (activeEntry === false) {
         await ctx.send(ctx, {
             embed: ctx.interaction.message.embeds[0],
@@ -205,25 +216,25 @@ const listTransactionPage = async (ctx, modalPage) => {
         return ctx.interaction.channel.createMessage({
             embeds: [
                 {
-                    description: `The transactions list you have attempted to interact with has expired. They expire after 15 minutes of inactivity or after a bot restart. Please run the command again!`,
+                    description: `The transactions list you have attempted to interact with has expired. They expire after 15 minutes of inactivity or after a bot restart/secondary command. Please run the command again!`,
                     color: ctx.colors.red
                 }
             ],
             messageReference: {messageID: ctx.interaction.message.id}
         })
     }
-    let entry = transactionPages[activeEntry]
+    let entry = transactionPages[activeEntryIndex]
     entry.lastUsed = new Date()
-    transactionPages[activeEntry] = entry
+    transactionPages[activeEntryIndex] = entry
     let page = modalPage !== undefined? modalPage: ctx.arguments.pop()
     page = page === 'first'? 0: page === 'last'? entry.pageList.length - 1 : Number(page)
     const customPgnButtons = []
     const nextPage = page + 1 >= entry.pageList.length? 'first': page + 1
     const backPage = page - 1 < 0? 'last' : page - 1
-    customPgnButtons.push(new Button(`trans_list-${ctx.user.userID}-${backPage}`).setStyle(1).setLabel('Back'))
-    customPgnButtons.push(new Button(`trans_list-${ctx.user.userID}-${nextPage}`).setStyle(1).setLabel('Next'))
+    customPgnButtons.push(new Button(`trans_list-${uniquePagesID}-${backPage}`).setStyle(1).setLabel('Back'))
+    customPgnButtons.push(new Button(`trans_list-${uniquePagesID}-${nextPage}`).setStyle(1).setLabel('Next'))
     if (entry.pageList.length >= 15) {
-        customPgnButtons.push(new Button(`trans_modal-${ctx.user.userID}`).setStyle(2).setLabel('Jump To...'))
+        customPgnButtons.push(new Button(`trans_modal-${uniquePagesID}`).setStyle(2).setLabel('Jump To...'))
     }
     let pages = [...entry.pageList]
     if (page !== -1) {
@@ -231,7 +242,7 @@ const listTransactionPage = async (ctx, modalPage) => {
         pages.unshift(removedItem)
     }
     const customButtons = []
-    customButtons.push(new Button(`trans_info-${ctx.user.userID}-${page * 10}`).setStyle(2).setLabel('Show Info'))
+    customButtons.push(new Button(`trans_info-${uniquePagesID}-${page * 10}`).setStyle(2).setLabel('Show Info'))
     return ctx.send(ctx, {
         pages,
         embed: {
@@ -252,7 +263,25 @@ const listTransactionCustomPage = async (ctx) => {
 }
 
 const listTransactionModal = async (ctx) => {
-    if (ctx.arguments[0] !== ctx.user.userID) {
+    const uniquePagesID = ctx.arguments[0]
+    let activeEntry = transactionPages.findIndex(x => x.uniqueID === uniquePagesID.replaceAll('O', '-')) >= 0? transactionPages.findIndex(x => x.uniqueID === uniquePagesID.replaceAll('O', '-')): false
+    activeEntry = transactionPages[activeEntry]
+    if (activeEntry === false) {
+        await ctx.send(ctx, {
+            embed: ctx.interaction.message.embeds[0],
+            parent: true
+        })
+        return ctx.interaction.channel.createMessage({
+            embeds: [
+                {
+                    description: `The transactions list you have attempted to interact with has expired. They expire after 15 minutes of inactivity or after a bot restart/secondary command. Please run the command again!`,
+                    color: ctx.colors.red
+                }
+            ],
+            messageReference: {messageID: ctx.interaction.message.id}
+        })
+    }
+    if (activeEntry.userID !== ctx.user.userID) {
         await ctx.interaction.defer(64)
         return ctx.interaction.createFollowup({
             embeds: [{
@@ -263,7 +292,7 @@ const listTransactionModal = async (ctx) => {
     }
     return ctx.interaction.createModal({
         title: 'Enter Your Page Number',
-        customID: `trans_custom-${ctx.user.userID}`,
+        customID: `trans_custom-${uniquePagesID}`,
         components: [
             {
                 type: 1,
@@ -285,7 +314,8 @@ const listTransactionModal = async (ctx) => {
 }
 
 const showTransactionInfo = async (ctx, modalPage) => {
-    let activeEntry = transactionPages.findIndex(x => x.userID === ctx.arguments[0]) >= 0? transactionPages.findIndex(x => x.userID === ctx.user.userID): false
+    const uniquePagesID = ctx.arguments[0]
+    let activeEntry = transactionPages.findIndex(x => x.uniqueID === uniquePagesID.replaceAll('O', '-')) >= 0? transactionPages.findIndex(x => x.uniqueID === uniquePagesID.replaceAll('O', '-')): false
     if (activeEntry === false) {
         await ctx.send(ctx, {
             embed: ctx.interaction.message.embeds[0],
@@ -294,7 +324,7 @@ const showTransactionInfo = async (ctx, modalPage) => {
         return ctx.interaction.channel.createMessage({
             embeds: [
                 {
-                    description: `The transactions list you have attempted to interact with has expired. They expire after 15 minutes of inactivity or after a bot restart. Please run the command again!`,
+                    description: `The transactions list you have attempted to interact with has expired. They expire after 15 minutes of inactivity or after a bot restart/secondary command. Please run the command again!`,
                     color: ctx.colors.red
                 }
             ],
@@ -311,11 +341,12 @@ const showTransactionInfo = async (ctx, modalPage) => {
     transactionPages[activeEntry] = entry
     let page = modalPage !== undefined? modalPage: ctx.arguments.pop()
     page = page === 'first'? 0: page === 'last'? entry.infoPages.length - 1 : Number(page)
+    page = page < 0? entry.infoPages.length - 1 : page > entry.infoPages.length? 0: page
     const customPgnButtons = []
     const nextPage = page + 1 >= entry.infoPages.length? 'first': page + 1
     const backPage = page - 1 < 0? 'last' : page - 1
-    customPgnButtons.push(new Button(`trans_info-${ctx.user.userID}-${backPage}`).setStyle(1).setLabel('Back'))
-    customPgnButtons.push(new Button(`trans_info-${ctx.user.userID}-${nextPage}`).setStyle(1).setLabel('Next'))
+    customPgnButtons.push(new Button(`trans_info-${uniquePagesID}-${backPage}`).setStyle(1).setLabel('Back'))
+    customPgnButtons.push(new Button(`trans_info-${uniquePagesID}-${nextPage}`).setStyle(1).setLabel('Next'))
     let pages = [...entry.infoPages]
     if (page !== -1) {
         const [removedItem] = pages.splice(page, 1)
@@ -323,11 +354,11 @@ const showTransactionInfo = async (ctx, modalPage) => {
     }
     const customButtons = []
     if (pages.length >= 15) {
-        customPgnButtons.push(new Button(`trans_info_modal-${ctx.user.userID}`).setStyle(2).setLabel('Jump To...'))
+        customPgnButtons.push(new Button(`trans_info_modal-${uniquePagesID}`).setStyle(2).setLabel('Jump To...'))
     }
-    customButtons.push(new Button(`trans_cfm-${entry.transactions[page].transactionID.replaceAll(/-/g, "O")}`).setStyle(3).setLabel('Accept').setOff(entry.transactions[page].toID !== ctx.user.userID || entry.transactions[page].status !== 'pending'))
+    customButtons.push(new Button(`trans_cfm-${entry.transactions[page].transactionID.replaceAll(/-/g, "O")}`).setStyle(3).setLabel('Accept').setOff((entry.transactions[page].toID !== ctx.user.userID && entry.transactions[page].toID !== 'bot') || entry.transactions[page].status !== 'pending'))
     customButtons.push(new Button(`trans_dcl-${entry.transactions[page].transactionID.replaceAll(/-/g, "O")}`).setStyle(4).setLabel('Decline').setOff(entry.transactions[page].status !== 'pending'))
-    customButtons.push(new Button(`trans_list-${ctx.user.userID}-${Math.floor(page / 10)}`).setStyle(2).setLabel('Show Pages'))
+    customButtons.push(new Button(`trans_list-${uniquePagesID}-${Math.floor(page / 10)}`).setStyle(2).setLabel('Show Pages'))
     return ctx.send(ctx, {
         pages,
         embed: {
@@ -345,11 +376,29 @@ const showTransactionInfo = async (ctx, modalPage) => {
 }
 
 const showCustomTransactionInfo = async (ctx) => {
-    return showTransactionInfo(ctx, isNaN(Number(ctx.options.pageNumber))? 0: Number(ctx.options.pageNumber) - 1)
+    return showTransactionInfo(ctx, isNaN(Number(Math.floor(ctx.options.pageNumber)))? 0: Number(Math.floor(ctx.options.pageNumber)) - 1)
 }
 
 const showCustomTransactionInfoModal = async (ctx) => {
-    if (ctx.arguments[0] !== ctx.user.userID) {
+    const uniquePagesID = ctx.arguments[0]
+    let activeEntry = transactionPages.findIndex(x => x.uniqueID === uniquePagesID.replaceAll('O', '-')) >= 0? transactionPages.findIndex(x => x.uniqueID === uniquePagesID.replaceAll('O', '-')): false
+    activeEntry = transactionPages[activeEntry]
+    if (activeEntry === false) {
+        await ctx.send(ctx, {
+            embed: ctx.interaction.message.embeds[0],
+            parent: true
+        })
+        return ctx.interaction.channel.createMessage({
+            embeds: [
+                {
+                    description: `The transactions list you have attempted to interact with has expired. They expire after 15 minutes of inactivity or after a bot restart/secondary command. Please run the command again!`,
+                    color: ctx.colors.red
+                }
+            ],
+            messageReference: {messageID: ctx.interaction.message.id}
+        })
+    }
+    if (activeEntry.userID !== ctx.user.userID) {
         await ctx.interaction.defer(64)
         return ctx.interaction.createFollowup({
             embeds: [{
@@ -360,7 +409,7 @@ const showCustomTransactionInfoModal = async (ctx) => {
     }
     return ctx.interaction.createModal({
         title: 'Enter Your Page Number',
-        customID: `trans_info_custom-${ctx.user.userID}`,
+        customID: `trans_info_custom-${uniquePagesID}`,
         components: [
             {
                 type: 1,
