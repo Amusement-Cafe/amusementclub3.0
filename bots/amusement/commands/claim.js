@@ -39,7 +39,7 @@ const claimNormal = async (ctx) => {
     if (price > ctx.user.tomatoes) {
         return ctx.send(ctx, `**${ctx.user.username}**, you have an insufficient tomato balance to claim ${claims} cards!`, 'red')
     }
-    // await ctx.send(ctx, `Claiming cards, please wait...`, 'yellow')
+    await ctx.send(ctx, `Claiming cards, please wait...`, 'yellow')
     if (processing.some(x => x === ctx.user.userID)) {
         return ctx.send(ctx, `${ctx.user.username}, this claim has been cancelled as you already have one processing.`, 'yellow')
     }
@@ -47,7 +47,7 @@ const claimNormal = async (ctx) => {
 
 
     let claimed = []
-    let collectionPool = ctx.collections.filter(x => x.inClaimPool && (!x.rarity || x.rarity > 0))
+    let collectionPool = [...ctx.collections.filter(x => x.inClaimPool && (!x.rarity || x.rarity > 0))]
     let lockCol, legClaim = false
     if (ctx.guild.lockCol && !ctx.args.any) {
         lockCol = ctx.collections.filter(x => x.collectionID === ctx.guild.lockCol)
@@ -58,8 +58,14 @@ const claimNormal = async (ctx) => {
         let legRNG = Math.random() < ctx.config.amusement.legendaryDrop
         const spec = _.sample(collectionPool.filter(x => x.rarity > claimRNG))
         const col = spec || lockCol || _.sample(collectionPool.filter(x => !x.rarity))
-        let cards = ctx.cards.filter(x => col.collectionID === x.collectionID && (legRNG? true: x.rarity < 5))
-        let card = _.sample(cards)
+        let cards, card
+        if (legRNG) {
+            cards = ctx.cards.filter(x => x.canDrop && x.rarity === 5).filter(x => collectionPool.some(y => x.collectionID === y.collectionID))
+            card = _.sample(cards)
+        } else {
+            cards = ctx.cards.filter(x => col.collectionID === x.collectionID)
+            card = _.sample(cards)
+        }
         let owned = ctx.userCards.find(x => x.cardID === card.cardID)
         let alreadyClaimed = claimed.filter(x => x.card.cardID === card.cardID).length
         let count = owned? (alreadyClaimed + 1 ) + owned.amount: alreadyClaimed? alreadyClaimed + 1: 1
@@ -71,25 +77,25 @@ const claimNormal = async (ctx) => {
             count
         })
     }
-    // if (claimed.length === 0) {
-    //     return ctx.send(ctx, {
-    //         embed: {
-    //             description: `There was an error claiming your cards, your balance and stats were not modified. Please try again!`,
-    //             color: ctx.colors.red
-    //         },
-    //         edit: true
-    //     })
-    // }
-    // if (legClaim) {
-    //     await ctx.send(ctx, {
-    //         embed: {
-    //             description: 'Claiming cards, please wait...???',
-    //             color: ctx.colors.blue
-    //         },
-    //         edit: true
-    //     })
-    //     await ctx.sleep(2000)
-    // }
+    if (claimed.length === 0) {
+        return ctx.send(ctx, {
+            embed: {
+                description: `There was an error claiming your cards, your balance and stats were not modified. Please try again!`,
+                color: ctx.colors.red
+            },
+            edit: true
+        })
+    }
+    if (legClaim) {
+        await ctx.send(ctx, {
+            embed: {
+                description: 'Claiming cards, please wait...???',
+                color: ctx.colors.blue
+            },
+            edit: true
+        })
+        await ctx.sleep(2000)
+    }
     claimed.sort((a, b) => b.card.rarity - a.card.rarity)
 
     const newCards = claimed.filter(x => x.count === 1)
@@ -144,7 +150,6 @@ const claimNormal = async (ctx) => {
         switchPage: (data) => data.embed.image.url = data.pages[data.pageNum],
         pages,
         edit: true,
-        forceInvalid: true,
     })
 }
 

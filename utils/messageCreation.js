@@ -47,7 +47,6 @@ const send = async (ctx, args) => {
     args.msgID = response? response.message? response.message.id: response.id: ctx.interaction.message.id
     args.channelID = response? response.message? response.message.channelID: ctx.interaction.channelID: ctx.interaction.message.channelID
 
-
     if ((args.buttons || args.selection) && args.permissions)
         interactions.push(args)
 
@@ -61,7 +60,9 @@ const switchPage = async (ctx, newPage) => {
 
     const max = pgn.pages.length - 1
 
+
     pgn.pageNum = newPage(pgn.pageNum)
+    pgn.pageNum = Math.floor(pgn.pageNum)
 
     if(pgn.pageNum === Infinity || (pgn.pageNum < 0)) pgn.pageNum = max
     else if(pgn.pageNum > max) pgn.pageNum = 0
@@ -107,9 +108,10 @@ const cfmResolve = async (ctx, confirm) => {
  * @returns {Promise<void>}
  */
 const sendInteraction = async (ctx, args, color = 'green') => {
-
+    let noButtons = false
     if (typeof args === 'string') {
         args = {embed: {description: args, color: ctx.colors[color]}}
+        noButtons = true
     }
 
     let interaction = Object.assign({}, {
@@ -129,6 +131,10 @@ const sendInteraction = async (ctx, args, color = 'green') => {
     }, args)
 
     interaction.embed.color = interaction.embed.color || ctx.colors.blue
+
+    if (noButtons) {
+        interaction.buttons = null
+    }
 
     if (interaction.selection) {
         interaction.selection.map(x => interaction.components.push({type: 1, components: [x]}))
