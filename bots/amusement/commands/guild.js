@@ -104,18 +104,22 @@ const setGuildLock = async (ctx, unlock = false) => {
 
     if (unlock) {
         let lastLock = ctx.guild.lockCol
-        ctx.guild.lockCol = null
+        ctx.guild.lockCol = ''
         await ctx.guild.save()
         return ctx.send(ctx, `Successfully unlocked the guild from ${lastLock}!`)
     }
     if (!ctx.args.cols[0]) {
         return ctx.send(ctx, `There was an error finding a collection for \`${ctx.args.colQuery}\`. Please try your search again!`, 'red')
     }
+
     let col = ctx.args.cols[0]
-    ctx.guild.lockCol = col.collectionID
+
+    if ((col.promo || !col.inClaimPool || col.rarity) && !ctx.user.roles.some(x=> x === 'admin')) {
+        return ctx.send(ctx, `You cannot lock guilds to limited collections!`, 'red')
+    }
+
+    ctx.guild.lockCol = col
     await ctx.guild.save()
-    console.log(ctx.args)
-    console.log(ctx.args.cols)
 
     return ctx.send(ctx, `Successfully locked the guild to \`${ctx.args.cols[0]}\`!`)
 }
