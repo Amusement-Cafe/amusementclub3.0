@@ -9,7 +9,7 @@ const {
 
 const {
     addUserCards,
-    removeUserCards,
+    removeUserCards, getUserCards,
 } = require("./userCard")
 
 const createTransaction = async (ctx, cardIDs, toID = 'bot', cost) => {
@@ -32,11 +32,10 @@ const createTransaction = async (ctx, cardIDs, toID = 'bot', cost) => {
 }
 
 const completeTransaction = async (ctx, decline = false, parent = true, extra = false) => {
-    console.log(ctx.arguments)
     ctx.arguments = ctx.arguments[0].replaceAll(/O/g, "-")
-    const transaction = await Transaction.findOne({transactionID: ctx.arguments})
+    const transaction = await Transaction.findOne({transactionID: ctx.arguments, status: 'pending'})
 
-    if (!transaction || transaction.status === 'confirmed') {
+    if (!transaction) {
         return ctx.send(ctx, {
             embed: {
                 description: `Transaction cannot be found or it is already completed!`,
@@ -93,6 +92,17 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
     let fromUser = await fetchUser(transaction.fromID)
 
     if (toUser && toUser.tomatoes < transaction.cost) {
+        return ctx.send(ctx, {
+            embed: {
+                description: `You don't have enough tomatoes to accept this transaction!\nYou need **${ctx.fmtNum(transaction.cost - ctx.user.tomatoes)}**${ctx.symbols.tomato} more tomatoes to accept this transaction.`,
+                color: ctx.colors.red
+            },
+            parent: !extra
+        })
+    }
+
+    const fromCards = await getUserCards(ctx, fromUser.userID)
+    if (!fromCards.some(x => transaction.cardIDs.includes(x.cardID))) {
         return ctx.send(ctx, {
             embed: {
                 description: `You don't have enough tomatoes to accept this transaction!\nYou need **${ctx.fmtNum(transaction.cost - ctx.user.tomatoes)}**${ctx.symbols.tomato} more tomatoes to accept this transaction.`,
