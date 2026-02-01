@@ -9,7 +9,7 @@ const {
 
 const {
     addUserCards,
-    removeUserCards, getUserCards,
+    getUserCards,
 } = require("./userCard")
 
 const createTransaction = async (ctx, cardIDs, toID = 'bot', cost) => {
@@ -60,6 +60,7 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
     if (decline) {
         transaction.status = 'declined'
         await transaction.save()
+        await addUserCards(transaction.fromID, transaction.cardIDs)
         if (ctx.user.userID !== transaction.fromID) {
             return ctx.send(ctx, {
                 embed: {
@@ -121,7 +122,6 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
     }
 
     fromUser.tomatoes += transaction.cost
-    await removeUserCards(fromUser.userID, transaction.cardIDs)
     await fromUser.save()
 
     transaction.status = 'confirmed'

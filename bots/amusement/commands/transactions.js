@@ -23,6 +23,10 @@ const {
     generateNewID
 } = require("../../../utils/misc")
 
+const {
+    removeUserCards,
+} = require("../helpers/userCard")
+
 let transactionPages = []
 
 registerBotCommand(['sell', 'one'], async (ctx) => await sell(ctx), { withCards: true })
@@ -94,7 +98,7 @@ const sell = async (ctx, many = false) => {
     }
 
     if (saleCards.length === 0) {
-        return ctx.send(ctx, `Are you sure you want to sell this card?\nThe card you have chosen is locked and cannot be sold unless you use the \`-locked\` query in your card query!`, 'red')
+        return ctx.send(ctx, `Are you sure you want to sell ${many? 'these cards': 'this card'}?\nThe card(s) you have chosen is locked and cannot be sold unless you use the \`-locked\` query in your card query!`, 'red')
     }
 
     if (ctx.options.amount && many) {
@@ -130,6 +134,8 @@ const sell = async (ctx, many = false) => {
         perms.cfm = [toUser.userID]
         perms.dcl.push(toUser.userID)
     }
+
+    await removeUserCards(ctx.user.userID, saleCards.map(x => x.cardID))
 
     return ctx.send(ctx, {
         pages: ctx.getPages(saleCards.map((card) => `${ctx.formatName(ctx, card)}${amountDisplay? ` (x${amountDisplay})`: ``}`)),
@@ -430,5 +436,5 @@ const showCustomTransactionInfoModal = async (ctx) => {
     })
 }
 
-const timeoutTransactionPages = (ctx) => transactionPages = transactionPages.filter(x => (ctx.minToMS(15) + new Date(x.lastUsed).getTime()) > new Date().getTime())
+const timeoutTransactionPages = (ctx) => transactionPages = transactionPages.filter(x => (ctx.minToMS(15) + new Date(x.lastUsed).getTime()) >= new Date().getTime())
 const filterDuplicatePages = (ctx) => transactionPages = transactionPages.filter(x => ctx.user.userID !== x.userID)
