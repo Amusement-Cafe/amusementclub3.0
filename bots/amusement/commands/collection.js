@@ -58,7 +58,7 @@ const listCollections = async (ctx) => {
 }
 
 const listCollectionPages = async (ctx) => {
-    const {entry, index} = getActivePages(ctx)
+    const entry = getActivePages(ctx)
     if (!entry) {
         return removeCollectionButtons(ctx)
     }
@@ -104,7 +104,7 @@ const listCollectionPages = async (ctx) => {
 }
 
 const listCollectionInfos = async (ctx) => {
-    const {entry, index} = getActivePages(ctx)
+    const entry = getActivePages(ctx)
     if (!entry) {
         return removeCollectionButtons(ctx)
     }
@@ -196,8 +196,7 @@ const getActivePages = (ctx) => {
     if (index < 0) {
         return false
     }
-    let entry = collectionPages[index]
-    return {entry, index}
+    return collectionPages[index]
 }
 
 timeoutCollectionPages()
