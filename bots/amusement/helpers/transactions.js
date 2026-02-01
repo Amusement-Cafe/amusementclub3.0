@@ -102,16 +102,6 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
         })
     }
 
-    const fromCards = await getUserCards(ctx, fromUser.userID)
-    if (!fromCards.some(x => transaction.cardIDs.includes(x.cardID))) {
-        return ctx.send(ctx, {
-            embed: {
-                description: `You don't have enough tomatoes to accept this transaction!\nYou need **${ctx.fmtNum(transaction.cost - ctx.user.tomatoes)}**${ctx.symbols.tomato} more tomatoes to accept this transaction.`,
-                color: ctx.colors.red
-            },
-            parent: !extra
-        })
-    }
     let toName = 'bot'
 
     if (toUser) {
