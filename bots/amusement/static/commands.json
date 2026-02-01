@@ -190,7 +190,8 @@
             {
               "type": 4,
               "name": "amount",
-              "description": "The quantity of the card you want to sell"
+              "description": "The quantity of the card you want to sell",
+              "minValue": 1
             }
           ]
         },
@@ -213,7 +214,8 @@
             {
               "type": 4,
               "name": "amount",
-              "description": "The limit of the cards you want to sell"
+              "description": "The limit of the cards you want to sell",
+              "minValue": 1
             }
           ]
         }
@@ -687,6 +689,18 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": 1,
+      "name": "collections",
+      "description": "collection placeholder text",
+      "options": [
+        {
+          "type": 3,
+          "name": "collections",
+          "description": "Collections to filter for"
         }
       ]
     }

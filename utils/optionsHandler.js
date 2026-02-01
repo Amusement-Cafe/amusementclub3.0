@@ -55,6 +55,19 @@ const getCommandOptions = async (ctx) => {
                     }));
                     args.colQuery = value;
                     break;
+                case 'collections':
+                    let tests = value.split(' ').map(x => new RegExp(`( |^)${x.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'gi'))
+                    ctx.collections.map(x => {
+                        if (x.aliases.includes(value)) {
+                            args.cols.push(x)
+                        }
+                        else {
+                            let pass = x.aliases.map(y => tests.some(z => y.match(z))).some(z => z)
+                            pass? args.cols.push(x): false
+                        }
+                    })
+                    args.colQuery = value;
+                    break;
                 case 'count': args.count = value; break;
                 case 'pending': args.pending = value; break;
                 case 'promo': args.promo = value; break;
