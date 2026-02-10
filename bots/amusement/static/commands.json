@@ -118,12 +118,12 @@
     {
       "type": 1,
       "name": "balance",
-      "description": "Check yo balance"
+      "description": "Display your current balances"
     },
     {
       "type": 1,
       "name": "daily",
-      "description": "Daily thing"
+      "description": "Claim your daily bonus and reset costs"
     },
     {
       "type": 1,
