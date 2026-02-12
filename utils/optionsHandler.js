@@ -69,10 +69,12 @@ const getCommandOptions = async (ctx) => {
                     args.colQuery = value;
                     break;
                 case 'count': args.count = value; break;
+                case 'end_time': args.end = value; break;
                 case 'pending': args.pending = value; break;
                 case 'promo': args.promo = value; break;
                 case 'received': args.received = value; break;
                 case 'remove': args.remove = value; break;
+                case 'start_time': args.start = value; break;
                 case 'tax_percentage': args.tax = value; break;
                 case 'user_id': args.userIDs.push(value); break;
             }
