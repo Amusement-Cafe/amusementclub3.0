@@ -1,14 +1,20 @@
 const {evalCards} = require('../helpers/eval')
+const {finishAuction} = require("../helpers/auctions")
 
-let tickArray
+let tickArray = []
 
 const evalQueue = (ctx) => {
     evalCards(ctx)
 }
 
+const auctionQueue = (ctx) => {
+    finishAuction(ctx)
+}
+
 const startTicks = (ctx) => {
     const evalTick = setInterval(evalQueue.bind({}, ctx), 1000 * 60 * 1)
-    tickArray = [evalTick]
+    const auctionTick = setInterval(auctionQueue.bind({}, ctx), 1000 * 5)
+    tickArray = [evalTick, auctionTick]
 }
 
 const stopTicks = () => {
