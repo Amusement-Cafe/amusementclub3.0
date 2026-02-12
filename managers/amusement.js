@@ -40,11 +40,16 @@ const restartAmusement = async () => {
     await startAmusement()
 }
 
+const refreshAmusementContext = async () => {
+    bot.send({refreshCTX: true})
+}
+
 registerCLICommand('acstart', () => startAmusement())
 registerCLICommand('acstop', () => stopAmusement())
 registerCLICommand('acrestart', () => restartAmusement())
 
 module.exports = {
+    refreshAmusementContext,
     restartAmusement,
     startAmusement,
     stopAmusement
