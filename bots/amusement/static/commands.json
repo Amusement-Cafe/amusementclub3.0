@@ -191,7 +191,8 @@
               "type": 4,
               "name": "amount",
               "description": "The quantity of the card you want to sell",
-              "minValue": 1
+              "minValue": 1,
+              "maxValue": 999
             }
           ]
         },
@@ -215,7 +216,8 @@
               "type": 4,
               "name": "amount",
               "description": "The limit of the cards you want to sell",
-              "minValue": 1
+              "minValue": 1,
+              "maxValue": 999
             }
           ]
         }
