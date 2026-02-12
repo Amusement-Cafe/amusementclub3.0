@@ -53,8 +53,8 @@ const {
 let globalContext = {}
 
 
-const getContext = async (bot) => {
-    if (globalContext.events) {
+const getContext = async (refresh) => {
+    if (globalContext.events && !refresh) {
         return globalContext
     }
 
@@ -63,7 +63,11 @@ const getContext = async (bot) => {
     globalContext.collections = await Collections.find().lean()
     globalContext.cards = await Cards.find().lean().sort('cardID')
     globalContext.promos = await Promos.find().lean()
-    globalContext.events = new Emitter()
+    globalContext.dbCards = await Cards.find().sort('cardID')
+
+    if (!globalContext.events) {
+        globalContext.events = new Emitter()
+    }
 
     return globalContext
 }
@@ -105,7 +109,7 @@ const ctxFiller = async (ctx, bot) => {
         hourToMS: (hours) => hours * 60 * 60 * 1000,
         dayToMS: (days) => days * 24 * 60 * 60 * 1000,
         timeDiff: (ms) => {
-            let seconds = Math.floor(ms / 1000)
+            let seconds = Math.floor(Math.abs(ms) / 1000)
 
             const years = Math.floor(seconds / 31536000)
             seconds %= 31536000
@@ -168,7 +172,7 @@ const ctxFiller = async (ctx, bot) => {
         fmtNum: (num) => num.toLocaleString('en-US'),
         formatName: (ctx, card) => {
             const col = ctx.collections.find(x => x.collectionID === card.collectionID)
-            const rarity = new Array(card.rarity + 1).join(col.stars[card.rarity - 1] || col.stars[0])
+            const rarity = `\`${new Array(card.rarity + 1).join(col.stars[card.rarity - 1] || col.stars[0])}\``
             const eval = ctx.fmtNum(card.eval)
             const amount = card.amount && card.amount > 1? `(x${card.amount})`: ''
             const locked = card.locked? ' `🔒`': ''
