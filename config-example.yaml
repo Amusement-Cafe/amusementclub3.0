@@ -9,6 +9,7 @@ analytics:
     url: https://
 ayano:
   token:
+  adminGuildID: ''
   reportChannelID:
 database:
   url: 'mongodb://'

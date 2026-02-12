@@ -1,4 +1,5 @@
 const Oceanic = require('oceanic.js')
+const User = require("../../db/user")
 
 const {
     handleBotCommand,
@@ -10,12 +11,13 @@ const {
     listen
 } = require("../../utils/webhooks")
 
+const {
+    getContext,
+    globalContext
+} = require("../../utils/ctxFiller")
 
 require('./commands')
 require('../../utils/cfmHandler')
-
-const User = require("../../db/user");
-const {getContext, globalContext} = require("../../utils/ctxFiller");
 
 const bot = new Oceanic.Client({ auth: 'Bot ' + process.env.token, gateway: { intents: ["MESSAGE_CONTENT", "GUILD_MESSAGES", "DIRECT_MESSAGES"]}})
 
@@ -28,8 +30,8 @@ process.on('message', async (msg) => {
         await bot.disconnect(false)
     if (msg.send)
         return
-    if (msg.ctx)
-        ctx = await getContext('ayano')
+    if (msg.ctx || msg.refreshCTX)
+        ctx = await getContext(true)
 })
 
 let ready = false
@@ -38,10 +40,10 @@ let ready = false
 bot.once('ready', async () => {
     ctx = await getContext('ayano')
     let slashCommands = require('./static/commands.json')
-    const serverCommands = await bot.application.getGuildCommands('651599467174428703')
+    const serverCommands = await bot.application.getGuildCommands(ctx.config.ayano.adminGuildID)
     if (serverCommands.length !== slashCommands.commands.length) {
         console.log('Updating server commands as a mis-match was found')
-        await bot.application.bulkEditGuildCommands('651599467174428703', slashCommands.commands)
+        await bot.application.bulkEditGuildCommands(ctx.config.ayano.adminGuildID, slashCommands.commands)
     }
     await listen(ctx)
     ready = true

@@ -19,14 +19,15 @@ require('./commands')
 require('../../utils/cfmHandler')
 
 const bot = new Oceanic.Client({ auth: 'Bot ' + process.env.token})
-let started, ctx
+let ctx
+let wip = true
 
 //Todo
 //Replace Guild Commands with globals before release
 
 bot.once('ready', async () => {
     ctx = await getContext()
-    started = true
+    wip = false
     let slashCommands = require('./static/commands.json')
     const globalCommands = await bot.application.getGlobalCommands()
     const guildCommands = await bot.application.getGuildCommands(ctx.config.amusement.adminGuildID)
@@ -57,12 +58,17 @@ process.on('message', async (msg) => {
     if (msg.send) {
         return false
     }
+    if (msg.ctx || msg.refreshCTX) {
+        wip = true
+        ctx = await getContext(true)
+        wip = false
+    }
 })
 
 
 bot.on('interactionCreate', async (interaction) => {
-    if (!started) {
-        return interaction.reply({content: `Amusement Club is not ready to accept commands just yet!`})
+    if (wip || ctx.wip) {
+        return interaction.reply({content: `Amusement club is currently in WIP mode, meaning updates are either ongoing or it is just starting up. Please try your command again later!`})
     }
 
     let base = [interaction.data.name || interaction.data.customID]
