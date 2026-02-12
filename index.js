@@ -41,3 +41,6 @@ prompt.on('close', async () => {
     console.log('Bye')
     process.exit(0)
 })
+
+startAyano()
+startAmusement()
