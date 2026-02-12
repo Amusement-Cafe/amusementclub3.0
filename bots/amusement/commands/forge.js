@@ -42,7 +42,7 @@ const forge = async (ctx) => {
     let forge2 = ctx.userCards[1].filter(x => x.rarity === forge1.rarity && x.cardID !== forge1.cardID)
 
     if (!forge2.length) {
-        return ctx.send(ctx, `Cannot find enough unique cards to forge! The only found card was ${ctx.formatName(ctx, forge1)}`, 'red')
+        return ctx.send(ctx, `Cannot find enough unique cards of the same rarity to forge! The only found card was ${ctx.formatName(ctx, forge1)}`, 'red')
     }
     forge2 = forge2[0]
 
