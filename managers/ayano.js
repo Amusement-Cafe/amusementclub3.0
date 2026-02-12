@@ -9,7 +9,8 @@ const {
 } = require("../utils/fileHelpers")
 
 const {
-    restartAmusement
+    restartAmusement,
+    refreshAmusementContext
 } = require("./amusement")
 
 let bot
@@ -26,6 +27,11 @@ const createAyano = async () => {
         if (message.restartac) {
             console.log('Restarting Amusement')
             await restartAmusement()
+        }
+        if (message.refreshCTX) {
+            console.log('Refreshing global context for Amusement and Ayano')
+            await refreshContext()
+            await refreshAmusementContext()
         }
     })
     // bot.on('exit', () => stopAyano())
@@ -55,6 +61,13 @@ const restartAyano = async () => {
     bot.kill()
     bot = null
     await startAyano()
+}
+
+const refreshContext = async () => {
+    if (!bot) {
+        return
+    }
+    bot.send({refreshCTX: true})
 }
 
 registerCLICommand('ayystart', () => startAyano())
