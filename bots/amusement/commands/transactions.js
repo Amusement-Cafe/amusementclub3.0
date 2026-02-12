@@ -58,15 +58,19 @@ const sell = async (ctx, many = false) => {
 
     if (ctx.args.userIDs[0]) {
         toUser = await fetchUser(ctx.args.userIDs[0])
-        if (!toUser) {
+        if (!toUser && ctx.args.userIDs[0] !== ctx.bot.application.id) {
             return ctx.send(ctx, `The user you have entered <@${ctx.args.userIDs[0]}> does not have a bot account to setup a sale to! Have them start playing before trying again.`, 'red')
         }
 
-        if (toUser.userID === ctx.user.userID) {
+        if (ctx.args.userIDs[0] === ctx.bot.application.id) {
+            toUser = undefined
+        }
+
+        if (toUser && toUser.userID === ctx.user.userID) {
             return ctx.send(ctx, `You cannot setup sales to yourself!`, 'red')
         }
 
-        if (!toUser.preferences.interact.canSell) {
+        if (toUser && !toUser.preferences.interact.canSell) {
             return ctx.send(ctx, `The user you are trying to sell to has disabled the ability to sell them cards!`, 'red')
         }
     }
@@ -76,15 +80,19 @@ const sell = async (ctx, many = false) => {
     }
 
     if (ctx.options.amount && !many) {
-        if (saleCards.fav && saleCards.amount === ctx.options.amount) {
+        let saleCard = saleCards[0]
+        if (saleCard.fav && saleCard.amount === ctx.options.amount) {
             return ctx.send(ctx, `You are trying to sell as many copies as you own, but this card is favorited! Reduce your sale amount by 1 or remove the card from your favorites before re-running this command.`, 'red')
         }
 
-        if (saleCards.amount < ctx.options.amount) {
+        if (saleCard.amount < ctx.options.amount) {
             return ctx.send(ctx, `You cannot sell more copies than you own!`, 'red')
         }
 
         amountDisplay = ctx.options.amount
+        for (let i = 0; i < amountDisplay - 1; i++) {
+            saleCards.push(saleCards[0])
+        }
     }
 
     saleCards = saleCards.filter(x => x.fav? x.amount > 1: x.amount >= 1)
@@ -106,10 +114,6 @@ const sell = async (ctx, many = false) => {
     }
 
     let cost = saleCards.reduce((a, b) => a + (b.eval), 0)
-
-    if (ctx.options.amount && !many) {
-        cost = cost * ctx.options.amount
-    }
 
     if (!toUser) {
         cost = Math.round(cost * .75)
@@ -135,7 +139,7 @@ const sell = async (ctx, many = false) => {
         perms.dcl.push(toUser.userID)
     }
 
-    await removeUserCards(ctx.user.userID, saleCards.map(x => x.cardID))
+    await removeUserCards(ctx.user.userID, saleCards.map(x => x.cardID), amountDisplay || 1)
 
     return ctx.send(ctx, {
         pages: ctx.getPages(saleCards.map((card) => `${ctx.formatName(ctx, card)}${amountDisplay? ` (x${amountDisplay})`: ``}`)),
