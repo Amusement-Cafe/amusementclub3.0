@@ -17,7 +17,7 @@ const embeds = require('../static/embeds/store.json')
 
 const homeButton = new Button('store_all').setLabel('Main Menu').setStyle(2)
 
-const limit = 24
+const limit = 3
 
 registerBotCommand(['store'], async (ctx) => await storeStart(ctx))
 
@@ -133,28 +133,44 @@ const purchaseTicket = async (ctx, item) => {
     await ctx.updateStat(ctx, 'storeTicket', 1)
     await displayItem(ctx, false)
 }
+
 const purchaseGuildBuilding = async (ctx, item) => {
     return ctx.send(ctx, `The guild store is currently disabled until guilds are reimplemented!`, 'red')
 }
+
 const purchaseRecipe = async (ctx, item) => {
     if (ctx.user.tomatoes < item.cost) {
         return ctx.send(ctx, `You have insufficient tomatoes to purchase ${ctx.arguments[0]}`, 'red')
     }
     await addItem(ctx, item)
+    await ctx.updateStat(ctx, 'store', 1)
+    await ctx.updateStat(ctx, 'storeRecipe', 1)
+    await ctx.updateStat(ctx, 'tomatoOut', item.cost)
+
     return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.tomato} (actually 0 for testing)!`, 'deepgreen')
 }
+
 const purchaseBonus = async (ctx, item) => {
-    if (ctx.user.tomatoes < item.cost) {
-        return ctx.send(ctx, `You have insufficient tomatoes to purchase ${ctx.arguments[0]}`, 'red')
+    if (ctx.user.lemons < item.cost) {
+        return ctx.send(ctx, `You have insufficient lemons to purchase ${ctx.arguments[0]}`, 'red')
     }
     await addItem(ctx, item)
+    await ctx.updateStat(ctx, 'store', 1)
+    await ctx.updateStat(ctx, 'storeBonus', 1)
+    await ctx.updateStat(ctx, 'lemonOut', item.cost)
+
     return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.tomato} (actually 0 for testing)!`, 'deepgreen')
 }
+
 const purchasePlotBuilding = async (ctx, item) => {
     let cost = item.cost
     if (ctx.user.lemons < cost) {
         return ctx.send(ctx, `You have insufficient lemons to purchase ${ctx.boldName(ctx.arguments[0])}`, 'red')
     }
     await addItem(ctx, item)
+    await ctx.updateStat(ctx, 'store', 1)
+    await ctx.updateStat(ctx, 'storePlot', 1)
+    await ctx.updateStat(ctx, 'lemonOut', cost)
+
     return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(ctx.fmtNum(cost))}${ctx.symbols.lemon} (actually 0 for testing)!`, 'deepgreen')
 }
