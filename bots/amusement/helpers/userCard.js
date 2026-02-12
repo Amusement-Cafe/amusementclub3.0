@@ -44,14 +44,14 @@ const addUserCards = async (userID, cardIDs) => {
     return await UserCards.bulkWrite(writes)
 }
 
-const removeUserCards = async (userID, cardIDs) => {
+const removeUserCards = async (userID, cardIDs, count) => {
     const update = await UserCards.updateMany(
         {
         userID: userID,
         cardID: {$in: cardIDs}
         },
         {
-            $inc: {amount: -1}
+            $inc: {amount: count? -count: -1}
         }
     )
 
