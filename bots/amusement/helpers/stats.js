@@ -13,9 +13,10 @@ const getUserStats = async (ctx) => {
 
 const getAllUserStats = async (ctx) => UserStats.find({userID: ctx.user.userID}).lean()
 
-const updateUserStats = async (ctx, stat, amount) => {
-    ctx.stats[stat] += amount
-    await ctx.stats.save()
+const updateUserStats = async (ctx, stat, amount, statObject) => {
+    let update = statObject || ctx.stats
+    update[stat] += amount
+    await update.save()
 }
 
 const createUserStats = async (ctx) => {
@@ -26,6 +27,8 @@ const createUserStats = async (ctx) => {
 
     return stats
 }
+
+const getSpecificUserStats = async (ctx, userID) => UserStats.find({userID: userID})
 
 const mapStatToName = (ctx, stat, count) => {
     count = ctx.fmtNum(count)
@@ -82,6 +85,7 @@ module.exports = {
     createUserStats,
     getUserStats,
     getAllUserStats,
+    getSpecificUserStats,
     mapStatToName,
     updateUserStats,
 }
