@@ -107,12 +107,12 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
     }
 
     let fromStats = await getSpecificUserStats(ctx, fromUser.userID)
-    fromStats = fromStats.sort((a, b) => new Date(b.date) - new Date(a.date))[0]
+    fromStats = fromStats.sort((a, b) => new Date(b.daily) - new Date(a.daily))[0]
     let toName = 'bot'
 
     if (toUser) {
         let toStats = await getSpecificUserStats(ctx, toUser.userID)
-        toStats = toStats.sort((a, b) => new Date(b.date) - new Date(a.date))[0]
+        toStats = toStats.sort((a, b) => new Date(b.daily) - new Date(a.daily))[0]
         await updateUserStats(ctx, 'tomatoOut', transaction.cost, toStats)
         await updateUserStats(ctx, 'userBuy', 1, toStats)
 
