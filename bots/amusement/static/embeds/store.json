@@ -152,40 +152,40 @@
 
 
   "ticket1x1": {
-    "title": "Single One Star Claim Ticket",
-    "description": "Single One Star Claim Ticket"
+    "title": "1x `★` Claim Ticket",
+    "description": "Placeholder"
   },
   "ticket1x2": {
-    "title": "Single Two Star Claim Ticket",
-    "description": "Single Two Star Claim Ticket"
+    "title": "1x `★★` Claim Ticket",
+    "description": "Placeholder"
   },
   "ticket1x3": {
-    "title": "Single Three Star Claim Ticket",
-    "description": "Single Three Star Claim Ticket"
+    "title": "1x `★★★` Claim Ticket",
+    "description": "Placeholder"
   },
   "ticket3x1s": {
-    "title": "Triple One Star Claim Ticket, Single Collection",
-    "description": "Triple One Star Claim Ticket, Single Collection"
+    "title": "3x `★` Claim Ticket",
+    "description": "Placeholder"
   },
   "ticket3x2s": {
-    "title": "Triple Two Star Claim Ticket, Single Collection",
-    "description": "Triple Two Star Claim Ticket, Single Collection"
+    "title": "3x `★★` Claim Ticket",
+    "description": "Placeholder"
   },
   "ticket3x3s": {
-    "title": "Triple Three Star Claim Ticket, Single Collection",
-    "description": "Triple Three Star Claim Ticket, Single Collection"
+    "title": "3x `★★★` Claim Ticket",
+    "description": "Placeholder"
   },
   "ticket3x1r": {
-    "title": "Triple Random One Star Claim Ticket",
-    "description": "Triple Random One Star Claim Ticket"
+    "title": "3x Random `★` Claim Ticket",
+    "description": "Placeholder"
   },
   "ticket3x2r": {
-    "title": "Triple Random Two Star Claim Ticket",
-    "description": "Triple Random Two Star Claim Ticket"
+    "title": "3x Random `★★` Claim Ticket",
+    "description": "Placeholder"
   },
   "ticket3x3r": {
-    "title": "Triple Random Three Star Claim Ticket",
-    "description": "Triple Random Three Star Claim Ticket"
+    "title": "3x `★★★` Claim Ticket",
+    "description": "Placeholder"
   },
 
 

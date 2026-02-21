@@ -1,28 +1,28 @@
 const items = {
     //Tickets
     ticket1x1: {
-        cost: 1,
+        cost: 300,
         itemID: 'ticket1x1',
         uses: 0,
         type: 'ticket',
         displayName: '1x `★` Claim Ticket'
     },
     ticket1x2: {
-        cost: 1,
+        cost: 600,
         itemID: 'ticket1x2',
         uses: 0,
         type: 'ticket',
         displayName: '1x `★★` Claim Ticket'
     },
     ticket1x3: {
-        cost: 1,
+        cost: 900,
         itemID: 'ticket1x3',
         uses: 0,
         type: 'ticket',
         displayName: '1x `★★★` Claim Ticket'
     },
     ticket3x1s: {
-        cost: 1,
+        cost: 1000,
         itemID: 'ticket3x1s',
         uses: 0,
         type: 'ticket',
@@ -30,7 +30,7 @@ const items = {
         displayName: '3x `★` Claim Ticket'
     },
     ticket3x2s: {
-        cost: 1,
+        cost: 2000,
         itemID: 'ticket3x2s',
         uses: 0,
         type: 'ticket',
@@ -38,7 +38,7 @@ const items = {
         displayName: '3x `★★` Claim Ticket'
     },
     ticket3x3s: {
-        cost: 1,
+        cost: 3000,
         itemID: 'ticket3x3s',
         uses: 0,
         type: 'ticket',
@@ -46,25 +46,60 @@ const items = {
         displayName: '3x `★★★` Claim Ticket'
     },
     ticket3x1r: {
-        cost: 1,
+        cost: 1000,
         itemID: 'ticket3x1r',
         uses: 0,
         type: 'ticket',
         displayName: '3x Random `★` Claim Ticket'
     },
     ticket3x2r: {
-        cost: 1,
+        cost: 2000,
         itemID: 'ticket3x2r',
         uses: 0,
         type: 'ticket',
         displayName: '3x Random `★★` Claim Ticket'
     },
     ticket3x3r: {
-        cost: 1,
+        cost: 3000,
         itemID: 'ticket3x3r',
         uses: 0,
         type: 'ticket',
         displayName: '3x Random `★★★` Claim Ticket'
+    },
+    ticket1x4s: {
+        cost: 1,
+        itemID: 'ticket1x4s',
+        uses: 0,
+        type: 'ticket',
+        displayName: '1x `★★★★` Claim Ticket'
+    },
+    ticket2x4s: {
+        cost: 1,
+        itemID: 'ticket2x4s',
+        uses: 0,
+        type: 'ticket',
+        displayName: '2x `★★★★` Claim Ticket'
+    },
+    ticket3x4s: {
+        cost: 1,
+        itemID: 'ticket3x4s',
+        uses: 0,
+        type: 'ticket',
+        displayName: '3x `★★★★` Claim Ticket'
+    },
+    ticket4x4s: {
+        cost: 1,
+        itemID: 'ticket4x4s',
+        uses: 0,
+        type: 'ticket',
+        displayName: '4x `★★★★` Claim Ticket'
+    },
+    ticket5x4s: {
+        cost: 1,
+        itemID: 'ticket5x4s',
+        uses: 0,
+        type: 'ticket',
+        displayName: '5x `★★★★` Claim Ticket'
     },
     ticket1x5s: {
         cost: 1,

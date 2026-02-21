@@ -128,7 +128,7 @@
     {
       "type": 1,
       "name": "cards",
-      "description": "Check your cards",
+      "description": "View your card list",
       "options": [
         {
           "type": 3,
@@ -138,7 +138,7 @@
         {
           "type": 5,
           "name": "global",
-          "description": "Set to true to check for any cards in bot and not just your own"
+          "description": "Set to true to check for any cards in the bot and not just your own"
         }
       ]
     },
@@ -150,19 +150,19 @@
         {
           "type": 4,
           "name": "count",
-          "description": "A description",
+          "description": "A number between 1 and 20, to claim that many cards",
           "minValue": 1,
           "maxValue": 20
         },
         {
           "type": 5,
           "name": "any",
-          "description": "Another Description"
+          "description": "If claiming in a locked server, claim from the global pool instead of the locked pool"
         },
         {
           "type": 5,
           "name": "promo",
-          "description": "Another Description"
+          "description": "Claim promo cards if a card event is currently active"
         }
       ]
     },
@@ -247,8 +247,7 @@
         {
           "name": "card_query_2",
           "description": "Enter a card query or name here if you entered a card name for card 1!",
-          "type": 3,
-          "required": false
+          "type": 3
         }
       ]
     },
@@ -271,7 +270,7 @@
             {
               "type": 5,
               "name": "global",
-              "description": "Set to true to check eval for any card in bot and not just your own"
+              "description": "Set to true to check eval for any card in the bot and not just your own"
             },
             {
               "type": 5,
@@ -308,7 +307,7 @@
     {
       "type": 1,
       "name": "stats",
-      "description": "Browse the stats."
+      "description": "Display your bot stats"
     },
     {
       "type": 1,
@@ -340,18 +339,18 @@
         {
           "type": 1,
           "name": "from",
-          "description": "Diff placeholder text",
+          "description": "Display cards another user owns that you do not",
           "options": [
             {
               "type": 3,
               "name": "card_query",
-              "description": "The card query to filter for your card to sell",
+              "description": "The card query to filter the cards to search for",
               "required": true
             },
             {
               "type": 6,
               "name": "user_id",
-              "description": "The user you want to sell to, ID or mention accepted",
+              "description": "The user you want to diff, ID or mention accepted",
               "required": true
             }
           ]
@@ -359,18 +358,18 @@
         {
           "type": 1,
           "name": "for",
-          "description": "Diff placeholder text",
+          "description": "Display cards you own that another user needs",
           "options": [
             {
               "type": 3,
               "name": "card_query",
-              "description": "The card query to filter for your cards to sell",
+              "description": "The card query to filter the cards to search for",
               "required": true
             },
             {
               "type": 6,
               "name": "user_id",
-              "description": "The user you want to sell to, ID or mention accepted",
+              "description": "The user you want to diff, ID or mention accepted",
               "required": true
             }
           ]
@@ -380,27 +379,27 @@
     {
       "type": 1,
       "name": "transactions",
-      "description": "Transactions and stuff, please let me remember to go through these later",
+      "description": "Display your transactions (All options optional)",
       "options": [
         {
           "type": 3,
           "name": "card_query",
-          "description": "The card query to filter for your card to sell"
+          "description": "Filter for transactions containing a specific query"
         },
         {
           "type": 5,
           "name": "auctions",
-          "description": "Whether to include all copies of the cards you own in the eval response"
+          "description": "Set to true to filter for only auction transactions, false to return no auction transactions"
         },
         {
           "type": 5,
           "name": "received",
-          "description": "Whether to include all copies of the cards you own in the eval response"
+          "description": "Set to true to filter for only received transactions, false to return only outgoing"
         },
         {
           "type": 5,
           "name": "pending",
-          "description": "Whether to include all copies of the cards you own in the eval response"
+          "description": "Set to true to filter for only pending transactions, false to return only completed"
         }
       ]
     },
@@ -425,13 +424,13 @@
         {
           "type": 1,
           "name": "info",
-          "description": "info placeholder text",
+          "description": "Display info about the current guild",
           "options": []
         },
         {
           "type": 1,
           "name": "lock",
-          "description": "lock placeholder text",
+          "description": "Lock the current guild to a specific collection",
           "options": [
             {
               "type": 3,
@@ -444,7 +443,7 @@
         {
           "type": 1,
           "name": "unlock",
-          "description": "unlock placeholder text",
+          "description": "Unlock the guild and allow all in claim pool",
           "options": []
         },
         {
@@ -485,7 +484,7 @@
                 {
                   "type": 4,
                   "name": "tax_percentage",
-                  "description": "A whole number to equal the tax percent you want to set",
+                  "description": "A whole number equal to the tax percent you want to set",
                   "minValue": 0,
                   "maxValue": 100
                 }
@@ -697,7 +696,7 @@
     {
       "type": 1,
       "name": "collections",
-      "description": "collection placeholder text",
+      "description": "Display bot collections",
       "options": [
         {
           "type": 3,

@@ -23,58 +23,63 @@
   ],
   "ticket": [
     {
-      "description": "View or use your Legendary Claim Ticket(s)",
-      "label": "Legendary Claim Ticket",
+      "description": "View or use your 1x `★★★★★` Claim Ticket(s)",
+      "label": "1x `★★★★★` Claim Ticket",
       "value": "ticket1x5s-ticket"
     },
     {
-      "description": "View or use your 1 Star Claim Ticket(s)",
-      "label": "Single 1 Star Claim Ticket",
+      "description": "View or use your 1x `★★★★` Claim Ticket(s)",
+      "label": "1x `★★★★` Claim Ticket",
+      "value": "ticket1x4s-ticket"
+    },
+    {
+      "description": "View or use your 1x `★` Claim Ticket(s)",
+      "label": "1x `★` Claim Ticket",
       "value": "ticket1x1-ticket"
     },
     {
-      "description": "View or use your 2 Star Claim Ticket(s)",
-      "label": "Single 2 Star Claim Ticket",
+      "description": "View or use your 1x `★★` Claim Ticket(s)",
+      "label": "1x `★★` Claim Ticket",
       "value": "ticket1x2-ticket"
     },
     {
-      "description": "View or use your 3 Star Claim Ticket(s)",
-      "label": "Single 3 Star Claim Ticket",
+      "description": "View or use your 1x `★★★` Claim Ticket(s)",
+      "label": "1x `★★★` Claim Ticket",
       "value": "ticket1x3-ticket"
     },
     {
-      "description": "View or use your Triple 1 Star Claim Ticket(s)",
-      "label": "Triple 1 Star Claim Ticket",
+      "description": "View or use your 3x `★` Claim Ticket(s)",
+      "label": "3x `★` Claim Ticket",
       "value": "ticket3x1s-ticket"
     },
     {
-      "description": "View or use your Triple 2 Star Claim Ticket(s)",
-      "label": "Triple 2 Star Claim Ticket",
+      "description": "View or use your 3x `★★` Claim Ticket(s)",
+      "label": "3x `★★` Claim Ticket",
       "value": "ticket3x2s-ticket"
     },
     {
-      "description": "View or use your Triple 3 Star Claim Ticket(s)",
-      "label": "Triple 3 Star Claim Ticket",
+      "description": "View or use your 3x `★★★` Claim Ticket(s)",
+      "label": "3x `★★★` Claim Ticket",
       "value": "ticket3x3s-ticket"
     },
     {
-      "description": "View or use your Triple Random 1 Star Claim Ticket(s)",
-      "label": "Triple Random 1 Star Claim Ticket",
+      "description": "View or use your 3x Random `★` Claim Ticket(s)",
+      "label": "3x Random `★` Claim Ticket",
       "value": "ticket3x1r-ticket"
     },
     {
-      "description": "View or use your Triple Random 2 Star Claim Ticket(s)",
-      "label": "Triple Random 2 Star Claim Ticket",
+      "description": "View or use your 3x Random `★★` Claim Ticket(s)",
+      "label": "3x Random `★★` Claim Ticket",
       "value": "ticket3x2r-ticket"
     },
     {
-      "description": "View or use your Triple Random 3 Star Claim Ticket(s)",
-      "label": "Triple Random 3 Star Claim Ticket",
+      "description": "View or use your 3x Random `★★★` Claim Ticket(s)",
+      "label": "3x Random `★★★` Claim Ticket",
       "value": "ticket3x3r-ticket"
     },
     {
-      "description": "View or use your Quintuple Random 5 Star Claim Ticket(s)",
-      "label": "Quintuple Random 5 Star Claim Ticket",
+      "description": "View or use your 3x Random `★★★★★` Claim Ticket(s)",
+      "label": "5x Random `★★★★★` Claim Ticket",
       "value": "ticket5x5r-ticket"
     }
   ],
