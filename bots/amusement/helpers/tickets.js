@@ -115,17 +115,22 @@ const ticketSelect = async (ctx, inv) => {
         }
         return x.itemID === invItems[0].itemID && x.collectionID === invItems[0].collectionID
     })
-    let pages = invItems.map(x => x.collectionID || 'random')
-    pages = pages.map(x => {
-        let amount = 0
-        inv.map(y => {
-            if (!y.collectionID && x === 'random') {
-                amount += 1
-            } else if (y.collectionID === x) {
-                amount += 1
-            }
-        })
-        return `${x}${amount > 1? ` (x${amount})`: ``}`
+
+    let embed = {
+        title: ctx.items[invItems[0].itemID].displayName,
+        description: `This is a \`{itemID}\` redeemable for **{count}** \`{rarity}\` cards from {collectionText}. You have **{number}** of them`
+    }
+    let pages = sameType.map(x => {
+        let itemEmbed = embed
+        let count = invItems.filter(y => y.collectionID === x.collectionID).length
+        let idSplit = item.itemID.substring(6).split('x')
+        itemEmbed.title = ctx.items[x.itemID].displayName
+        itemEmbed.description.replace('{itemID}', x.itemID)
+        itemEmbed.description.replace('{count}', ctx.fmtNum(Number(idSplit[0])))
+        itemEmbed.description.replace('{rarity}', `${new Array(Number(idSplit[1].substring(0, 1))).join('★')}`)
+        itemEmbed.description.replace('{collectionText}', x.collectionID === 'random'? 'randomly chosen collections': `\`${x.collectionID}\``)
+        itemEmbed.description.replace('{number}', ctx.fmtNum(count))
+        return itemEmbed
     })
 
     buttons.push(
