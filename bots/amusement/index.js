@@ -22,8 +22,6 @@ const bot = new Oceanic.Client({ auth: 'Bot ' + process.env.token})
 let ctx
 let wip = true
 
-//Todo
-//Replace Guild Commands with globals before release
 
 bot.once('ready', async () => {
     ctx = await getContext()
