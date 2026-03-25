@@ -1,0 +1,54 @@
+{
+  "all" : [
+    {
+      "description": "Display the help menu for auctions",
+      "label": "Auctions",
+      "value": "auction"
+    },
+    {
+      "description": "Display the help menu for cards",
+      "label": "Cards",
+      "value": "cards"
+    },
+    {
+      "description": "Display the help menu for collections",
+      "label": "Collections",
+      "value": "collections"
+    },
+    {
+      "description": "Display the help menu for currencies",
+      "label": "Currencies",
+      "value": "currencies"
+    },
+    {
+      "description": "Display the help menu for forge",
+      "label": "Forge",
+      "value": "forge"
+    },
+    {
+      "description": "Display the help menu for guilds",
+      "label": "Guilds",
+      "value": "guilds"
+    },
+    {
+      "description": "Display the help menu for items",
+      "label": "Items",
+      "value": "items"
+    },
+    {
+      "description": "Display the help menu for plots",
+      "label": "Plots",
+      "value": "plots"
+    },
+    {
+      "description": "Display the help menu for the store",
+      "label": "Store",
+      "value": "store"
+    },
+    {
+      "description": "Display the help menu for extra",
+      "label": "Extra",
+      "value": "extra"
+    }
+  ]
+}
