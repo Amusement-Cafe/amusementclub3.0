@@ -107,6 +107,8 @@ const handleBotCommand = async (input, ctx) => {
     }
 
     ctx.cmdOptions = currentLevel.options || {}
+    ctx.cmd = input
+    ctx.type = 'cmd'
     ctx = await ctxFiller(ctx)
 
     return currentLevel.handler(ctx)
@@ -130,6 +132,8 @@ const handleReaction = async (input, ctx) => {
         return console.log(`Somehow you have run a command without a handler!`)
     }
     ctx.cmdOptions = currentLevel.options || {}
+    ctx.cmd = input
+    ctx.type = 'rct'
     ctx = await ctxFiller(ctx)
 
     if (!oldInteract && (command[0] === 'pgn' || command[0] === 'dcl' || command[0] === 'cfm')) {

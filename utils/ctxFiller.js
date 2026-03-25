@@ -42,7 +42,8 @@ const {
 const {
     Collections,
     Cards,
-    Promos
+    Promos,
+    Commands
 } = require("../db")
 
 const {
@@ -236,6 +237,13 @@ const ctxFiller = async (ctx, bot) => {
     if (!newCTX.isGuildDM(newCTX)) {
         newCTX.guildUser = await fetchOrCreateGuildUser(newCTX)
     }
+    const ranCommand = new Commands()
+    ranCommand.userID = newCTX.user.userID
+    ranCommand.guildID = newCTX.guild?.guildID || newCTX.guild
+    ranCommand.command = newCTX.cmd?.join(' ') ||  ''
+    ranCommand.options = newCTX.options || ctx.arguments || []
+    ranCommand.type = newCTX.type || 'unknown'
+    await ranCommand.save()
     return newCTX
 }
 

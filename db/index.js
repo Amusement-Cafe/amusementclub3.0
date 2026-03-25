@@ -7,6 +7,7 @@ module.exports = {
     Cards: require('./card'),
     Claims: require('./claim'),
     Collections: require('./collection'),
+    Commands: require('./commands'),
     Guilds: require('./guild'),
     GuildBuildings: require('./guildBuilding'),
     GuildUsers: require('./guildUser'),
