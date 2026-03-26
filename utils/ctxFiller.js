@@ -241,7 +241,7 @@ const ctxFiller = async (ctx, bot) => {
     ranCommand.userID = newCTX.user.userID
     ranCommand.guildID = newCTX.guild?.guildID || newCTX.guild
     ranCommand.command = newCTX.cmd?.join(' ') ||  ''
-    ranCommand.options = newCTX.options || ctx.arguments || []
+    ranCommand.options = newCTX.arguments? newCTX.arguments: newCTX.options || []
     ranCommand.type = newCTX.type || 'unknown'
     await ranCommand.save()
     return newCTX
