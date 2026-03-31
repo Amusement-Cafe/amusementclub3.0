@@ -1,9 +1,49 @@
 const {registerBotCommand} = require('../../../utils/commandRegistrar')
-const {Collections} = require("../../../db");
-const _ = require("lodash");
+const {generateGlobalCommand} = require("../../../utils/commandGeneration")
+const {Collections} = require("../../../db")
+const _ = require("lodash")
 
 
-registerBotCommand(['set', 'alias'], async (ctx) => {
+registerBotCommand(['set', 'alias'], async (ctx) => await setAlias(ctx))
+
+registerBotCommand(['set', 'author'], async (ctx) => await setAuthor(ctx))
+
+registerBotCommand(['set', 'compression'], async (ctx) => await setCompression(ctx))
+
+registerBotCommand(['set', 'display'], async (ctx) => await setDisplay(ctx))
+
+registerBotCommand(['set', 'rarity'], async (ctx) => await setRarity(ctx))
+generateGlobalCommand('set', 'Top Level Set')
+    .subCommand('alias', 'Set an alias for a collection')
+    .string('collection', 'The collection receiving an alias')
+    .required()
+    .string('alias', 'The alias(es) to add to the collection. Space separated')
+    .required()
+    .boolean('remove', 'Select whether you are removing aliases or not. (Default is false)')
+    .close()
+    .subCommand('author', `Set a collection's Author`)
+    .string('collection', 'The collection receiving an author')
+    .required()
+    .userID('The mention or discord ID of the author')
+    .required()
+    .close()
+    .subCommand('compression', 'Toggle a collection between compressed and non-compressed images')
+    .string('collection', 'The collection to toggle compression for')
+    .required()
+    .close()
+    .subCommand('display', `Set a collection's display name`)
+    .string('collection', 'The collection to update the display name for')
+    .required()
+    .string('display_name', 'The display name to set the collection to')
+    .required()
+    .close()
+    .subCommand('rarity', `Set a rarity for a collection`)
+    .string('collection', 'The collection to update rarity for')
+    .required()
+    .integer('rarity', 'The rarity to set the collection to as a whole number, 5% = 5')
+    .close()
+
+const setAlias = async (ctx) => {
     const col = ctx.collections.filter(x => x.aliases.some(y => ctx.args.cols[0] === y))[0]
 
     if (!col) {
@@ -50,17 +90,17 @@ registerBotCommand(['set', 'alias'], async (ctx) => {
             }
         })
     }
-})
+}
 
-registerBotCommand(['set', 'author'], async (ctx) => {
+const setAuthor = async (ctx) => {
     const col = ctx.collections.filter(x => x.aliases.some(y => ctx.args.cols[0] === y))[0]
 
     if (!col) {
         return ctx.send(ctx, 'Nothing found')
     }
-})
+}
 
-registerBotCommand(['set', 'compression'], async (ctx) => {
+const setCompression = async (ctx) => {
     const col = ctx.collections.filter(x => x.aliases.some(y => ctx.args.cols[0] === y))[0]
 
     if (!col) {
@@ -71,20 +111,20 @@ registerBotCommand(['set', 'compression'], async (ctx) => {
     await col.save()
     ctx.global.collections = await Collections.find()
     await ctx.send(ctx, `Set compression status to ${col.compressed}!`)
-})
+}
 
-registerBotCommand(['set', 'display'], async (ctx) => {
+const setDisplay = async (ctx) => {
     const col = ctx.collections.filter(x => x.aliases.some(y => ctx.args.cols[0] === y))[0]
 
     if (!col) {
         return ctx.send(ctx, 'Nothing found')
     }
-})
+}
 
-registerBotCommand(['set', 'rarity'], async (ctx) => {
+const setRarity = async (ctx) => {
     const col = ctx.collections.filter(x => x.aliases.some(y => ctx.args.cols[0] === y))[0]
 
     if (!col) {
         return ctx.send(ctx, 'Nothing found')
     }
-})
+}

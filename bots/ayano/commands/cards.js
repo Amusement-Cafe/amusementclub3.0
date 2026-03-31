@@ -1,5 +1,6 @@
 const {registerBotCommand} = require('../../../utils/commandRegistrar')
-const {getS3Connection} = require("../helpers/s3");
+const {generateGlobalCommand} = require("../../../utils/commandGeneration")
+const {getS3Connection} = require("../helpers/s3")
 const {Collections, Cards} = require('../../../db')
 
 let updating = false
@@ -7,7 +8,12 @@ let updating = false
 
 
 //Todo Rename S3 card file to cardID once imported, and use that for links
-registerBotCommand('update', async (ctx, extras) => {
+registerBotCommand('update', async (ctx) => await update(ctx))
+generateGlobalCommand('update', 'Start a collection update')
+    .string('collection', 'The collection that is receiving new cards')
+    .boolean('promo', 'Select whether the collection to be added is a promo')
+
+const update = async (ctx) => {
     if (!ctx.s3)
         await getS3Connection(ctx)
 
@@ -116,4 +122,4 @@ registerBotCommand('update', async (ctx, extras) => {
             description: response.substring(0, 4095)
         }
     })
-})
+}

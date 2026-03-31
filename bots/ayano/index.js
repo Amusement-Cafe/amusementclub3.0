@@ -8,6 +8,11 @@ const {
 } = require("../../utils/commandRegistrar")
 
 const {
+    generateGlobalCommand,
+    getGlobalCommands,
+} = require("../../utils/commandGeneration")
+
+const {
     listen
 } = require("../../utils/webhooks")
 
@@ -36,14 +41,13 @@ process.on('message', async (msg) => {
 
 let ready = false
 
-//Todo Add guild ID to config
 bot.once('ready', async () => {
     ctx = await getContext('ayano')
-    let slashCommands = require('./static/commands.json')
+    let commands = getGlobalCommands()
     const serverCommands = await bot.application.getGuildCommands(ctx.config.ayano.adminGuildID)
-    if (serverCommands.length !== slashCommands.commands.length) {
+    if (serverCommands.length !== commands.length) {
         console.log('Updating server commands as a mis-match was found')
-        await bot.application.bulkEditGuildCommands(ctx.config.ayano.adminGuildID, slashCommands.commands)
+        await bot.application.bulkEditGuildCommands(ctx.config.ayano.adminGuildID, commands)
     }
     await listen(ctx)
     ready = true
@@ -110,8 +114,12 @@ registerBotCommand(['restart', 'ayano'], async (ctx) => {
     await ctx.interaction.reply({content: 'restarting'})
     process.send({restart: true})
 })
-
 registerBotCommand(['restart', 'amusement'], async (ctx) => {
     await ctx.interaction.reply({content: 'restarting'})
     process.send({restartac: true})
 })
+generateGlobalCommand('restart', 'Top Level Restart')
+    .subCommand('ayano', 'Restart Ayano')
+    .close()
+    .subCommand('amusement', 'Restart Amusement Club')
+    .close()
