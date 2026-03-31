@@ -1,4 +1,9 @@
 const {registerBotCommand} = require('../../../utils/commandRegistrar')
+const {
+    generateGuildCommand,
+    getGuildCommands,
+    getGlobalCommands,
+} = require('../../../utils/commandGeneration')
 
 registerBotCommand(['sudo', 'refresh', 'global'], async (ctx) => await refresh(ctx), {perms: ['admin']})
 
@@ -54,6 +59,13 @@ registerBotCommand(['sudo', 'announce', 'daily'], async (ctx) => await createAnn
 
 registerBotCommand(['sudo', 'announce', 'important'], async (ctx) => await createAnnouncement(ctx, true), {perms: ['admin']})
 
+generateGuildCommand('sudo', 'Top Level Sudo')
+    .subCommandGroup('refresh', 'Top Level Refresh')
+    .subCommand('global', `Refresh the bot's global commands`)
+    .close()
+    .subCommand('guild', `Refresh the bot's guild commands`)
+    .close()
+    .close()
 
 const summon = async (ctx) => {}
 
@@ -92,12 +104,10 @@ const modifyAuctionLock = async (ctx) => {}
 const createAnnouncement = async (ctx, important = false) => {}
 
 const refresh = async (ctx, global = true) => {
-    const slashCommands = require("../static/commands.json")
-
     if (!global) {
-        await ctx.bot.application.bulkEditGuildCommands(ctx.config.amusement.adminGuildID, slashCommands.admin)
+        await ctx.bot.application.bulkEditGuildCommands(ctx.config.amusement.adminGuildID, getGuildCommands())
     } else {
-        await ctx.bot.application.bulkEditGlobalCommands(slashCommands.general)
+        await ctx.bot.application.bulkEditGlobalCommands(getGlobalCommands())
     }
 
     return ctx.send(ctx, `updating ${global? 'global': 'admin'} commands!`)

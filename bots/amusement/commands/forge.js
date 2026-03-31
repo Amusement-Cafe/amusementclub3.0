@@ -6,6 +6,10 @@ const {
 } = require('../../../utils/commandRegistrar')
 
 const {
+    generateGlobalCommand
+} = require("../../../utils/commandGeneration")
+
+const {
     Button,
 } = require('../helpers/componentBuilders')
 
@@ -18,6 +22,10 @@ let pricePerRarity = 250
 
 
 registerBotCommand(['forge'], async (ctx) => await forge(ctx), {withCards: true})
+generateGlobalCommand('forge', 'Forge two cards of similar rarity together')
+    .string('card_query_1', 'Enter either a card name, or card query here. If using query, only fill out this option!')
+    .required()
+    .string('card_query_2', 'Enter a card query or name here if you entered a card name for card 1!')
 
 registerReaction(['forge'], async (ctx) => await processForge(ctx), {withCards: true})
 

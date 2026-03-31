@@ -1,6 +1,7 @@
 const _ = require('lodash')
 
 const {registerBotCommand} = require('../../../utils/commandRegistrar')
+const {generateGlobalCommand} = require("../../../utils/commandGeneration")
 
 const {
     getUserStats,
@@ -28,27 +29,45 @@ const {
 } = require("../utils/misc")
 
 registerBotCommand('daily', async (ctx) => await daily(ctx))
+generateGlobalCommand('daily', 'Claim your daily bonus and reset costs')
 
 registerBotCommand('balance', async (ctx) => await balance(ctx))
+generateGlobalCommand('balance', 'Display your current balance')
 
 registerBotCommand('profile', async (ctx) => await showProfile(ctx))
 
 registerBotCommand('has', async (ctx) => await userHas(ctx))
 
 registerBotCommand('miss', async (ctx) => await userMissing(ctx), {withCards: true, globalCards: true})
+generateGlobalCommand('miss', 'Check your missing cards').cardQuery()
+
 
 registerBotCommand('achievements', async (ctx) => await userAchievements(ctx))
 
 registerBotCommand('quests', async (ctx) => await listQuests(ctx))
 
 registerBotCommand(['diff', 'for'], async (ctx) => await userDiff(ctx))
-
 registerBotCommand(['diff', 'from'], async (ctx) => await userDiff(ctx, true))
+generateGlobalCommand('diff', 'Top Level Diff')
+    .subCommand('from', 'Display cards another user owns that you do not')
+        .cardQuery()
+        .required()
+        .user('user_id', 'The user you want to diff, ID or mention accepted')
+        .required()
+        .close()
+    .subCommand('for', 'Display cards you own that another user needs')
+        .cardQuery()
+        .required()
+        .user('user_id', 'The user you want to diff, ID or mention accepted')
+        .required()
+        .close()
+
 
 registerBotCommand(['cards'], async (ctx) => await cards(ctx), {withCards: true})
-
 registerBotCommand(['cards', 'global'], async (ctx) => await cards(ctx, true), { globalCards: true })
-
+generateGlobalCommand('cards', 'View your card list')
+    .cardQuery()
+    .boolean('global', 'Set to true to check for any cards in the bot and not just your own')
 
 const daily = async (ctx, streakSaver = false) => {
     let nextDailyMS = ctx.user.lastDaily.getTime() + ctx.hourToMS(20)

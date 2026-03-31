@@ -4,6 +4,10 @@ const {
 } = require('../../../utils/commandRegistrar')
 
 const {
+    generateGlobalCommand,
+} = require('../../../utils/commandGeneration')
+
+const {
     createTransaction,
     completeTransaction,
     formatTransactions,
@@ -30,10 +34,31 @@ const {
 let transactionPages = []
 
 registerBotCommand(['sell', 'one'], async (ctx) => await sell(ctx), { withCards: true })
-
 registerBotCommand(['sell', 'many'], async (ctx) => await sell(ctx, true))
+generateGlobalCommand('sell', 'Top level Sell')
+    .subCommand('one', 'Sell a single unique card to a user')
+    .cardQuery()
+    .required()
+    .userID('The user you want to sell to, ID or mention accepted')
+    .integer('amount', 'The quantity of the card you want to sell')
+    .minValue(1)
+    .maxValue(999)
+    .close()
+    .subCommand('many', 'Sell a single copy of many cards to a user')
+    .cardQuery()
+    .required()
+    .userID('The user you want to sell to, ID or mention accepted')
+    .integer('amount', 'The limit of the cards you want to sell')
+    .minValue(1)
+    .maxValue(999)
+    .close()
 
 registerBotCommand(['transactions'], async (ctx) => await listTransaction(ctx))
+generateGlobalCommand('transactions', 'Display your transactions (All options optional)')
+    .cardQuery()
+    .boolean('auctions', 'Set to true to filter for only auction transactions, false to return no auction transactions')
+    .boolean('received', 'Set to true to filter for only received transactions, false to return only outgoing')
+    .boolean('pending', 'Set to true to filter for only pending transactions, false to return only completed')
 
 registerReaction(['trans', 'cfm'], async (ctx) => await completeTransaction(ctx))
 registerReaction(['trans', 'dcl'], async (ctx) => await completeTransaction(ctx, true))

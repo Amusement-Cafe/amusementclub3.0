@@ -3,6 +3,10 @@ const _ = require("lodash")
 const Claims = require("../../../db/claim")
 
 const {
+    generateGlobalCommand
+} = require("../../../utils/commandGeneration")
+
+const {
     registerBotCommand,
     registerReaction,
 } = require('../../../utils/commandRegistrar')
@@ -22,6 +26,12 @@ const {
 let processing = []
 
 registerBotCommand(['claim'], async (ctx) => await claimNormal(ctx), {withCards: true})
+generateGlobalCommand('claim', 'Claim cards with this command!')
+    .integer('count', 'A number between 1 and 20, to claim that many cards')
+    .minValue(1)
+    .maxValue(20)
+    .boolean('any', 'If claiming in a locked server, claim from the global pool instead of the locked pool')
+    .boolean('promo', 'Claim promo cards if a card event is currently active')
 
 registerReaction(['claim', 'show'], async (ctx) => {})
 

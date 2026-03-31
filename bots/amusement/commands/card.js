@@ -1,4 +1,6 @@
 const {registerBotCommand} = require('../../../utils/commandRegistrar')
+const {generateGlobalCommand} = require("../../../utils/commandGeneration")
+
 const _ = require('lodash')
 
 const {
@@ -6,9 +8,10 @@ const {
 } = require("../helpers/user")
 
 registerBotCommand('summon', async (ctx) => await summonCard(ctx), {withCards: true})
+generateGlobalCommand('summon', 'Summon a card you own').cardQuery()
 
 registerBotCommand('info', async (ctx) => await cardInfo(ctx))
-
+generateGlobalCommand('info', 'View info about a card').cardQuery().required()
 
 const summonCard = async (ctx) => {
     if (ctx.userCards.length === 0) {

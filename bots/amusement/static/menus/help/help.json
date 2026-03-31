@@ -3,52 +3,123 @@
     {
       "description": "Display the help menu for auctions",
       "label": "Auctions",
-      "value": "auction"
+      "value": "subAuction"
     },
     {
       "description": "Display the help menu for cards",
       "label": "Cards",
-      "value": "cards"
+      "value": "subCards"
     },
     {
       "description": "Display the help menu for collections",
       "label": "Collections",
-      "value": "collections"
+      "value": "subCollections"
     },
     {
       "description": "Display the help menu for currencies",
       "label": "Currencies",
-      "value": "currencies"
+      "value": "subCurrencies"
     },
     {
       "description": "Display the help menu for forge",
       "label": "Forge",
-      "value": "forge"
+      "value": "subForge"
     },
     {
       "description": "Display the help menu for guilds",
       "label": "Guilds",
-      "value": "guilds"
+      "value": "subGuilds"
     },
     {
       "description": "Display the help menu for items",
       "label": "Items",
-      "value": "items"
+      "value": "subItems"
     },
     {
       "description": "Display the help menu for plots",
       "label": "Plots",
-      "value": "plots"
+      "value": "subPlots"
     },
     {
       "description": "Display the help menu for the store",
       "label": "Store",
-      "value": "store"
+      "value": "subStore"
     },
     {
       "description": "Display the help menu for extra",
       "label": "Extra",
-      "value": "extra"
+      "value": "subExtra"
+    }
+  ],
+  "subAuction" : [
+    {
+      "description": "How to sell cards on auction",
+      "label": "Selling",
+      "value": "subAuction-selling"
+    },
+    {
+      "description": "Bidding on auctions",
+      "label": "Bidding",
+      "value": "subAuction-bidding"
+    },
+    {
+      "description": "Cancelling an auction",
+      "label": "Cancelling",
+      "value": "subAuction-cancelling"
+    },
+    {
+      "description": "This is probably needed, I just don't know why",
+      "label": "Auctions3",
+      "value": "subAuction-auction3"
+    }
+  ],
+  "subCards" : [
+    {
+      "description": "Display the help menu for auctions",
+      "label": "Auctions",
+      "value": "auction"
+    }
+  ],
+  "subCollections" : [
+    {
+      "description": "Display the help menu for auctions",
+      "label": "Auctions",
+      "value": "auction"
+    }
+  ],
+  "currencies" : [
+    {
+      "description": "Display the help menu for auctions",
+      "label": "Auctions",
+      "value": "auction"
+    }
+  ],
+  "forge" : [
+    {
+      "description": "Display the help menu for auctions",
+      "label": "Auctions",
+      "value": "auction"
+    }
+  ],
+  "guilds" : [
+    {
+      "description": "Display the help menu for auctions",
+      "label": "Auctions",
+      "value": "auction"
+    }
+  ],
+  "items" : [
+    {
+      "description": "Display the help menu for auctions",
+      "label": "Auctions",
+      "value": "auction"
+    }
+  ],
+  "plots" : [
+    {
+      "description": "Display the help menu for auctions",
+      "label": "Auctions",
+      "value": "auction"
     }
   ]
 }

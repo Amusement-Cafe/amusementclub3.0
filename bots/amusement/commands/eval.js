@@ -1,11 +1,24 @@
 const {registerBotCommand} = require('../../../utils/commandRegistrar')
+const {generateGlobalCommand} = require("../../../utils/commandGeneration")
 
 
 registerBotCommand(['eval', 'one'], async (ctx) => await eval(ctx))
 registerBotCommand(['eval', 'one', 'global'], async (ctx) => await eval(ctx, false, true))
-
 registerBotCommand(['eval', 'many'], async (ctx) => await eval(ctx, true))
 registerBotCommand(['eval', 'many', 'global'], async (ctx) => await eval(ctx, true, true))
+generateGlobalCommand('eval', 'Top Level Eval')
+    .subCommand('one', 'Eval a singular card from a query')
+    .cardQuery()
+    .required()
+    .boolean('global', 'Set to true to check eval for any card in the bot and not just your own')
+    .boolean('multi', 'Whether to include all copies of the card you own in the eval response')
+    .close()
+    .subCommand('many', 'Eval multiple cards in a query')
+    .cardQuery()
+    .required()
+    .boolean('global', 'Set to true to check eval for any cards in the bot and not just your own')
+    .boolean('multi', 'Whether to include all copies of the cards you own in the eval response')
+    .close()
 
 const eval = async (ctx, many = false, global = false) => {
     let evals

@@ -7,6 +7,11 @@ const {
 } = require("../../utils/commandRegistrar")
 
 const {
+    getGlobalCommands,
+    getGuildCommands
+} = require("../../utils/commandGeneration")
+
+const {
     fetchOrCreateUser
 } = require("./helpers/user")
 
@@ -27,15 +32,17 @@ bot.once('ready', async () => {
     ctx = await getContext()
     wip = false
     let slashCommands = require('./static/commands.json')
+    let botGlobalCommands = getGlobalCommands()
+    let botGuildCommands = getGuildCommands()
     const globalCommands = await bot.application.getGlobalCommands()
     const guildCommands = await bot.application.getGuildCommands(ctx.config.amusement.adminGuildID)
-    if (globalCommands.length !== slashCommands.general.length) {
+    if (globalCommands.length !== botGlobalCommands.length) {
         console.log('Updating global commands as a mis-match was found')
-        await bot.application.bulkEditGlobalCommands(slashCommands.general)
+        await bot.application.bulkEditGlobalCommands(botGlobalCommands)
     }
-    if (guildCommands.length !== slashCommands.admin.length) {
+    if (guildCommands.length !== botGuildCommands.length) {
         console.log(`Updating Admin commands as a mis-match was found!`)
-        await bot.application.bulkEditGuildCommands(ctx.config.amusement.adminGuildID, slashCommands.admin)
+        await bot.application.bulkEditGuildCommands(ctx.config.amusement.adminGuildID, botGuildCommands)
     }
     jobs.startTicks(ctx)
 })

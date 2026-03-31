@@ -75,7 +75,9 @@ const getCommandOptions = async (ctx) => {
                 case 'received': args.received = value; break;
                 case 'remove': args.remove = value; break;
                 case 'start_time': args.start = value; break;
+                case 'starting_bid': args.price = value; break;
                 case 'tax_percentage': args.tax = value; break;
+                case 'time_length': args.timeLength = value; break;
                 case 'user_id': args.userIDs.push(value); break;
             }
         })

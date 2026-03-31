@@ -4,6 +4,10 @@ const {
 } = require('../../../utils/commandRegistrar')
 
 const {
+    generateGlobalCommand
+} = require("../../../utils/commandGeneration")
+
+const {
     Button,
     Selection,
 } = require('../helpers/componentBuilders')
@@ -19,6 +23,7 @@ const profileModals = require('../static/modals/profile.json')
 const home = new Button('preferences_start').setLabel('Main Menu').setStyle(2)
 
 registerBotCommand(['preferences'], async (ctx) => await preferencesStart(ctx))
+generateGlobalCommand('preferences', 'Access the preferences menus')
 
 registerReaction(['preferences', 'start'], async (ctx) => await preferencesStart(ctx, true))
 registerReaction(['preference', 'category'], async (ctx) => await preferencesCategory(ctx))

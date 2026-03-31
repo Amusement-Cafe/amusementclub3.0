@@ -4,6 +4,10 @@ const {
 } = require('../../../utils/commandRegistrar')
 
 const {
+    generateGlobalCommand
+} = require("../../../utils/commandGeneration")
+
+const {
     getUserInventory
 } = require('../helpers/userInventory')
 
@@ -22,6 +26,8 @@ const menus = require('../static/menus/inventory/inventory.json')
 const homeButton = new Button('inv_home').setLabel('Home Page').setStyle(2)
 
 registerBotCommand(['inventory'], async (ctx) => await inventoryStart(ctx))
+generateGlobalCommand('inventory', 'Browse your item inventory')
+
 registerReaction(['inventoryMain'], async (ctx) => await mainSelect(ctx))
 registerReaction(['inventoryItem'], async (ctx) => await itemSelect(ctx))
 registerReaction(['inv', 'home'], async (ctx) => await inventoryStart(ctx, true))

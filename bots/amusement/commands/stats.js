@@ -1,6 +1,10 @@
 const _ = require('lodash')
 
 const {
+    generateGlobalCommand
+} = require("../../../utils/commandGeneration")
+
+const {
     AsciiTable3,
 } = require("ascii-table3")
 
@@ -19,6 +23,8 @@ const {
 } = require("../helpers/componentBuilders")
 
 registerBotCommand('stats', async (ctx) => await stats(ctx))
+generateGlobalCommand('stats', 'Display your bot stats')
+
 registerReaction(['stat', 'page'], async (ctx) => await stats(ctx))
 
 let weekStart = () => {

@@ -3,47 +3,47 @@ const main = {
     description: "Help usage",
 }
 
-const items = {
+const subAuction = {
     title: "Help",
     description: "Help usage",
 }
 
-const currencies = {
+const subCards = {
     title: "Help",
     description: "Help usage",
 }
 
-const cards = {
+const subCollections = {
     title: "Help",
     description: "Help usage",
 }
 
-const collections = {
+const subCurrencies = {
     title: "Help",
     description: "Help usage",
 }
 
-const guilds = {
+const subForge = {
     title: "Help",
     description: "Help usage",
 }
 
-const plots = {
+const subGuilds = {
     title: "Help",
     description: "Help usage",
 }
 
-const forge = {
+const subItems = {
     title: "Help",
     description: "Help usage",
 }
 
-const auction = {
+const subPlots = {
     title: "Help",
     description: "Help usage",
 }
 
-const store = {
+const subStore = {
     title: "Help",
     description: "Help usage",
 }
@@ -51,14 +51,46 @@ const store = {
 module.exports = {
     main,
     subMenus: {
-        auction,
-        cards,
-        collections,
-        currencies,
-        forge,
-        guilds,
-        items,
-        plots,
-        store
+        subAuction,
+        subCards,
+        subCollections,
+        subCurrencies,
+        subForge,
+        subGuilds,
+        subItems,
+        subPlots,
+        subStore,
+    },
+    helpMenus: {
+        subAuction: {
+            selling: {
+                title: "Selling",
+                description: "WEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+            }
+        },
+        subCards: {
+
+        },
+        subCollections: {
+
+        },
+        subCurrencies: {
+
+        },
+        subForge: {
+
+        },
+        subGuilds: {
+
+        },
+        subItems: {
+
+        },
+        subPlots: {
+
+        },
+        subStore: {
+
+        },
     }
 }

@@ -1,6 +1,10 @@
 const _ = require('lodash')
 
 const {
+    generateGlobalCommand
+} = require("../../../utils/commandGeneration")
+
+const {
     registerBotCommand,
     registerReaction
 } = require('../../../utils/commandRegistrar')
@@ -20,6 +24,9 @@ const {
 let collectionPages = []
 
 registerBotCommand(['collections'], async (ctx) => await listCollections(ctx))
+generateGlobalCommand('collections', 'Display bot collections')
+    .string('collections', 'Collections to filter for')
+
 
 registerReaction(['col', 'list'], async (ctx) => listCollectionPages(ctx))
 registerReaction(['col', 'info'], async (ctx) => listCollectionInfos(ctx), {withCards: true})

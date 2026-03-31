@@ -4,6 +4,10 @@ const {
 } = require('../../../utils/commandRegistrar')
 
 const {
+    generateGlobalCommand
+} = require("../../../utils/commandGeneration")
+
+const {
     addItem
 } = require("../helpers/userInventory")
 
@@ -20,6 +24,7 @@ const homeButton = new Button('store_all').setLabel('Main Menu').setStyle(2)
 const limit = 3
 
 registerBotCommand(['store'], async (ctx) => await storeStart(ctx))
+generateGlobalCommand('store', 'Browse the store')
 
 registerReaction(['store', 'all'], async (ctx) => await storeStart(ctx, true))
 registerReaction(['storeMenu'], async (ctx) => await displayStore(ctx))
