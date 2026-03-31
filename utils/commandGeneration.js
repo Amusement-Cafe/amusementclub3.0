@@ -72,7 +72,7 @@ class BuildCommand {
     }
 
     required (value = true) {
-        this.currentOption.required = true
+        this.currentOption.required = value
         return this
     }
 
