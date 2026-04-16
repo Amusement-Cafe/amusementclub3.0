@@ -73,12 +73,31 @@ registerReaction(['trans', 'info', 'modal'], async (ctx) => await showCustomTran
 
 
 const sell = async (ctx, many = false) => {
-    let saleCards, toUser, amountDisplay
+    let toUser, amountDisplay
+    let saleCards = [...ctx.userCards]
+
+    if (!saleCards || saleCards.length === 0) {
+        return ctx.send(ctx, `no cards found for query \`${ctx.options.card_query}\`, please check your spelling and try again!`, 'red')
+    }
+
+    saleCards = saleCards.filter(x => x.fav? x.amount > 1: true)
+
+    if (saleCards.length === 0) {
+        return ctx.send(ctx, `All cards in your query are favorited and only have one copy! Please re-run your command to include more non-favorite cards or remove the cards from your favorites first!`, 'red')
+    }
+    console.log(saleCards.length)
+    if (!ctx.args.cardQuery.locked) {
+        console.log('not locked')
+        saleCards = saleCards.filter(x => !x.locked)
+        console.log(saleCards.length)
+    }
+
+    if (saleCards.length === 0) {
+        return ctx.send(ctx, `Are you sure you want to sell ${many? 'these cards': 'this card'}?\nThe card(s) you have chosen is/are locked and cannot be sold unless you use the \`-locked\` query in your card query!`, 'red')
+    }
 
     if (!many) {
-        saleCards = ctx.userCards[0]? [ctx.userCards[0]]: false
-    } else {
-        saleCards = ctx.userCards
+        saleCards = [saleCards[0]]
     }
 
     if (ctx.args.userIDs[0]) {
@@ -100,10 +119,6 @@ const sell = async (ctx, many = false) => {
         }
     }
 
-    if (!saleCards || saleCards.length === 0) {
-        return ctx.send(ctx, `no cards found for query \`${ctx.options.card_query}\`, please check your spelling and try again!`, 'red')
-    }
-
     if (ctx.options.amount && !many) {
         let saleCard = saleCards[0]
         if (saleCard.fav && saleCard.amount === ctx.options.amount) {
@@ -120,19 +135,7 @@ const sell = async (ctx, many = false) => {
         }
     }
 
-    saleCards = saleCards.filter(x => x.fav? x.amount > 1: x.amount >= 1)
 
-    if (saleCards.length === 0) {
-        return ctx.send(ctx, `All cards in your query are favorited and only have one copy! Please re-run your command to include more non-favorite cards or remove the cards from your favorites first!`, 'red')
-    }
-
-    if (!ctx.args.cardQuery.locked) {
-        saleCards = saleCards.filter(x => !x.locked)
-    }
-
-    if (saleCards.length === 0) {
-        return ctx.send(ctx, `Are you sure you want to sell ${many? 'these cards': 'this card'}?\nThe card(s) you have chosen is locked and cannot be sold unless you use the \`-locked\` query in your card query!`, 'red')
-    }
 
     if (ctx.options.amount && many) {
         saleCards = saleCards.slice(0, ctx.options.amount < saleCards.length? ctx.options.amount : saleCards.length)
