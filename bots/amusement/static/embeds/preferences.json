@@ -51,6 +51,10 @@
     "title": "Allow Others To Sell You Cards",
     "description": "Enable or disable the ability for other users to sell you cards via `/sell`"
   },
+  "alwaysForce": {
+    "title": "Enable the force option everywhere",
+    "description": "Enable or disable the need to use the `-f` option in card query for all commands that take it, bypassing confirmation.\n(Enabling this option opts you out of support for mistaken commands ran with this option enabled, this can be dangerous)"
+  },
   "bio": {
     "title": "Bio Setting",
     "description": "Open the modal below to set your bio"
@@ -85,7 +89,7 @@
   },
   "interact": {
     "title": "Interaction Settings",
-    "description": "Use the select menu below to navigate to an Interaction option.\nInteraction options change how others can interact with you."
+    "description": "Use the select menu below to navigate to an Interaction option.\nInteraction options change how others can interact with you, or how you interact with the bot."
   },
   "profile": {
     "title": "Profile Settings",

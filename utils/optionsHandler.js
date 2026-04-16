@@ -193,6 +193,9 @@ const parseCardArgs = (ctx, user, cardArgs) => {
                     case 'miss':
                         query.diff = flag? 1: 2
                         break;
+                    case 'f':
+                        query.force = true
+                        break;
                     default:
                         const parsedInt = parseInt(subStr)
                         if (!isNaN(parsedInt))

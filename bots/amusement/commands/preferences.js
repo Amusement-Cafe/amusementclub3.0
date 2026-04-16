@@ -116,7 +116,7 @@ const preferenceDisplay = async (ctx) => {
             customButtons,
         })
     } else {
-        customButtons.push(new Button(`preference_toggle-${category}-${preference}-test`).setStyle(4).setLabel('Disable').setOff(!ctx.user.preferences[category][preference]))
+        customButtons.push(new Button(`preference_toggle-${category}-${preference}-disable`).setStyle(4).setLabel('Disable').setOff(!ctx.user.preferences[category][preference]))
         customButtons.push(new Button(`preference_toggle-${category}-${preference}`).setStyle(3).setLabel('Enable').setOff(ctx.user.preferences[category][preference]))
         embed.color = ctx.user.preferences[category][preference]? ctx.colors.green: ctx.colors.red
         return ctx.send(ctx, {

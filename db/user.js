@@ -81,6 +81,7 @@ const schema = new Schema({
             canHas:     { type: Boolean, default: true  },
             canDiff:    { type: Boolean, default: true  },
             canSell:    { type: Boolean, default: true  },
+            alwaysForce:{ type: Boolean, default: false },
         },
         profile:        {
             bio:        { type: String, default: 'This user has not set a bio' },

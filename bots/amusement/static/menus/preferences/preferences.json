@@ -36,6 +36,11 @@
       "description": "This option changes whether another user can sell cards to you",
       "label": "Can Sell",
       "value": "interact_canSell"
+    },
+    {
+      "description": "This option changes whether you need to use the -f query for commands",
+      "label": "Always Accept/Force",
+      "value": "interact_alwaysForce"
     }
   ],
   "notify": [
