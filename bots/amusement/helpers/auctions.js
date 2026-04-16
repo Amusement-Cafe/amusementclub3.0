@@ -21,10 +21,9 @@ const cancelAuction = async () => {
 
 }
 
-const listAuctions = async () => {
+const listAuctions = async (ctx, aucList) => {
 
 }
-
 
 module.exports = {
     cancelAuction,

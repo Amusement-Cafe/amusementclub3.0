@@ -1,6 +1,7 @@
 module.exports = {
     Announcements: require('./announcement'),
     Auctions: require('./auction'),
+    AuctionQueue: require('./auctionQueue'),
     Audits: require('./audit'),
     AuditAucSells: require('./auditAucSell'),
     AuditTags: require('./auditTag'),
