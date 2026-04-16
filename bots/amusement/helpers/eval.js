@@ -130,24 +130,21 @@ const auctionReturnedMultiplier = (card, currentEval) => {
 
 
 
-const evalCards = async (ctx) => {
+const evalCards = async (ctx, force = false) => {
     if (processing) {
         return
     }
     processing = true
     const start = new Date()
-    const queryTime = new Date()
-    queryTime.setTime(start.getTime() - (1000 * 60 * 60 * 24 * 7))
+    const queryTime = force? start: new Date().setTime(start.getTime() - (1000 * 60 * 60 * 24 * 7))
     const cards = await Cards.find({lastUpdatedEval: {$lt: queryTime}})
     if (cards.length === 0) {
+        processing = false
         return
     }
     console.log('Attempting Card Eval Updates')
     console.log("Cards gathered, updating evals")
     await Promise.all(cards.map(async (card) => {
-        if (card.lastUpdatedEval && card.lastUpdatedEval >= (Date.now() - (1000 * 60 * 60 * 24 * 7)))
-            return
-
         console.log(`Processing card ID ${card.cardID}`)
         let basePrice = referencePrices[card.rarity]
         let price = basePrice
@@ -164,7 +161,6 @@ const evalCards = async (ctx) => {
         price *= card.stats.wishlistCount? 1 + 0.15 * Math.log1p(card.stats.wishlistCount) / Math.log1p(50): 1
         price *= auctionReturnedMultiplier(card, price)
         price = Math.max(price, basePrice * 0.5)
-
         card.eval = Math.abs(Math.round(price)) || -1
         card.lastUpdatedEval = Date.now()
         await card.save()
