@@ -31,7 +31,6 @@ let wip = true
 bot.once('ready', async () => {
     ctx = await getContext()
     wip = false
-    let slashCommands = require('./static/commands.json')
     let botGlobalCommands = getGlobalCommands()
     let botGuildCommands = getGuildCommands()
     const globalCommands = await bot.application.getGlobalCommands()
