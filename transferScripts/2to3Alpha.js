@@ -154,8 +154,27 @@ const transferAuctions = async (db) => {
 const transferCollections = async (db) => {
     const colsJSON = require('../../ayano/data/collections.json')
     console.log('Processing Collections')
-    let count = 1
+    const promoRarity = {
+        halloween: '🎃',
+        christmas: '❄',
+        valentine: '🍫',
+        birthday: '🎂',
+        halloween18: '🍬',
+        christmas18: '🎄',
+        valentine19: '💗',
+        halloween19: '👻',
+        christmas19: '☃️',
+        birthday20: '🎈',
+        christmas20: '🎁',
+        valentine21: '🌹',
+        birthday21: '🧁',
+        halloween21: '🕸️',
+        christmas21: '🍪',
+        christmas22: '🥛',
+    }
+    let count = 0
     await Promise.all(colsJSON.map(async col => {
+        count++
         console.log(`Processing Collection ${count}`)
         const newCol = await new Collections()
         newCol.collectionID = col.id
@@ -172,8 +191,11 @@ const transferCollections = async (db) => {
         if (col.rarity) {
             newCol.rarity = col.rarity
         }
+        if (promoRarity[col.id]) {
+            let star = `${promoRarity[col.id]}`
+            newCol.stars = [star, star, star, star, star]
+        }
         await newCol.save()
-        count++
     }))
     console.log(`Finished Processing Collections`)
 }
