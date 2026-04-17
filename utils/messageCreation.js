@@ -8,7 +8,7 @@ const _ = require("lodash")
 
 setInterval(() => {
     const now = new Date()
-    let expired = interactions.filter(x => now - new Date(x.expires) >= 9000)
+    let expired = interactions.filter(x => now - new Date(x.expires) >= 900000)
     expired.map(x => _.pull(interactions, x))
 }, 1000)
 /**
