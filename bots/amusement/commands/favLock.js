@@ -58,6 +58,9 @@ const fav = async (ctx, many = false, remove = false) => {
 
     let selection = many? nonFav: [nonFav[0]]
     let pages = selection.map(x => ctx.formatName(ctx, x))
+    if (ctx.args.cardQuery.force || ctx.user.preferences.interact.alwaysForce) {
+        return favOrUnfav(ctx, selection.map(x => x.cardID), remove, true)
+    }
     return ctx.send(ctx, {
         pages: ctx.getPages(pages),
         embed: {
@@ -80,6 +83,9 @@ const lock = async (ctx, many = false, remove = false) => {
 
     let selection = many? nonFav: [nonFav[0]]
     let pages = selection.map(x => ctx.formatName(ctx, x))
+    if (ctx.args.cardQuery.force || ctx.user.preferences.interact.alwaysForce) {
+        return lockOrUnlock(ctx, selection.map(x => x.cardID), remove, true)
+    }
     return ctx.send(ctx, {
         pages: ctx.getPages(pages),
         embed: {
@@ -90,7 +96,7 @@ const lock = async (ctx, many = false, remove = false) => {
     })
 }
 
-const favOrUnfav = async (ctx, cardIDs, remove = false) => {
+const favOrUnfav = async (ctx, cardIDs, remove = false, forced = false) => {
     await UserCards.updateMany(
         {
             userID: ctx.user.userID,
@@ -105,11 +111,11 @@ const favOrUnfav = async (ctx, cardIDs, remove = false) => {
             color: ctx.colors.green,
             description: `You have ${remove? `removed`: 'marked'} ${cardIDs.length === 1? ctx.cards[cardIDs[0]].displayName: `${ctx.fmtNum(cardIDs.length)} card(s)`} ${remove ? 'from your favorite list' : 'as favorite'}`
         },
-        edit: true
+        edit: !forced
     })
 }
 
-const lockOrUnlock = async (ctx, cardIDs, remove = false) => {
+const lockOrUnlock = async (ctx, cardIDs, remove = false, forced = false) => {
     await UserCards.updateMany(
         {
             userID: ctx.user.userID,
@@ -124,6 +130,6 @@ const lockOrUnlock = async (ctx, cardIDs, remove = false) => {
             color: ctx.colors.green,
             description: `You have ${remove? `removed`: 'locked'} ${cardIDs.length === 1? ctx.cards[cardIDs[0]].displayName: `${ctx.fmtNum(cardIDs.length)} card(s)`}${remove ? ' from your locked list' : ''}`
         },
-        edit: true
+        edit: !forced
     })
 }
