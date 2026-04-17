@@ -6,6 +6,11 @@ const {
 
 const _ = require("lodash")
 
+setInterval(() => {
+    const now = new Date()
+    let expired = interactions.filter(x => now - new Date(x.expires) >= 9000)
+    expired.map(x => _.pull(interactions, x))
+}, 1000)
 /**
  *
  * @param ctx
@@ -69,6 +74,7 @@ const switchPage = async (ctx, newPage) => {
 
 
     pgn.switchPage(pgn)
+    pgn.expires = new Date()
 
     if(pgn.embed.footer.text.startsWith('Page'))
         pgn.embed.footer.text = `Page ${pgn.pageNum + 1}/${pgn.pages.length}`
@@ -165,7 +171,10 @@ const sendInteraction = async (ctx, args, color = 'green') => {
 
     if (interaction.customButtons) {
         let chunk = _.chunk(interaction.customButtons, 5)
-        chunk.map(x => interaction.components.push({type: 1, components: x}))
+        chunk.map(x => {
+            x = x.filter(y => y)
+            interaction.components.push({type: 1, components: x})
+        })
     }
 
     if(interaction.checks && await interaction.checks())
@@ -179,8 +188,10 @@ const sendInteraction = async (ctx, args, color = 'green') => {
 
 const invalidateOld = async (ctx, user) => {
     const oldInteraction = interactions.filter(x => x.userID === user.userID)[0]
-    if (oldInteraction && oldInteraction.msgID && oldInteraction.channelID) {
-        await ctx.bot.rest.interactions.editOriginalMessage(ctx.bot.application.id, oldInteraction.interaction.token, {embeds: [oldInteraction.embed], components: [] }).catch(e => e)
+    if (oldInteraction) {
+        if (oldInteraction.msgID && oldInteraction.channelID) {
+            await ctx.bot.rest.interactions.editOriginalMessage(ctx.bot.application.id, oldInteraction.interaction.token, {embeds: [oldInteraction.embed], components: [] }).catch(e => e)
+        }
         _.pull(interactions, oldInteraction)
     }
 }
