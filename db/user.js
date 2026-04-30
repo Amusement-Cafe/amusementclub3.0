@@ -68,6 +68,7 @@ const schema = new Schema({
 
     preferences:        {
         notify:  {
+            aucCreated: { type: Boolean, default: true  },
             aucBidMe:   { type: Boolean, default: true  },
             aucOutbid:  { type: Boolean, default: true  },
             aucNewBid:  { type: Boolean, default: false },

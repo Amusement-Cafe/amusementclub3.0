@@ -3,6 +3,10 @@
     "title": "Main Menu Title",
     "description": "Select A Preference Menu Below"
   },
+  "aucCreated": {
+    "title": "Auction Created Notification",
+    "description": "Receive a DM notification when one of your queued auctions is listed."
+  },
   "aucBidMe": {
     "title": "Auction First Bid Notification",
     "description": "Receive a DM notification when one of your auctions receives an initial bid."

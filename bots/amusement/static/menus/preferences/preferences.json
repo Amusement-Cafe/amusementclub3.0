@@ -45,6 +45,11 @@
   ],
   "notify": [
     {
+      "description": "This option changes whether you receive a DM when your auction is fully listed",
+      "label": "Auction Created Notification",
+      "value": "notify_aucCreated"
+    },
+    {
       "description": "This option changes whether you receive a DM when your auction receives an initial bid",
       "label": "First Bid On Your Auctions",
       "value": "notify_aucBidMe"
