@@ -20,8 +20,9 @@ registerBotCommand(['auction', 'sell', 'one'], async (ctx) => await auctionSell(
 registerBotCommand(['auction', 'sell', 'many'], async (ctx) => await auctionSell(ctx, true))
 registerBotCommand(['auction', 'list'], async (ctx) => await listAuctions(ctx))
 
-registerReaction(['auction', 'cfm'], async (ctx) => {})
-registerReaction(['auction', 'dcl'], async (ctx) => {})
+registerReaction(['auction', 'cfm'], async (ctx) => await auctionConfirm(ctx), {withCards: true})
+registerReaction(['auction', 'dcl'], async (ctx) => await auctionDecline(ctx))
+registerReaction(['auction', 'success', 'view'], async (ctx) => await listAuctions(ctx, true))
 
 generateGlobalCommand('auction', 'Top Level Auction')
     .subCommand('list', 'List current active auctions')
@@ -107,7 +108,7 @@ const auctionSell = async (ctx, many = false) => {
         return ctx.send(ctx, `You don't have enough tomatoes to auction your query! This auction query costs ${ctx.boldName(ctx.fmtNum(cost))} and you only have ${ctx.boldName(ctx.fmtNum(ctx.user.tomatoes))}!`, 'red')
     }
     let msg = await ctx.send(ctx, 'Processing...', 'yellow')
-    console.log(msg)
+
     const newAucQueue = new AuctionQueue()
     newAucQueue.userID = ctx.user.userID
     newAucQueue.guildID = ctx.guild.guildID
@@ -135,29 +136,131 @@ const auctionSell = async (ctx, many = false) => {
             edit: true
         })
     }
-    const cfmButton = new Button(`auction_cfm-${cost}-${msg.messageID}-${ctx.user.userID}`).setLabel('Confirm').setStyle(3)
-    const dclButton = new Button(`auction_dcl-${cost}-${msg.messageID}-${ctx.user.userID}`).setLabel('Decline').setStyle(4)
+    const cfmButton = new Button(`auction_cfm-${cost}-${msg.message.id}-${ctx.user.userID}-${many}`).setLabel('Confirm').setStyle(3)
+    const dclButton = new Button(`auction_dcl-${cost}-${msg.message.id}-${ctx.user.userID}-${many}`).setLabel('Decline').setStyle(4)
     return ctx.send(ctx, {
         pages: ctx.getPages(pages),
         embed: {
             title: `You are about to auction ${many? `${auctionCards.length} cards`: `${limit > 1? `${limit} copies of `: ``}1 card`}\nThis will cost you ${cost}${ctx.symbols.tomato} to list`,
-
         },
         customButtons: [cfmButton, dclButton],
         edit: true
     })
 }
 
-const listAuctions = async (ctx) => {
+const listAuctions = async (ctx, button = false) => {
     const activeAuctions = await Auctions.find({ended: false})
     console.log(activeAuctions)
-    return ctx.send(ctx, `${activeAuctions.length} auctions`)
+    return ctx.send(ctx, {
+        embed: {
+            description: `${activeAuctions.length} auctions`,
+            color: ctx.colors.blue
+        },
+        parent: button
+    })
 }
-
-const auctionBid = async (ctx) => {}
 
 const auctionCancel = async (ctx) => {}
 
 const auctionInfo = async (ctx) => {}
 
 const auctionPreview = async (ctx) => {}
+
+const auctionConfirm = async (ctx) => {
+    let many = ctx.arguments.pop()
+    const pendingAuction = await AuctionQueue.findOne({
+        userID: ctx.arguments.pop(),
+        messageID: ctx.arguments.pop()
+    })
+    if (!pendingAuction) {
+        return ctx.send(ctx, {
+            embed: {
+                title: ``,
+                description: `The auction listing you were attempting to confirm cannot be found and has been cancelled. Please try again, if you are seeing this message consistently please contact us in our support discord.`,
+                color: ctx.colors.red
+            },
+            parent: true
+        })
+    }
+    let cost = Number(ctx.arguments.pop())
+    if (cost > ctx.user.tomatoes) {
+        await AuctionQueue.findOneAndDelete(pendingAuction)
+        return ctx.send(ctx, {
+            embed: {
+                title: ``,
+                description: `Between sending the command and confirming the listing you no longer have enough tomatoes to confirm this auction listing. Please try your listing again when you have enough!`,
+                color: ctx.colors.red
+            },
+            parent: true
+        })
+    }
+    let cards = [...new Set(pendingAuction.cardIDs)]
+    let count = []
+    cards.forEach(cardID => {
+        let amount = 0
+        pendingAuction.cardIDs.forEach(x => x === cardID? amount++: x)
+        count.push({cardID: cardID, count: amount})
+    })
+    let ownedCards = [...ctx.userCards]
+    let errored = false
+    for (let card of count) {
+        if (!ownedCards.some(x => x.cardID === card.cardID && x.fav? x.amount - card.count >= 1: x.amount >= card.count)) {
+            errored = true
+        }
+    }
+    if (errored) {
+        await AuctionQueue.findOneAndDelete(pendingAuction)
+        return ctx.send(ctx, {
+            embed: {
+                title: ``,
+                description: `Between sending the command and confirming the listing you no longer have the required cards to confirm this auction listing. Please try your listing again!`,
+                color: ctx.colors.red
+            },
+            parent: true
+        })
+    }
+    // ctx.user.tomatoes -= cost
+    await ctx.updateStat(ctx, 'tomatoOut', cost)
+    // await ctx.user.save()
+    pendingAuction.paid = true
+    await pendingAuction.save()
+    // await removeUserCards(ctx.user.userID, pendingAuction.cardIDs, 1)
+    const pages = pendingAuction.cardIDs.map(x => ctx.formatName(ctx, ctx.cards[x]))
+    const viewAucButton = new Button('auction_success_view').setLabel('View Auctions').setStyle(2)
+    return ctx.send(ctx, {
+        pages: ctx.getPages(pages),
+        embed: {
+            title: `You have auctioned ${many? `${pendingAuction.cardIDs.length} cards`: `${pendingAuction.cardIDs.length > 1? `${pendingAuction.cardIDs.length} copies of `: ``}1 card`} and spent ${ctx.fmtNum(cost)}${ctx.symbols.tomato}`,
+        },
+        customButtons: [viewAucButton],
+        parent: true
+    })
+}
+
+const auctionDecline = async (ctx) => {
+    ctx.arguments.pop()
+    const pendingAuction = await AuctionQueue.findOneAndDelete({
+        userID: ctx.arguments.pop(),
+        messageID: ctx.arguments.pop()
+    })
+    if (pendingAuction) {
+        let cards = [...new Set(pendingAuction.cardIDs)]
+        await ctx.send(ctx, {
+            embed: {
+                title: ``,
+                description: `You have cancelled listing ${ctx.boldName(ctx.fmtNum(pendingAuction.cardIDs.length))}x ${cards.length > 1? `${ctx.boldName(ctx.fmtNum(cards.length))} cards`: ctx.formatName(ctx, ctx.cards[cards[0]])} on auction. No tomatoes or cards have been removed from your account.`,
+                color: ctx.colors.red
+            },
+            parent: true
+        })
+    } else {
+        await ctx.send(ctx, {
+            embed: {
+                title: ``,
+                description: 'The auction listing tied to this message cannot be found, it may have already been cancelled. If this problem persists please contact us in our support discord.',
+                color: ctx.colors.red
+            },
+            parent: true
+        })
+    }
+}
