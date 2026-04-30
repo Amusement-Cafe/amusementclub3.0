@@ -30,6 +30,7 @@ let wip = true
 
 bot.once('ready', async () => {
     ctx = await getContext()
+    ctx.bot = bot
     wip = false
     let botGlobalCommands = getGlobalCommands()
     let botGuildCommands = getGuildCommands()

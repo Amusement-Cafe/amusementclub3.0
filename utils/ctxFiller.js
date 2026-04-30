@@ -70,6 +70,24 @@ const getContext = async (refresh) => {
         globalContext.events = new Emitter()
     }
 
+    globalContext.sendDM = async (ctx, user, message, color) => {
+        try {
+            let dmChannel = await ctx.bot.rest.users.createDM(user.userID)
+            await dmChannel.createMessage({embeds: [ctx.toEmbed(user, message, color)]})
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    globalContext.toEmbed = (user, string, color = 2067276) => {
+        if (typeof string === 'object') {
+            string.description = `**${user.username}**, ${string.description}`
+            string.color = color
+            return string
+        }
+        return { description: `**${user.username}**, ${string}`, color: color }
+    }
+
     return globalContext
 }
 
@@ -161,14 +179,6 @@ const ctxFiller = async (ctx, bot) => {
             }
 
             return `${diff.seconds}s`
-        },
-        toEmbed: (user, string, color = 2067276) => {
-            if (typeof string === 'object') {
-                string.description = `**${user.username}**, ${string.description}`
-                string.color = color
-                return string
-            }
-            return { description: `**${user.username}**, ${string}`, color: color }
         },
         fmtNum: (num) => num.toLocaleString('en-US'),
         formatName: (ctx, card) => {
