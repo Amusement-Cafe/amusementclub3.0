@@ -56,14 +56,35 @@ const getCommandOptions = async (ctx) => {
                     args.colQuery = value;
                     break;
                 case 'collections':
-                    let tests = value.split(' ').map(x => new RegExp(`( |^)${x.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'gi'))
-                    ctx.collections.map(x => {
-                        if (x.aliases.includes(value)) {
-                            args.cols.push(x)
+                    let valueSplit = value.split(' ')
+                    const inclusions = []
+                    const exclusions = []
+                    valueSplit.forEach(x => {
+                        const isInverse = x.startsWith('!')
+                        const cleanValue = isInverse? x.slice(1): x
+                        if (!cleanValue) {
+                            return
                         }
-                        else {
-                            let pass = x.aliases.map(y => tests.some(z => y.match(z))).some(z => z)
-                            pass? args.cols.push(x): false
+                        const regex = new RegExp(`( |^)${cleanValue.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}`, 'gi')
+                        if (isInverse) {
+                            exclusions.push(regex)
+                        } else {
+                            inclusions.push(regex)
+                        }
+                    })
+
+                    ctx.collections.forEach(x => {
+                        const exclusionMatch = exclusions.some(y => x.aliases.some(z => z.match(y)))
+                        if (exclusionMatch) {
+                            return
+                        }
+                        if (!inclusions.length) {
+                            return args.cols.push(x)
+                        }
+                        const inclusiveMatch = inclusions.some(y => x.aliases.some(z => z.match(y)))
+
+                        if (inclusiveMatch) {
+                            args.cols.push(x)
                         }
                     })
                     args.colQuery = value;
