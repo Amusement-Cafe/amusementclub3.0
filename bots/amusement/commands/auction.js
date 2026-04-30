@@ -112,7 +112,7 @@ const auctionSell = async (ctx, many = false) => {
     const newAucQueue = new AuctionQueue()
     newAucQueue.userID = ctx.user.userID
     newAucQueue.guildID = ctx.guild.guildID
-    newAucQueue.channelID = ctx.interaction.channel.channelID
+    newAucQueue.channelID = ctx.interaction.channel.id
     newAucQueue.messageID = msg.message.id
     newAucQueue.cardIDs = queuePrep
     newAucQueue.timeLength = length
