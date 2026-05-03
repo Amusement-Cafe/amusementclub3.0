@@ -2,7 +2,8 @@ const Auctions = require('../../../db/auction')
 const AuctionQueue = require('../../../db/auctionQueue')
 
 const {
-    generateNewID
+    generateNewID,
+    encodeUUID,
 } = require("../../../utils/misc")
 
 const {
@@ -57,15 +58,31 @@ const cancelAuction = async () => {
 
 const listAuctionEmbedRows = (ctx, aucList) => {
     return aucList.map(x => {
-        const icon = x.userID === ctx.user.userID? x.highestBidderID? ctx.symbols.auctionHasBid: ctx.symbols.auctionNoBid: x.highestBidderID === ctx.user.userID? ctx.symbols.auctionOwn: ctx.symbols.auctionIcon
+        const icon = x.userID === ctx.user.userID? x.lastBidderID? ctx.symbols.auctionHasBid: ctx.symbols.auctionNoBid: x.lastBidderID === ctx.user.userID? ctx.symbols.auctionOwn: ctx.symbols.auctionIcon
         const card = ctx.cards[x.cardID]
         const timeRemaining = ctx.timeDisplay(ctx, x.expires)
         return `${icon} [${timeRemaining}] [${ctx.fmtNum(x.price)}${ctx.symbols.tomato}] ${ctx.formatName(ctx, card)}`
     })
 }
 
-const createAuctionInfoEmbed = async (ctx, auction, extra) => {
+const createAuctionInfoEmbed = async (ctx, auction, {total, page}) => {
+    const seller = await fetchUser(auction.userID)
+    const card = ctx.cards[auction.cardID]
+    ctx.args.fmtOptions = {locked: false, fav: false, amount: false, eval: false}
+    const cardName = ctx.formatName(ctx, card)
 
+    return {
+        image: {url: card.cardURL},
+        description: [
+            `Seller: ${ctx.boldName(seller.username)}`,
+            `Price: ${ctx.boldName(ctx.fmtNum(auction.price))}${ctx.symbols.tomato}`,
+            `Card: ${cardName}`,
+            `Card Value: ${ctx.boldName(ctx.fmtNum(card.eval))}${ctx.symbols.tomato}`,
+            `Expires in: ${ctx.timeDisplay(ctx, auction.expires)}`,
+        ].join('\n'),
+        footer: { text: `Auction ${encodeUUID(auction.auctionID)} · Page ${page + 1}/${total}`},
+        color: ctx.colors.blue
+    }
 }
 
 module.exports = {

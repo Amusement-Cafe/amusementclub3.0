@@ -163,6 +163,11 @@ const handleReaction = async (input, ctx) => {
                 color: ctx.colors.red
             }})
     }
+
+    if (currentLevel.options?.ephemeral) {
+        await ctx.interaction.defer(64)
+    }
+
     return currentLevel.handler(ctx)
 }
 

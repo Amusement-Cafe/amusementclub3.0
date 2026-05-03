@@ -45,6 +45,9 @@ const send = async (ctx, args) => {
     } else if (args.parent) {
         response = await ctx.interaction.editParent({content: args.content || '', embeds: args.embed? [args.embed]: [] , components: components, files: args.files || []})
     } else {
+        if (!ctx.interaction.acknowledged) {
+            await ctx.interaction.defer()
+        }
         response = await ctx.interaction.createFollowup({content: args.content || '', embeds: args.embed? [args.embed]: [] , components: components, files: args.files || []})
     }
 

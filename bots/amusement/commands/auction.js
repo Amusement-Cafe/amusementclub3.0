@@ -9,6 +9,7 @@ const {
 
 const {
     removeUserCards,
+    addUserCards
 } = require("../helpers/userCard")
 
 const {
@@ -16,13 +17,19 @@ const {
 } = require("../helpers/componentBuilders")
 
 const {
-    generateNewID
+    generateNewID,
+    encodeUUID,
+    decodeUUID
 } = require("../../../utils/misc")
 
 const {
     createAuctionInfoEmbed,
     listAuctionEmbedRows
 } = require("../helpers/auctions")
+
+const {
+    fetchUser
+} = require("../helpers/user")
 
 let auctionPages = []
 
@@ -33,7 +40,12 @@ registerBotCommand(['auction', 'list'], async (ctx) => await listAuctions(ctx), 
 registerReaction(['auction', 'cfm'], async (ctx) => await auctionConfirm(ctx), {withCards: true})
 registerReaction(['auction', 'dcl'], async (ctx) => await auctionDecline(ctx))
 registerReaction(['auction', 'success', 'view'], async (ctx) => await listAuctions(ctx, true), {withGlobalCards: true})
-registerReaction(['auction', 'list'], async (ctx) => listAuctionPage(ctx), {withGlobalCards: true})
+registerReaction(['auction', 'list'], async (ctx) => await listAuctionPage(ctx), {withGlobalCards: true})
+registerReaction(['auction', 'info'], async (ctx) => await listAuctionInfo(ctx))
+registerReaction(['auction', 'bid'], async (ctx) => await auctionBid(ctx))
+registerReaction(['auction', 'bid', 'modal'], async (ctx) => await auctionBidModal(ctx))
+registerReaction(['auction', 'view', 'bid'], async (ctx) => await auctionViewBidResponse(ctx), { ephemeral: true})
+registerReaction(['auction', 'cancel'], async (ctx) => await auctionCancel(ctx))
 
 generateGlobalCommand('auction', 'Top Level Auction')
     .subCommand('list', 'List current active auctions')
@@ -138,12 +150,12 @@ const auctionSell = async (ctx, many = false) => {
 
     const pages = queuePrep.map(x => ctx.formatName(ctx, ctx.cards[x]))
     if (ctx.user.preferences.interact.alwaysForce) {
-        // ctx.user.tomatoes -= cost
+        ctx.user.tomatoes -= cost
         await ctx.updateStat(ctx, 'tomatoOut', cost)
-        // await ctx.user.save()
+        await ctx.user.save()
         newAucQueue.paid = true
         await newAucQueue.save()
-        // await removeUserCards(ctx.user.userID, queuePrep, 1)
+        await removeUserCards(ctx.user.userID, queuePrep, 1)
         return ctx.send(ctx, {
             pages: ctx.getPages(pages),
             embed: {
@@ -332,11 +344,233 @@ const listAuctionPage = async (ctx) => {
     })
 }
 
-const auctionCancel = async (ctx) => {}
+const listAuctionInfo = async (ctx, forcedPage) => {
+    const entry = getActivePages(ctx)
+    if (!entry) {
+        return removeAuctionButtons(ctx)
+    }
 
-const auctionInfo = async (ctx) => {}
+    const filterQuery = { ended: false }
+    if (entry.findArgs.cardIDs) {
+        filterQuery.cardID = { $in: entry.findArgs.cardIDs }
+    }
 
-const auctionPreview = async (ctx) => {}
+    if (entry.findArgs.me !== undefined) {
+        filterQuery.userID = entry.findArgs.me? entry.userID: { $ne: entry.userID }
+    }
+
+    if (entry.findArgs.bid !== undefined) {
+        filterQuery.lastBidderID = entry.findArgs.bid? entry.userID: { $ne: entry.userID }
+    }
+
+    const auctions = await Auctions.find(filterQuery).sort(entry.findArgs.sort)
+    if (!auctions.length) {
+        auctionPages = auctionPages.filter(x => x.uniqueID !== entry.uniqueID)
+        return ctx.send(ctx, {
+            embed: {
+                description: `No auctions found matching your queries, they may have expired or been cancelled!`,
+                color: ctx.colors.red
+            },
+            parent: true
+        })
+    }
+
+    entry.lastUsed = new Date()
+
+    const total = auctions.length
+
+    const pageNum = forcedPage || ctx.arguments[1]
+    let page = pageNum === 'first'? 0: pageNum === 'last'? total - 1: Number(pageNum)
+    if (Number.isNaN(page) || page >= total) {
+        page = 0
+    }
+    if (page < 0) {
+        page = total - 1
+    }
+
+    entry.lastInfoIndex = page
+    const viewedAuction = auctions[page]
+    entry.currentEncodedUUID = encodeUUID(viewedAuction.auctionID)
+
+    const embed = await createAuctionInfoEmbed(ctx, viewedAuction, {total, page})
+
+    const customPgnButtons = []
+    const customButtons = []
+    if (total > 1) {
+        const nextPage = page + 1 >= total? 0: page + 1
+        const backPage = page - 1 < 0? total - 1 : page - 1
+        customButtons.push(new Button(`auction_info-${entry.buttonID}-first`).setStyle(1).setLabel('First'))
+        customButtons.push(new Button(`auction_info-${entry.buttonID}-${backPage}`).setStyle(1).setLabel('Back'))
+        customButtons.push(new Button(`auction_info-${entry.buttonID}-${nextPage}`).setStyle(1).setLabel('Next'))
+        customButtons.push(new Button(`auction_info-${entry.buttonID}-last`).setStyle(1).setLabel('Last'))
+        customButtons.push(false)
+    }
+    customButtons.push(new Button(`auction_list-${entry.buttonID}-${entry.lastListPage}`).setStyle(2).setLabel('Show List'))
+
+    if (ctx.user.userID === viewedAuction.userID) {
+        customButtons.push(new Button(`auction_cancel-${entry.buttonID}-${page}`).setLabel('Cancel Auction').setStyle(4).setOff(viewedAuction.ended || viewedAuction.cancelled || viewedAuction.lastBidderID !== undefined || (new Date() - new Date(viewedAuction.time).getTime()) > 1000 * 60 * 5))
+    } else {
+        const bids = !viewedAuction.bids.length? 0: viewedAuction.bids.filter(x => x.userID === ctx.user.userID).length
+        const bidButton = new Button(`auction_bid_modal-${entry.buttonID}-${page}`).setLabel(bids >= 5? `Bid Limit Reached`: `Place Bid (${5 - bids} left)`).setStyle(bids >= 5? 4: 3).setOff(bids >= 5)
+        customButtons.push(bidButton)
+        if (viewedAuction.lastBidderID === ctx.user.userID) {
+            customButtons.push(new Button(`auction_view_bid-${entry.buttonID}-${page}`).setLabel('View My Bid').setStyle(2))
+        }
+    }
+
+    return ctx.send(ctx, {
+        embed,
+        parent: true,
+        customPgnButtons,
+        customButtons,
+    })
+}
+
+const auctionBid = async (ctx) => {
+    const entry = getActivePages(ctx)
+    if (!entry) {
+        return removeAuctionButtons(ctx)
+    }
+    const raw = ctx.options.bidAmount?.trim() ?? ''
+    if (!/^\d+$/.test(raw)) {
+        return ctx.send(ctx, `Invalid bid amount. Enter a positive number with no symbols, commas, or suffixes.`, 'red')
+    }
+    const bidAmount = Number(raw)
+    if (!Number.isSafeInteger(bidAmount) || bidAmount <= 0) {
+        return ctx.send(ctx, `Bid amount must be positive!`, 'red')
+    }
+    const auction = await Auctions.findOne({ ended: false, auctionID: decodeUUID(entry.currentEncodedUUID) })
+    if (!auction) {
+        return ctx.send(ctx, `The auction has ended or is no longer available!`, 'red')
+    }
+    let error
+    if (bidAmount <= auction.price) {
+        error = `You need to bid more than ${ctx.boldName(ctx.fmtNum(auction.price))}${ctx.symbols.tomato} on this auction!`
+    }
+
+    if (bidAmount > ctx.user.tomatoes) {
+        error = `You don't have enough tomatoes to bid ${ctx.boldName(ctx.fmtNum(bidAmount))}${ctx.symbols.tomato}, you only have ${ctx.boldName(ctx.fmtNum(ctx.user.tomatoes))}${ctx.symbols.tomato}!`
+    }
+
+    if (auction.lastBidderID === ctx.user.userID && bidAmount <= auction.highBid) {
+        await ctx.interaction.defer(64)
+        return ctx.send(ctx, `You have already bid ${ctx.boldName(ctx.fmtNum(auction.highBid))}${ctx.symbols.tomato} on this auction! Bid more to raise your bid.`, 'red')
+    }
+
+    if (bidAmount <= auction.highBid) {
+        error = `You have tried to bid ${ctx.boldName(ctx.fmtNum(bidAmount))}${ctx.symbols.tomato} on this auction, but someone else has already has a hidden bid that's higher! Try a higher amount, and remember there are only 5 bids per auction!`
+        auction.price = bidAmount > auction.price? bidAmount: auction.price
+        auction.bids.push({ userID: ctx.user.userID, amount: bidAmount, time: new Date(), success: false})
+        await auction.save()
+    }
+
+    if (error) {
+        await ctx.interaction.defer(64)
+        return ctx.send(ctx, error, 'red')
+    }
+
+    if (auction.lastBidderID === ctx.user.userID) {
+        let priceDifference = bidAmount - auction.highBid
+        ctx.user.tomatoes -= priceDifference
+        await ctx.user.save()
+        auction.highBid = bidAmount
+        auction.bids.push({ userID: ctx.user.userID, amount: bidAmount, time: new Date(), success: true})
+        await auction.save()
+        await listAuctionInfo(ctx, entry.lastInfoIndex)
+        return await ctx.send(ctx, `You have successfully increased your bid on this auction! Use the \`View My Bid\` button to see your new bid!`, 'green')
+    } else {
+        if (auction.lastBidderID) {
+            let lastBidder = await fetchUser(auction.lastBidderID)
+            lastBidder.tomatoes += auction.highBid
+            await lastBidder.save()
+            if (lastBidder.preferences.notify.aucOutbid) {
+                try {
+                    await ctx.sendDM(ctx, lastBidder, `Someone has outbid you on the auction for ${ctx.formatName(ctx, ctx.cards[auction.cardID])}!`, ctx.colors.red)
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+        }
+        auction.price = auction.highBid
+        auction.lastBidderID = ctx.user.userID
+        auction.highBid = bidAmount
+        auction.bids.push({ userID: ctx.user.userID, amount: bidAmount, time: new Date(), success: true})
+        await auction.save()
+        ctx.user.tomatoes -= bidAmount
+        await ctx.user.save()
+        await listAuctionInfo(ctx, entry.lastInfoIndex)
+        return await ctx.send(ctx, `You have successfully bid on this auction! Use the \`View My Bid\` button to see your bid!`, 'green')
+    }
+
+}
+
+const auctionBidModal = async (ctx) => {
+    const entry = getActivePages(ctx)
+    if (!entry) {
+        return removeAuctionButtons(ctx)
+    }
+    const viewedAuction = await Auctions.findOne({auctionID: decodeUUID(entry.currentEncodedUUID)})
+    if (!viewedAuction) {
+        return ctx.send(ctx, `The auction you are trying to bid on is no longer available!`, 'red')
+    }
+    return ctx.interaction.createModal({
+        customID: `auction_bid-${entry.buttonID}-${entry.currentEncodedUUID}`,
+        title: `Place a bid`,
+        components: [{
+            type: 1,
+            components: [{
+                type: 4,
+                customID: 'bidAmount',
+                label: `Bid Amount (must be higher than ${ctx.fmtNum(viewedAuction.price)}${ctx.symbols.tomato})`,
+                style: 1,
+                placeholder: 'Enter your bid amount',
+                required: true
+            }]
+        }]
+    })
+}
+
+const auctionViewBidResponse = async (ctx) => {
+    const entry = getActivePages(ctx)
+    if (!entry) {
+        return removeAuctionButtons(ctx)
+    }
+    const auction = await Auctions.findOne({auctionID: decodeUUID(entry.currentEncodedUUID)})
+    if (auction.lastBidderID !== ctx.user.userID) {
+        return ctx.send(ctx, `You are currently not the highest bidder and therefore cannot see the high bid any longer!`, 'red')
+    }
+    return ctx.send(ctx, `You have bid ${ctx.boldName(ctx.fmtNum(auction.highBid))}${ctx.symbols.tomato} on this auction!`, 'green')
+}
+
+const auctionCancel = async (ctx) => {
+    const entry = getActivePages(ctx)
+    if (!entry) {
+        return removeAuctionButtons(ctx)
+    }
+    const auctionToCancel = await Auctions.findOne({auctionID: decodeUUID(entry.currentEncodedUUID)})
+    if (!auctionToCancel) {
+        return ctx.send(ctx, `The auction you are trying to cancel is no longer available!`, 'red')
+    }
+    if (auctionToCancel.cancelled) {
+        return ctx.send(ctx, `This auction has already been cancelled!`, 'red')
+    }
+    if (auctionToCancel.ended) {
+        return ctx.send(ctx, `This auction has already ended!`, 'red')
+    }
+    if (auctionToCancel.lastBidderID) {
+        return ctx.send(ctx, `You cannot cancel an auction that has already been bid on!`, 'red')
+    }
+    if (new Date() - new Date(auctionToCancel.time).getTime() > 1000 * 60 * 5) {
+        return ctx.send(ctx, `This auction has been active for more than 5 minutes and cannot be cancelled!`, 'red')
+    }
+    auctionToCancel.cancelled = true
+    auctionToCancel.ended = true
+    await auctionToCancel.save()
+    await addUserCards(auctionToCancel.userID, [auctionToCancel.cardID])
+    await listAuctionInfo(ctx, entry.lastInfoIndex)
+    return ctx.send(ctx, `You have successfully cancelled this auction and your card has been returned to you!`, 'green')
+
+}
 
 const auctionConfirm = async (ctx) => {
     let many = ctx.arguments.pop()
@@ -391,12 +625,12 @@ const auctionConfirm = async (ctx) => {
             parent: true
         })
     }
-    // ctx.user.tomatoes -= cost
+    ctx.user.tomatoes -= cost
     await ctx.updateStat(ctx, 'tomatoOut', cost)
-    // await ctx.user.save()
+    await ctx.user.save()
     pendingAuction.paid = true
     await pendingAuction.save()
-    // await removeUserCards(ctx.user.userID, pendingAuction.cardIDs, 1)
+    await removeUserCards(ctx.user.userID, pendingAuction.cardIDs, 1)
     const pages = pendingAuction.cardIDs.map(x => ctx.formatName(ctx, ctx.cards[x]))
     const viewAucButton = new Button('auction_success_view').setLabel('View Auctions').setStyle(2)
     return ctx.send(ctx, {
