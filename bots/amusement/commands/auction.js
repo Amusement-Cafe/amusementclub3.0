@@ -15,18 +15,34 @@ const {
     Button
 } = require("../helpers/componentBuilders")
 
+const {
+    generateNewID
+} = require("../../../utils/misc")
+
+const {
+    createAuctionInfoEmbed,
+    listAuctionEmbedRows
+} = require("../helpers/auctions")
+
+let auctionPages = []
 
 registerBotCommand(['auction', 'sell', 'one'], async (ctx) => await auctionSell(ctx))
 registerBotCommand(['auction', 'sell', 'many'], async (ctx) => await auctionSell(ctx, true))
-registerBotCommand(['auction', 'list'], async (ctx) => await listAuctions(ctx))
+registerBotCommand(['auction', 'list'], async (ctx) => await listAuctions(ctx), {withGlobalCards: true})
 
 registerReaction(['auction', 'cfm'], async (ctx) => await auctionConfirm(ctx), {withCards: true})
 registerReaction(['auction', 'dcl'], async (ctx) => await auctionDecline(ctx))
-registerReaction(['auction', 'success', 'view'], async (ctx) => await listAuctions(ctx, true))
+registerReaction(['auction', 'success', 'view'], async (ctx) => await listAuctions(ctx, true), {withGlobalCards: true})
+registerReaction(['auction', 'list'], async (ctx) => listAuctionPage(ctx), {withGlobalCards: true})
 
 generateGlobalCommand('auction', 'Top Level Auction')
     .subCommand('list', 'List current active auctions')
     .cardQuery()
+    .string('sort_style', 'Change how the auctions are sorted')
+    .addChoice('Time Ascending (Default)', 'time_asc')
+    .addChoice('Time Descending', 'time_desc')
+    .addChoice('Price Ascending', 'price_asc')
+    .addChoice('Price Descending', 'price_desc')
     .boolean('me', 'Filter only for your auctions')
     .boolean('bid', 'Filter only for auctions you have bid on')
     .close()
@@ -149,14 +165,170 @@ const auctionSell = async (ctx, many = false) => {
 }
 
 const listAuctions = async (ctx, button = false) => {
-    const activeAuctions = await Auctions.find({ended: false})
-    console.log(activeAuctions)
-    return ctx.send(ctx, {
+    invalidateAuctionPages(ctx)
+
+    let filterQuery = {ended: false, cancelled: false}
+
+    if (ctx.options?.me) {
+        filterQuery.userID = ctx.user.userID
+    } else if (!ctx.options.me && ctx.options.me !== undefined) {
+        filterQuery.userID = { $ne: ctx.user.userID }
+    }
+
+    if (ctx.options.bid) {
+        filterQuery.lastBidderID = ctx.user.userID
+    } else if (!ctx.options.bid && ctx.options.bid !== undefined) {
+        filterQuery.lastBidderID = { $ne: ctx.user.userID }
+    }
+
+    if (ctx.options?.card_query) {
+        filterQuery.cardID = { $in: ctx.globalCards.map(x => x.cardID) }
+    }
+
+    let sort = {expires: 1}
+
+    if (ctx.args?.sortStyle) {
+        switch (ctx.args.sortStyle) {
+            case 'time_asc':
+                break;
+            case 'time_desc':
+                sort = {expires: -1}
+                break;
+            case 'price_asc':
+                sort = {price: 1}
+                break;
+            case 'price_desc':
+                sort = {price: -1}
+                break;
+        }
+    }
+
+    let activeAuctions = await Auctions.find(filterQuery).sort(sort).lean()
+    if (activeAuctions.length === 0) {
+        return ctx.send(ctx, `No auctions found matching your query or other options!`, 'red')
+    }
+
+    const uniqueID = generateNewID()
+    const buttonID = uniqueID.replaceAll(/-/g, "O")
+
+    const pages = ctx.getPages(listAuctionEmbedRows(ctx, activeAuctions))
+
+    const customPgnButtons = []
+    if (pages.length > 1) {
+        const total = pages.length
+        customPgnButtons.push(new Button(`auction_list-${buttonID}-first`).setStyle(1).setLabel('First'))
+        customPgnButtons.push(new Button(`auction_list-${buttonID}-${total - 1}`).setStyle(1).setLabel('Back'))
+        customPgnButtons.push(new Button(`auction_list-${buttonID}-1`).setStyle(1).setLabel('Next'))
+        customPgnButtons.push(new Button(`auction_list-${buttonID}-last`).setStyle(1).setLabel('Last'))
+    }
+
+    const customButtons = [new Button(`auction_info-${buttonID}-0`).setStyle(2).setLabel('Show Info')]
+
+    const message = await ctx.send(ctx, {
+        pages,
         embed: {
+            title: `Found ${ctx.fmtNum(activeAuctions.length)} auctions`,
             description: `${activeAuctions.length} auctions`,
             color: ctx.colors.blue
         },
+        customButtons,
+        customPgnButtons,
         parent: button
+    })
+
+    auctionPages.push({
+        uniqueID,
+        buttonID,
+        userID: ctx.user.userID,
+        lastListPage: 0,
+        lastInfoIndex: 0,
+        lastUsed: new Date(),
+        messageID: message?.message?.id || message.resource.message.id, //Using the list view from the button returns a different message response than normal
+        findArgs: {
+            cardIDs: filterQuery.cardID?.$in,
+            me: ctx.options?.me? true: ctx.options.me === undefined? undefined: false,
+            bid: ctx.options?.bid? true: ctx.options.bid === undefined? undefined: false,
+            sort
+        }
+    })
+}
+
+const listAuctionPage = async (ctx) => {
+    const entry = getActivePages(ctx)
+    if (!entry) {
+        return removeAuctionButtons(ctx)
+    }
+
+    const filterQuery = { ended: false }
+    if (entry.findArgs.cardIDs) {
+        filterQuery.cardID = { $in: entry.findArgs.cardIDs }
+    }
+
+    if (entry.findArgs.me !== undefined) {
+        filterQuery.userID = entry.findArgs.me? entry.userID: { $ne: entry.userID }
+    }
+
+    if (entry.findArgs.bid !== undefined) {
+        filterQuery.lastBidderID = entry.findArgs.bid? entry.userID: { $ne: entry.userID }
+    }
+
+    const auctions = await Auctions.find(filterQuery).sort(entry.findArgs.sort)
+
+    if (!auctions.length) {
+        auctionPages = auctionPages.filter(x => x.uniqueID !== entry.uniqueID)
+        return ctx.send(ctx, {
+            embed: {
+                description: `No auctions found matching your queries, they may have expired or been cancelled!`,
+                color: ctx.colors.red
+            },
+            parent: true
+        })
+    }
+
+    entry.lastUsed = new Date()
+
+    const pages = ctx.getPages(listAuctionEmbedRows(ctx, auctions))
+    const total = pages.length
+
+    const pageNum = ctx.arguments[1]
+    let page = pageNum === 'first'? 0: pageNum === 'last'? total - 1: Number(pageNum)
+    if (Number.isNaN(page) || page >= total) {
+        page = 0
+    }
+    if (page < 0) {
+        page = total - 1
+    }
+
+    entry.lastListPage = page
+    const customPgnButtons = []
+    const customButtons = []
+    if (pages.length > 1) {
+        const nextPage = page + 1 >= total? 0: page + 1
+        const backPage = page - 1 < 0? total - 1 : page - 1
+        customPgnButtons.push(new Button(`auction_list-${entry.buttonID}-first`).setStyle(1).setLabel('First'))
+        customPgnButtons.push(new Button(`auction_list-${entry.buttonID}-${backPage}`).setStyle(1).setLabel('Back'))
+        customPgnButtons.push(new Button(`auction_list-${entry.buttonID}-${nextPage}`).setStyle(1).setLabel('Next'))
+        customPgnButtons.push(new Button(`auction_list-${entry.buttonID}-last`).setStyle(1).setLabel('Last'))
+    }
+    customButtons.push(new Button(`auction_info-${entry.buttonID}-${page * 10}`).setStyle(2).setLabel('Show Info'))
+
+    let displayPages = [...pages]
+    if (page !== -1) {
+        const [removedItem] = displayPages.splice(page, 1)
+        displayPages.unshift(removedItem)
+    }
+
+    return ctx.send(ctx, {
+        pages: displayPages,
+        embed: {
+            title: `Found ${ctx.fmtNum(auctions.length)} auctions`,
+            description: `${auctions.length} auctions`,
+            color: ctx.colors.blue,
+            footer: { text: `Page ${page + 1}/${total}` },
+        },
+        parent: true,
+        customPgnButtons,
+        customButtons,
     })
 }
 
@@ -264,3 +436,38 @@ const auctionDecline = async (ctx) => {
         })
     }
 }
+
+const invalidateAuctionPages = (ctx) => {
+    auctionPages = auctionPages.filter(x => x.userID !== ctx.user.userID)
+}
+
+const timeoutAuctionPages = () => setInterval(() => {
+    const now = new Date().getTime()
+    auctionPages = auctionPages.filter(x => (1000 * 60 * 5 + new Date(x.lastUsed).getTime()) >= now)
+}, 60000)
+
+const removeAuctionButtons = async (ctx) => {
+    await ctx.send(ctx, {
+        embed: ctx.interaction.message.embeds[0],
+        parent: true
+    })
+    return ctx.interaction.channel.createMessage({
+        embeds: [
+            {
+                description: `The auction list you have attempted to interact with has expired. They expire after 5 minutes of inactivity or after a bot restart/secondary command. Please run the command again!`,
+                color: ctx.colors.red
+            }
+        ],
+        messageReference: {messageID: ctx.interaction.message.id}
+    })
+}
+
+const getActivePages = (ctx) => {
+    let index = auctionPages.findIndex(x => ctx.arguments[0].replaceAll(/O/g, "-") === x.uniqueID)
+    if (index < 0) {
+        return false
+    }
+    return auctionPages[index]
+}
+
+timeoutAuctionPages()

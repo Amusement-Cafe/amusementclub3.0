@@ -96,9 +96,24 @@ class BuildCommand {
         return this
     }
 
+    addChoice (name, value) {
+        return this.choiceBuilder(name, value)
+    }
+
     optionBuilder (type, name, description) {
         this.currentOption = {type, name, description}
         this.options.push(this.currentOption)
+        return this
+    }
+
+    choiceBuilder (name, value) {
+        if (!this.currentOption.type === 3) {
+            throw Error(`Called choice builder outside of string option!`)
+        }
+        if (!this.currentOption?.choices) {
+            this.currentOption.choices = []
+        }
+        this.currentOption.choices.push({name, value})
         return this
     }
 

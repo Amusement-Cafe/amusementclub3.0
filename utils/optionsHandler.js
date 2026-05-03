@@ -95,6 +95,7 @@ const getCommandOptions = async (ctx) => {
                 case 'promo': args.promo = value; break;
                 case 'received': args.received = value; break;
                 case 'remove': args.remove = value; break;
+                case 'sort_style': args.sortStyle = value; break;
                 case 'start_time': args.start = value; break;
                 case 'starting_bid': args.price = value; break;
                 case 'tax_percentage': args.tax = value; break;

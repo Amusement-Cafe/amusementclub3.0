@@ -23,6 +23,9 @@ const createAuction = async (ctx) => {
         } else {
             price = auctionToList.listPrice
         }
+        if (!price) {
+            price = ctx.cards[cardID].eval
+        }
         const newAuction = new Auctions()
         newAuction.auctionID = generateNewID()
         newAuction.guildID = auctionToList.guildID
@@ -30,7 +33,7 @@ const createAuction = async (ctx) => {
         newAuction.price = price
         newAuction.highBid = price
         newAuction.cardID = cardID
-        newAuction.expires = new Date(expiryTime + Math.round(1000 * 60 * auctionToList.timeLength))
+        newAuction.expires = new Date(expiryTime + Math.round(1000 * 60 * 60 * auctionToList.timeLength))
         newAuction.time = new Date()
         await newAuction.save()
     }
@@ -52,7 +55,16 @@ const cancelAuction = async () => {
 
 }
 
-const listAuctions = async (ctx, aucList) => {
+const listAuctionEmbedRows = (ctx, aucList) => {
+    return aucList.map(x => {
+        const icon = x.userID === ctx.user.userID? x.highestBidderID? ctx.symbols.auctionHasBid: ctx.symbols.auctionNoBid: x.highestBidderID === ctx.user.userID? ctx.symbols.auctionOwn: ctx.symbols.auctionIcon
+        const card = ctx.cards[x.cardID]
+        const timeRemaining = ctx.timeDisplay(ctx, x.expires)
+        return `${icon} [${timeRemaining}] [${ctx.fmtNum(x.price)}${ctx.symbols.tomato}] ${ctx.formatName(ctx, card)}`
+    })
+}
+
+const createAuctionInfoEmbed = async (ctx, auction, extra) => {
 
 }
 
@@ -60,5 +72,6 @@ module.exports = {
     cancelAuction,
     createAuction,
     finishAuction,
-    listAuctions,
+    listAuctionEmbedRows,
+    createAuctionInfoEmbed,
 }
