@@ -100,6 +100,20 @@ const getContext = async (refresh) => {
         return `[${rarity}]${ctx.args?.fmtOptions?.locked? locked: ''}${ctx.args?.fmtOptions?.fav? fav: ''} [${card.displayName}](${card.cardURL}) \`[${card.collectionID}]\`${ctx.args?.fmtOptions?.amount? amount: ''}${ctx.args?.fmtOptions?.eval? ` ${eval}${ctx.symbols.tomato}`: ''}`
     }
 
+    globalContext.symbols = {
+        tomato: '`🍅`',
+        lemon: '`🍋`',
+        auctionNoBid: '`🔹`',
+        auctionHasBid: '`🔷`',
+        auctionOwn: '`🔸`',
+        auctionIcon: '`▫️`',
+        auctionTrans: '`🔨`',
+        accept: '`✅`',
+        pending: '`❗`',
+        decline: '`❌`',
+        promo: '`✨`'
+    }
+
     globalContext.colors = {
         red: 14356753,
         yellow: 16756480,
@@ -109,6 +123,8 @@ const getContext = async (refresh) => {
         deepgreen:1142316,
         default: 2067276
     }
+
+    globalContext.boldName = (name) => `**${name}**`
 
     return globalContext
 }
@@ -228,23 +244,7 @@ const ctxFiller = async (ctx, bot) => {
 
             return pages
         },
-        boldName: (name) => {
-            return `**${name}**`
-        },
         isGuildDM: (ctx) => ctx.guild === 'DM',
-        symbols: {
-            tomato: '`🍅`',
-            lemon: '`🍋`',
-            auctionNoBid: '`🔹`',
-            auctionHasBid: '`🔷`',
-            auctionOwn: '`🔸`',
-            auctionIcon: '`▫️`',
-            auctionTrans: '`🔨`',
-            accept: '`✅`',
-            pending: '`❗`',
-            decline: '`❌`',
-            promo: '`✨`'
-        }
     })
     newCTX.guild = await fetchOrCreateGuild(newCTX)
     if (!newCTX.isGuildDM(newCTX)) {
