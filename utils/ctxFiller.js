@@ -88,6 +88,28 @@ const getContext = async (refresh) => {
         return { description: `**${user.username}**, ${string}`, color: color }
     }
 
+    globalContext.fmtNum = (num) => num.toLocaleString('en-US')
+
+    globalContext.formatName = (ctx, card) => {
+        const col = ctx.collections.find(x => x.collectionID === card.collectionID)
+        const rarity = `\`${new Array(card.rarity + 1).join(col.stars[card.rarity - 1] || col.stars[0])}\``
+        const eval = ctx.fmtNum(card.eval)
+        const amount = card.amount && card.amount > 1? `(x${card.amount})`: ''
+        const locked = card.locked? ' `🔒`': ''
+        const fav = card.fav? ' `❤`' : ''
+        return `[${rarity}]${ctx.args?.fmtOptions?.locked? locked: ''}${ctx.args?.fmtOptions?.fav? fav: ''} [${card.displayName}](${card.cardURL}) \`[${card.collectionID}]\`${ctx.args?.fmtOptions?.amount? amount: ''}${ctx.args?.fmtOptions?.eval? ` ${eval}${ctx.symbols.tomato}`: ''}`
+    }
+
+    globalContext.colors = {
+        red: 14356753,
+        yellow: 16756480,
+        green: 1030733,
+        blue: 1420012,
+        grey: 3553598,
+        deepgreen:1142316,
+        default: 2067276
+    }
+
     return globalContext
 }
 
@@ -180,16 +202,6 @@ const ctxFiller = async (ctx, bot) => {
 
             return `${diff.seconds}s`
         },
-        fmtNum: (num) => num.toLocaleString('en-US'),
-        formatName: (ctx, card) => {
-            const col = ctx.collections.find(x => x.collectionID === card.collectionID)
-            const rarity = `\`${new Array(card.rarity + 1).join(col.stars[card.rarity - 1] || col.stars[0])}\``
-            const eval = ctx.fmtNum(card.eval)
-            const amount = card.amount && card.amount > 1? `(x${card.amount})`: ''
-            const locked = card.locked? ' `🔒`': ''
-            const fav = card.fav? ' `❤`' : ''
-            return `[${rarity}]${ctx.args.fmtOptions.locked? locked: ''}${ctx.args.fmtOptions.fav? fav: ''} [${card.displayName}](${card.cardURL}) \`[${card.collectionID}]\`${ctx.args.fmtOptions.amount? amount: ''}${ctx.args.fmtOptions.eval? ` ${eval}${ctx.symbols.tomato}`: ''}`
-        },
         deDuplicate: (array, deDupeBy) => array.reduce((acc, current) => {
             const exists = acc.find(item => item[deDupeBy] === current[deDupeBy])
             if (!exists) {
@@ -220,15 +232,6 @@ const ctxFiller = async (ctx, bot) => {
             return `**${name}**`
         },
         isGuildDM: (ctx) => ctx.guild === 'DM',
-        colors: {
-            red: 14356753,
-            yellow: 16756480,
-            green: 1030733,
-            blue: 1420012,
-            grey: 3553598,
-            deepgreen:1142316,
-            default: 2067276
-        },
         symbols: {
             tomato: '`🍅`',
             lemon: '`🍋`',

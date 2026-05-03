@@ -35,12 +35,12 @@ let auctionPages = []
 
 registerBotCommand(['auction', 'sell', 'one'], async (ctx) => await auctionSell(ctx))
 registerBotCommand(['auction', 'sell', 'many'], async (ctx) => await auctionSell(ctx, true))
-registerBotCommand(['auction', 'list'], async (ctx) => await listAuctions(ctx), {withGlobalCards: true})
+registerBotCommand(['auction', 'list'], async (ctx) => await listAuctions(ctx), {globalCards: true})
 
 registerReaction(['auction', 'cfm'], async (ctx) => await auctionConfirm(ctx), {withCards: true})
 registerReaction(['auction', 'dcl'], async (ctx) => await auctionDecline(ctx))
-registerReaction(['auction', 'success', 'view'], async (ctx) => await listAuctions(ctx, true), {withGlobalCards: true})
-registerReaction(['auction', 'list'], async (ctx) => await listAuctionPage(ctx), {withGlobalCards: true})
+registerReaction(['auction', 'success', 'view'], async (ctx) => await listAuctions(ctx, true), {globalCards: true})
+registerReaction(['auction', 'list'], async (ctx) => await listAuctionPage(ctx), {globalCards: true})
 registerReaction(['auction', 'info'], async (ctx) => await listAuctionInfo(ctx))
 registerReaction(['auction', 'bid'], async (ctx) => await auctionBid(ctx))
 registerReaction(['auction', 'bid', 'modal'], async (ctx) => await auctionBidModal(ctx))
@@ -179,7 +179,7 @@ const auctionSell = async (ctx, many = false) => {
 const listAuctions = async (ctx, button = false) => {
     invalidateAuctionPages(ctx)
 
-    let filterQuery = {ended: false, cancelled: false}
+    let filterQuery = {ended: false, cancelled: false, expires: {$gte: new Date()}}
 
     if (ctx.options?.me) {
         filterQuery.userID = ctx.user.userID
@@ -271,7 +271,7 @@ const listAuctionPage = async (ctx) => {
         return removeAuctionButtons(ctx)
     }
 
-    const filterQuery = { ended: false }
+    const filterQuery = { ended: false, expires: {$gte: new Date()} }
     if (entry.findArgs.cardIDs) {
         filterQuery.cardID = { $in: entry.findArgs.cardIDs }
     }
@@ -350,7 +350,7 @@ const listAuctionInfo = async (ctx, forcedPage) => {
         return removeAuctionButtons(ctx)
     }
 
-    const filterQuery = { ended: false }
+    const filterQuery = { ended: false, expires: {$gte: new Date()} }
     if (entry.findArgs.cardIDs) {
         filterQuery.cardID = { $in: entry.findArgs.cardIDs }
     }
@@ -439,7 +439,7 @@ const auctionBid = async (ctx) => {
     if (!Number.isSafeInteger(bidAmount) || bidAmount <= 0) {
         return ctx.send(ctx, `Bid amount must be positive!`, 'red')
     }
-    const auction = await Auctions.findOne({ ended: false, auctionID: decodeUUID(entry.currentEncodedUUID) })
+    const auction = await Auctions.findOne({ ended: false, auctionID: decodeUUID(entry.currentEncodedUUID), expires: {$gte: new Date()} })
     if (!auction) {
         return ctx.send(ctx, `The auction has ended or is no longer available!`, 'red')
     }
@@ -509,7 +509,7 @@ const auctionBidModal = async (ctx) => {
     if (!entry) {
         return removeAuctionButtons(ctx)
     }
-    const viewedAuction = await Auctions.findOne({auctionID: decodeUUID(entry.currentEncodedUUID)})
+    const viewedAuction = await Auctions.findOne({auctionID: decodeUUID(entry.currentEncodedUUID), expires: {$gte: new Date()}})
     if (!viewedAuction) {
         return ctx.send(ctx, `The auction you are trying to bid on is no longer available!`, 'red')
     }

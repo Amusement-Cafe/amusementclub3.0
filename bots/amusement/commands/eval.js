@@ -2,10 +2,10 @@ const {registerBotCommand} = require('../../../utils/commandRegistrar')
 const {generateGlobalCommand} = require("../../../utils/commandGeneration")
 
 
-registerBotCommand(['eval', 'one'], async (ctx) => await eval(ctx))
-registerBotCommand(['eval', 'one', 'global'], async (ctx) => await eval(ctx, false, true))
-registerBotCommand(['eval', 'many'], async (ctx) => await eval(ctx, true))
-registerBotCommand(['eval', 'many', 'global'], async (ctx) => await eval(ctx, true, true))
+registerBotCommand(['eval', 'one'], async (ctx) => await eval(ctx), {withCards: true})
+registerBotCommand(['eval', 'one', 'global'], async (ctx) => await eval(ctx, false, true), {globalCards: true})
+registerBotCommand(['eval', 'many'], async (ctx) => await eval(ctx, true), {withCards: true})
+registerBotCommand(['eval', 'many', 'global'], async (ctx) => await eval(ctx, true, true), {globalCards: true})
 generateGlobalCommand('eval', 'Top Level Eval')
     .subCommand('one', 'Eval a singular card from a query')
     .cardQuery()
@@ -15,14 +15,13 @@ generateGlobalCommand('eval', 'Top Level Eval')
     .close()
     .subCommand('many', 'Eval multiple cards in a query')
     .cardQuery()
-    .required()
     .boolean('global', 'Set to true to check eval for any cards in the bot and not just your own')
     .boolean('multi', 'Whether to include all copies of the cards you own in the eval response')
     .close()
 
 const eval = async (ctx, many = false, global = false) => {
     let evals
-    let multi = ctx.options.multi
+    let multi = ctx.options?.multi
     if (!multi || global) {
         ctx.args.fmtOptions.amount = false
     }
@@ -39,6 +38,6 @@ const eval = async (ctx, many = false, global = false) => {
         return ctx.send(ctx, `${ctx.formatName(ctx, ctx.userCards[0])} is worth ${ctx.boldName(ctx.fmtNum(ctx.userCards[0].eval * (multi? ctx.userCards[0].amount: 1)))} ${ctx.symbols.tomato}`, 'blue')
     }
     let totalCopies = 0
-    evals = ctx.userCards.reduce((acc, card) => {totalCopies += card.amount; return acc + (multi? card.amount * card.eval: card.eval)}, 0)
+    evals = ctx.userCards.reduce((acc, card) => {totalCopies += multi? card.amount: 1; return acc + (multi? card.amount * card.eval: card.eval)}, 0)
     return ctx.send(ctx, `Your query consisting of ${ctx.boldName(ctx.fmtNum(totalCopies))} cards is worth ${ctx.boldName(ctx.fmtNum(evals))} ${ctx.symbols.tomato}`)
 }

@@ -10,6 +10,10 @@ const {
     fetchUser
 } = require("./user")
 
+const {
+    addUserCards,
+} = require("./userCard")
+
 
 const createAuction = async (ctx) => {
     const auctionToList = await AuctionQueue.findOneAndUpdate({paid: true, processing:false}, {processing: true}, {returnDocument: "after"})
@@ -45,15 +49,33 @@ const createAuction = async (ctx) => {
 }
 
 const finishAuction = async (ctx) => {
-    const auctionToFinish = await Auctions.findOne({expires: {$lt: new Date()}})
+    const auctionToFinish = await Auctions.findOneAndUpdate({ended: false, expires: {$lt: new Date()}}, {ended: true}, {returnDocument: "after"})
     if (!auctionToFinish) {
         return
     }
+    let seller = await fetchUser(auctionToFinish.userID)
+    if (!auctionToFinish.lastBidderID) {
+        await addUserCards(seller.userID, [auctionToFinish.cardID])
+        if (seller.preferences.notify.aucEnd) {
+            return ctx.sendDM(ctx, seller, `Your auction for ${ctx.formatName(ctx, ctx.cards[auctionToFinish.cardID])} has now ended! No on bid on it and it has been returned to you.`, ctx.colors.yellow)
+        }
+        return
+    }
+    const bidder = await fetchUser(auctionToFinish.lastBidderID)
+    const tomatoReturn = auctionToFinish.highBid - auctionToFinish.price
+    bidder.tomatoes += tomatoReturn
+    await bidder.save()
+    seller.tomatoes += auctionToFinish.price
+    await seller.save()
 
-}
-
-const cancelAuction = async () => {
-
+    try {
+        if (seller.preferences.notify.aucEnd) {
+            await ctx.sendDM(ctx, seller, `Your auction for ${ctx.formatName(ctx, ctx.cards[auctionToFinish.cardID])} has now ended! The highest bidder, ${ctx.boldName(bidder.username)}, has won and you have been paid ${ctx.boldName(ctx.fmtNum(auctionToFinish.price))}${ctx.symbols.tomato}.`, ctx.colors.green)
+        }
+        await ctx.sendDM(ctx, bidder, `You have won the auction for ${ctx.formatName(ctx, ctx.cards[auctionToFinish.cardID])} for ${ctx.boldName(ctx.fmtNum(auctionToFinish.price))}${ctx.symbols.tomato}! You have had ${ctx.boldName(ctx.fmtNum(tomatoReturn))}${ctx.symbols.tomato} returned and you now have ${ctx.boldName(ctx.fmtNum(bidder.tomatoes))}${ctx.symbols.tomato} tomatoes.`, ctx.colors.green)
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 const listAuctionEmbedRows = (ctx, aucList) => {
@@ -61,7 +83,7 @@ const listAuctionEmbedRows = (ctx, aucList) => {
         const icon = x.userID === ctx.user.userID? x.lastBidderID? ctx.symbols.auctionHasBid: ctx.symbols.auctionNoBid: x.lastBidderID === ctx.user.userID? ctx.symbols.auctionOwn: ctx.symbols.auctionIcon
         const card = ctx.cards[x.cardID]
         const timeRemaining = ctx.timeDisplay(ctx, x.expires)
-        return `${icon} [${timeRemaining}] [${ctx.fmtNum(x.price)}${ctx.symbols.tomato}] ${ctx.formatName(ctx, card)}`
+        return `${icon} [~${timeRemaining}] [${ctx.fmtNum(x.price)}${ctx.symbols.tomato}] ${ctx.formatName(ctx, card)}`
     })
 }
 
@@ -86,7 +108,6 @@ const createAuctionInfoEmbed = async (ctx, auction, {total, page}) => {
 }
 
 module.exports = {
-    cancelAuction,
     createAuction,
     finishAuction,
     listAuctionEmbedRows,
