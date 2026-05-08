@@ -46,20 +46,18 @@ registerBotCommand('achievements', async (ctx) => await userAchievements(ctx))
 
 registerBotCommand('quests', async (ctx) => await listQuests(ctx))
 
-registerBotCommand(['diff', 'for'], async (ctx) => await userDiff(ctx))
-registerBotCommand(['diff', 'from'], async (ctx) => await userDiff(ctx, true))
+registerBotCommand(['diff', 'for'], async (ctx) => await userDiff(ctx), {withCards: true})
+registerBotCommand(['diff', 'from'], async (ctx) => await userDiff(ctx, true), {withCards: true})
 generateGlobalCommand('diff', 'Top Level Diff')
     .subCommand('from', 'Display cards another user owns that you do not')
-        .cardQuery()
-        .required()
         .user('user_id', 'The user you want to diff, ID or mention accepted')
         .required()
+        .cardQuery()
         .close()
     .subCommand('for', 'Display cards you own that another user needs')
-        .cardQuery()
-        .required()
         .user('user_id', 'The user you want to diff, ID or mention accepted')
         .required()
+        .cardQuery()
         .close()
 
 
@@ -197,7 +195,7 @@ const userMissing = async (ctx) => {
     return ctx.send(ctx, {
         pages,
         embed: {
-            title: ``,
+            title: `Your missing cards (${ctx.fmtNum(missing.length)} results)`,
             description: 'miss'
         }
     })
@@ -212,14 +210,28 @@ const userDiff = async (ctx, from = false) => {
     if (!otherUser) {
         return ctx.send(ctx, `Temp error if not found`, 'red')
     }
+
+    if (!otherUser.preferences.interact.canDiff) {
+        return ctx.send(ctx, `You cannot diff this user as they have disabled the ability in their preferences!`, 'red')
+    }
     let otherUserCards = await mergeUserCards(ctx, await getUserCardsLean(ctx, otherUser.userID))
-    ctx.args.cardQuery?.filters?.map(x => {
-        otherUserCards = otherUserCards.filter(x)
-        return otherUserCards
-    })
-    otherUserCards.sort(ctx.args.cardQuery.sort)
-    let fromList = from? otherUserCards: ctx.userCards
-    let toList = from? ctx.userCards: otherUserCards
+    let fromList, toList
+    if (from) {
+        let runningUserCards = await mergeUserCards(ctx, await getUserCardsLean(ctx, ctx.user.userID))
+        ctx.args.cardQuery?.filters?.map(x => {
+            otherUserCards = otherUserCards.filter(x)
+            return otherUserCards
+        })
+        otherUserCards = otherUserCards.filter(x => !x.locked).filter(x => x.fav? x.amount > 1: true)
+        otherUserCards.sort(ctx.args.cardQuery.sort)
+        toList = runningUserCards
+        fromList = otherUserCards
+    } else {
+        fromList = ctx.userCards
+        otherUserCards.sort(ctx.args.cardQuery.sort)
+        toList = otherUserCards
+    }
+
     let diff = _.differenceBy(fromList, toList, 'cardID')
     if (diff.length === 0) {
         return ctx.send(ctx, `No different cards found to display!`, 'red')
