@@ -67,6 +67,7 @@ const finishAuction = async (ctx) => {
     await bidder.save()
     seller.tomatoes += auctionToFinish.price
     await seller.save()
+    await addUserCards(bidder.userID, [auctionToFinish.cardID])
 
     try {
         if (seller.preferences.notify.aucEnd) {
