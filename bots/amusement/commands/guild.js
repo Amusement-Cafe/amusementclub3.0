@@ -2,7 +2,8 @@ const {registerBotCommand} = require('../../../utils/commandRegistrar')
 const {generateGlobalCommand} = require("../../../utils/commandGeneration")
 
 const {
-    fetchAllGuildUsers
+    fetchAllGuildUsers,
+    fetchGuildUser,
 } = require("../helpers/guildUser")
 
 registerBotCommand(['guild', 'info'], async (ctx) => await guildInfo(ctx))
@@ -53,12 +54,12 @@ generateGlobalCommand('guild', 'Top Level Guild')
     .subCommand('report', 'Set the report channel for the current guild to the channel this command is ran in')
     .close()
     .close()
-    .subCommandGroup('structure', 'Top Level Structure')
-    .subCommand('upgrade', 'Upgrade a guild building')
-    .close()
-    .subCommand('downgrade', 'Downgrade a guild building')
-    .close()
-    .close()
+    // .subCommandGroup('structure', 'Top Level Structure')
+    // .subCommand('upgrade', 'Upgrade a guild building')
+    // .close()
+    // .subCommand('downgrade', 'Downgrade a guild building')
+    // .close()
+    // .close()
     .subCommandGroup('managers', 'Top Level Managers')
     .subCommand('add', 'Add a user to the guild managers list')
     .userID('The user you want to add as a manager')
@@ -70,6 +71,7 @@ generateGlobalCommand('guild', 'Top Level Guild')
     .close()
     .close()
 
+const authCheck = (ctx) => !ctx.guildUser || (!ctx.guildUser.roles.some(x => x === 'manager') && ctx.guild.ownerID !== ctx.user.userID && !ctx.user.roles.some(x => x === 'admin'))
 
 const guildInfo = async (ctx) => {
     if (!ctx.guild || ctx.isGuildDM(ctx)) {
@@ -120,12 +122,11 @@ const donateGuild = async (ctx) => {
     return ctx.send(ctx, `You have successfully donated ${ctx.boldName(ctx.fmtNum(ctx.args.amount))}${ctx.symbols.tomato} to this guild. The guild now has ${ctx.boldName(ctx.fmtNum(ctx.guild.tomatoes))}${ctx.symbols.tomato}!`)
 }
 
-//Todo add checks for permissions for all below
 const setGuildTax = async (ctx) => {
     if (!ctx.guild || ctx.isGuildDM(ctx)) {
         return ctx.send(ctx, `Something has gone wrong fetching the guild you are in, or you are attempting to use this command in DMs!\nPlease try another command or run this command within a server to get a proper result.`, 'red')
     }
-    if (!ctx.guildUser || !ctx.guildUser.roles.some(x => x === 'manager')) {
+    if (authCheck(ctx)) {
         return ctx.send(ctx, `Only guild managers can set guild tax percentages! The guild owner or other managers can add managers with the \`/guild managers add\` command.`, 'red')
     }
     const tax = Number(ctx.args.tax) || 0
@@ -140,14 +141,14 @@ const setGuildReport = async (ctx) => {
     if (!ctx.guild || ctx.isGuildDM(ctx)) {
         return ctx.send(ctx, `Something has gone wrong fetching the guild you are in, or you are attempting to use this command in DMs!\nPlease try another command or run this command within a server to get a proper result.`, 'red')
     }
-    if (!ctx.guildUser || !ctx.guildUser.roles.some(x => x === 'manager')) {
+    if (authCheck(ctx)) {
         return ctx.send(ctx, `Only guild managers can set the guild report channel! The guild owner or other managers can add managers with the \`/guild managers add\` command.`, 'red')
     }
 
     let testMsg
     try {
         testMsg = await ctx.interaction.channel.createMessage({
-            content: "test"
+            content: "This is a test message to see if messages can be sent to this channel. If this message is deleted, then the report channel has been set!\n## You should watch The Helpful Fox Senko-San"
         })
     } catch (e) {
         return ctx.send(ctx, `Amusement club needs permissions to send messages in this channel. Reports are generated as a normal message and not an interaction response!`, 'red')
@@ -159,21 +160,30 @@ const setGuildReport = async (ctx) => {
     return ctx.send(ctx, `Amusement club will now post all maintenance reports in this channel.`)
 }
 
-const modifyGuildManagers = async (ctx, remove = true) => {
+const modifyGuildManagers = async (ctx, remove = false) => {
     if (!ctx.guild || ctx.isGuildDM(ctx)) {
         return ctx.send(ctx, `Something has gone wrong fetching the guild you are in, or you are attempting to use this command in DMs!\nPlease try another command or run this command within a server to get a proper result.`, 'red')
     }
-    if (!ctx.guildUser || !ctx.guildUser.roles.some(x => x === 'manager')) {
+    if (authCheck(ctx)) {
         return ctx.send(ctx, `Only guild managers can modify guild managers!`, 'red')
     }
-    return ctx.send(ctx, `Test`)
+    let toModify = await fetchGuildUser(ctx, false, ctx.args.userIDs[0])
+    if (remove && !toModify.roles.some(x => x === 'manager')) {
+        return ctx.send(ctx, `That user is not a guild manager!`, 'red')
+    }
+    if (!remove && toModify.roles.some(x => x === 'manager')) {
+        return ctx.send(ctx, `That user is already a guild manager!`, 'red')
+    }
+    remove? toModify.roles = toModify.roles.filter(x => x !== 'manager'): toModify.roles.push('manager')
+    await toModify.save()
+    return ctx.send(ctx, remove? `Removed <@${toModify.userID}> from the guild manager list!`: `Added <@${toModify.userID}> as a guild manager!`)
 }
 
 const setGuildLock = async (ctx, unlock = false) => {
     if (!ctx.guild || ctx.isGuildDM(ctx)) {
         return ctx.send(ctx, `Something has gone wrong fetching the guild you are in, or you are attempting to use this command in DMs!\nPlease try another command or run this command within a server to get a proper result.`, 'red')
     }
-    if (!ctx.guildUser || !ctx.guildUser.roles.some(x => x === 'manager')) {
+    if (authCheck(ctx)) {
         return ctx.send(ctx, `Only guild managers can set guild lock! The guild owner or other managers can add managers with the \`/guild managers add\` command.`, 'red')
     }
     let lockCost = 1000000000
@@ -207,7 +217,7 @@ const convertGuildLemons = async (ctx) => {
     if (!ctx.guild || ctx.isGuildDM(ctx)) {
         return ctx.send(ctx, `Something has gone wrong fetching the guild you are in, or you are attempting to use this command in DMs!\nPlease try another command or run this command within a server to get a proper result.`, 'red')
     }
-    if (!ctx.guildUser || !ctx.guildUser.roles.some(x => x === 'manager')) {
+    if (authCheck(ctx)) {
         return ctx.send(ctx, `Only guild managers can convert guild lemons! The guild owner or other managers can add managers with the \`/guild managers add\` command.`, 'red')
     }
     let amount = Number(ctx.args.amount)
@@ -231,7 +241,7 @@ const modifyGuildStructure = async (ctx, downgrade = false) => {
     if (!ctx.guild || ctx.isGuildDM(ctx)) {
         return ctx.send(ctx, `Something has gone wrong fetching the guild you are in, or you are attempting to use this command in DMs!\nPlease try another command or run this command within a server to get a proper result.`, 'red')
     }
-    if (!ctx.guildUser || !ctx.guildUser.roles.some(x => x === 'manager')) {
+    if (authCheck(ctx)) {
         return ctx.send(ctx, `Only guild managers can modify structures! The guild owner or other managers can add managers with the \`/guild managers add\` command.`, 'red')
     }
     return ctx.send(ctx, `test`)
