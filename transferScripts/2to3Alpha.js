@@ -274,7 +274,7 @@ const transferGuilds = async (db) => {
         newGuild.guildID = g.id
         newGuild.lockCol = g.lock? g.lock: g.overridelock? g.overridelock: ''
         newGuild.ownerID = g.ownerid
-        newGuild.reportChannel = g.reportchannel
+        newGuild.reportChannel = g.reportchannel || g.lastcmdchannel
         newGuild.hero = g.hero
 
         newGuild.xp = g.xp
@@ -656,7 +656,7 @@ const transferUserInventories = async (db) => {
         userInventory.id = newID
         userInventory.userID = ui.userid
         userInventory.itemID = newItemID[ui.id]
-        userInventory.collectionID = ui.col
+        userInventory.collectionID = type === 'ticket'? ui.col? ui.col: 'random': ui.col
         userInventory.acquired = ui.acquired
         userInventory.cards = ui.cards
         userInventory.type = type
