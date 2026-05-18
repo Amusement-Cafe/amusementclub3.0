@@ -9,12 +9,18 @@ const fetchOrCreateGuild = async (ctx) => {
         return 'DM'
     }
 
+    if (!guild.ownerID) {
+        guild.ownerID = (await ctx.bot.rest.guilds.get(ctx.interaction.guildID)).ownerID
+        await guild.save()
+    }
+
     if (!guild) {
         guild = new Guilds()
         guild.guildID = ctx.interaction.guildID
         guild.reportChannel = ctx.interaction.channelID
         guild.tomatoes = 10000
         guild.nextCheck = new Date(new Date().getTime() + ctx.hourToMS(24))
+        guild.ownerID = (await ctx.bot.rest.guilds.get(ctx.interaction.guildID)).ownerID
         await guild.save()
         try {
             await ctx.interaction.channel.createMessage({
@@ -33,8 +39,22 @@ const fetchOrCreateGuild = async (ctx) => {
 
 const fetchGuildByID = async (ctx, guildID) => Guilds.findOne({guildID: guildID})
 
+const updateGuildInvites = async (ctx) => {
+    let now = new Date()
+    let guildToUpdate = await Guilds.find({adminLock: true, $or: [{lastUpdatedInvite: {$lt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 7)}}, {invite: ''}]})
+    for (let guilds of guildToUpdate) {
+        if (guilds.guildID !== '529023217491247105') {
+            continue
+        }
+        let invite = await ctx.bot.rest.channels.createInvite(guilds.reportChannel, {maxAge: 60 * 60 * 24 * 7, reason: 'Rotating invites for admin locked servers', temporary: false, unique: true})
+        guilds.invite = invite.code
+        guilds.lastUpdatedInvite = now
+        await guilds.save()
+    }
+}
 
 module.exports = {
     fetchGuildByID,
     fetchOrCreateGuild,
+    updateGuildInvites,
 }

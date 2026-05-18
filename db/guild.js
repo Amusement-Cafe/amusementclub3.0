@@ -3,7 +3,7 @@ const {model, Schema} = require('mongoose')
 const schema = new Schema({
     guildID:            { type: String, index: true},
     lockCol:            { type: String, default: '' },
-    ownerID:            { type: String },
+    ownerID:            { type: String, default: '' },
     reportChannel:      { type: String },
     hero:               { type: String },
 
@@ -21,6 +21,9 @@ const schema = new Schema({
     adminLock:          { type: Boolean, default: false },
     lockActive:         { type: Boolean, default: false },
     processing:         { type: Boolean, default: false },
+
+    invite:             { type: String, default: '' },
+    lastUpdatedInvite:  { type: Date, default: new Date(0) },
 
 })
 module.exports = model('Guild', schema)

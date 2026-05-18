@@ -4,6 +4,10 @@ const {
     finishAuction
 } = require("../helpers/auctions")
 
+const {
+    updateGuildInvites
+} = require("../helpers/guild")
+
 let tickArray = []
 
 const evalQueue = (ctx) => {
@@ -15,10 +19,15 @@ const auctionQueue = (ctx) => {
     finishAuction(ctx)
 }
 
+const guildQueue = (ctx) => {
+    updateGuildInvites(ctx)
+}
+
 const startTicks = (ctx) => {
     const evalTick = setInterval(evalQueue.bind({}, ctx), 1000 * 60 * 1)
     const auctionTick = setInterval(auctionQueue.bind({}, ctx), 1000)
-    tickArray = [evalTick, auctionTick]
+    const guildTick = setInterval(guildQueue.bind({}, ctx), 1000 * 60)
+    tickArray = [evalTick, auctionTick, guildTick]
 }
 
 const stopTicks = () => {
