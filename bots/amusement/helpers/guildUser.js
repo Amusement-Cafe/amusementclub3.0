@@ -3,7 +3,7 @@ const {
 } = require('../../../db')
 
 const fetchOrCreateGuildUser = async (ctx) => {
-    let guildUser = await GuildUsers.findOne({ guildId: ctx.guild.guildID, userID: ctx.user.userID })
+    let guildUser = await GuildUsers.findOne({ guildID: ctx.guild.guildID, userID: ctx.user.userID })
     if (!guildUser) {
         guildUser = new GuildUsers()
         guildUser.userID = ctx.user.userID
