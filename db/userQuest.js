@@ -8,8 +8,8 @@ const schema = new Schema({
 
     completed:  { type: Boolean, default: false },
 
-    created:    { type: Date, default: new Date() },
-    expires:    { type: Date, default: new Date() },
+    created:    { type: Date, default: Date.now },
+    expires:    { type: Date, default: Date.now },
 
 })
 module.exports = model('UserQuest', schema)

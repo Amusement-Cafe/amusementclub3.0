@@ -12,6 +12,6 @@ const schema = new Schema({
 
     promo:          { type: Boolean, default: false },
 
-    timeClaimed:    { type: Date, default: new Date() },
+    timeClaimed:    { type: Date, default: Date.now },
 })
 module.exports = model('Claim', schema)

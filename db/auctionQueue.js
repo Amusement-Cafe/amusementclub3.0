@@ -14,6 +14,6 @@ const schema = new Schema({
     paid:           { type: Boolean, default: false },
     processing:     { type: Boolean, default: false },
 
-    created:        { type: Date, default: new Date() }
+    created:        { type: Date, default: Date.now }
 })
 module.exports = model('AuctionQueue', schema)

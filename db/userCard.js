@@ -10,7 +10,7 @@ const schema = new Schema({
     fav:            { type: Boolean, default: false },
     locked:         { type: Boolean, default: false },
 
-    acquired:       { type: Date,    default: new Date() },
+    acquired:       { type: Date,    default: Date.now },
 
 })
 

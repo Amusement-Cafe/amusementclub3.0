@@ -24,7 +24,7 @@ const schema = new Schema({
         daily: {
             count:     { type: Number, default: 0 },
             lastCount: { type: Number, default: 0 },
-            lastReset: { type: Date, default: new Date() }
+            lastReset: { type: Date, default: Date.now }
         },
         donations: {
             kofi: {
@@ -49,8 +49,8 @@ const schema = new Schema({
     cloutedCols:        { type: Array, default: [] },
     achievements:       { type: Array, default: [] },
 
-    lastDaily:          { type: Date, default: new Date() },
-    lastAnnounce:       { type: Date, default: new Date() },
+    lastDaily:          { type: Date, default: Date.now },
+    lastAnnounce:       { type: Date, default: Date.now },
     lastMsg:            { type: String },
     lastCard:           { type: Number, default: -1 },
     lastCards:          { type: Array, default: [] },

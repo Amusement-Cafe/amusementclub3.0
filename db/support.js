@@ -8,7 +8,7 @@ const schema = new Schema({
 
     amount:         { type: Number },
 
-    received:       { type: Date, default: new Date()}
+    received:       { type: Date, default: Date.now}
 
 })
 module.exports = model('Support', schema)

@@ -15,7 +15,7 @@ const schema = new Schema({
 
     rarity:         { type: Number },
 
-    dateAdded:      { type: Date, default: new Date() }
+    dateAdded:      { type: Date, default: Date.now }
 })
 
 module.exports = model('Collection', schema)
