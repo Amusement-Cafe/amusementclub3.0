@@ -4,6 +4,11 @@ const formatEventName = (ctx, event) => {
     return `[~${expiresDate}] **${event.promoName}** ${type}`
 }
 
+const getDashboardURL = (ctx) => {
+    return ctx.config?.links?.dashboard?.startsWith('http') ? ctx.config.links.dashboard : null
+}
+
 module.exports = {
     formatEventName,
+    getDashboardURL,
 }

@@ -4,6 +4,10 @@ const {
 } = require('../../../utils/commandRegistrar')
 
 const {
+    getDashboardURL
+} = require("../utils/misc")
+
+const {
     generateGlobalCommand,
 } = require('../../../utils/commandGeneration')
 
@@ -229,11 +233,17 @@ const listTransaction = async (ctx) => {
     const customButtons = []
     customButtons.push(new Button(`trans_info-${buttonID}-0`).setStyle(2).setLabel('Show Info'))
 
+    const dashURL = getDashboardURL(ctx)
+    let desc = `${userTransactions.length} transactions`
+    if (dashURL) {
+        desc += `\n[View your transactions on the dashboard!](${dashURL}/transactions)`
+    }
+
     const msg = await ctx.send(ctx, {
         pages,
         embed: {
             title: `${ctx.user.username}, your transactions (${userTransactions.length} results)`,
-            description: `${userTransactions.length}`
+            description: desc
         },
         customPgnButtons,
         customButtons

@@ -4,6 +4,10 @@ const {
 } = require('../../../utils/commandRegistrar')
 
 const {
+    getDashboardURL
+} = require("../utils/misc")
+
+const {
     generateGlobalCommand
 } = require("../../../utils/commandGeneration")
 
@@ -37,6 +41,13 @@ registerReaction(['preference', 'profile'], async (ctx) => await preferenceProfi
 const preferencesStart = async (ctx, back = false) => {
     const embed = embeds.mainMenu
     const select = new Selection('preference_category').setOptions(menus.all)
+
+    const dashURL = getDashboardURL(ctx)
+    let desc = embed.description || ''
+    if (dashURL && !desc.includes(dashURL)) {
+        embed.description = desc + `\n\n[Modify your preferences on the dashboard!](${dashURL}/preferences)`
+    }
+
     return ctx.send(ctx, {
         embed,
         selection: [select],

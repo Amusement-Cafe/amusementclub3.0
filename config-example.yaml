@@ -18,6 +18,7 @@ links:
   website: 'https://'
   discord: 'https://'
   cards: 'https://'
+  dashboard: '!https://'
 minio:
   endpoint:
   port: 9000

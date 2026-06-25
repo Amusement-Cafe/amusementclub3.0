@@ -3,6 +3,10 @@ const Auctions = require("../../../db/auction")
 const AuctionQueue = require("../../../db/auctionQueue")
 
 const {
+    getDashboardURL
+} = require("../utils/misc")
+
+const {
     registerBotCommand,
     registerReaction,
 } = require('../../../utils/commandRegistrar')
@@ -236,11 +240,17 @@ const listAuctions = async (ctx, button = false) => {
 
     const customButtons = [new Button(`auction_info-${buttonID}-0`).setStyle(2).setLabel('Show Info')]
 
+    const dashURL = getDashboardURL(ctx)
+    let desc = `${activeAuctions.length} auctions`
+    if (dashURL) {
+        desc += `\n[View and bid on auctions on the dashboard!](${dashURL}/auctions)`
+    }
+
     const message = await ctx.send(ctx, {
         pages,
         embed: {
             title: `Found ${ctx.fmtNum(activeAuctions.length)} auctions`,
-            description: `${activeAuctions.length} auctions`,
+            description: desc,
             color: ctx.colors.blue
         },
         customButtons,
@@ -330,11 +340,17 @@ const listAuctionPage = async (ctx) => {
         displayPages.unshift(removedItem)
     }
 
+    const dashURL = getDashboardURL(ctx)
+    let desc = `${auctions.length} auctions`
+    if (dashURL) {
+        desc += `\n[View and bid on auctions on the dashboard!](${dashURL}/auctions)`
+    }
+
     return ctx.send(ctx, {
         pages: displayPages,
         embed: {
             title: `Found ${ctx.fmtNum(auctions.length)} auctions`,
-            description: `${auctions.length} auctions`,
+            description: desc,
             color: ctx.colors.blue,
             footer: { text: `Page ${page + 1}/${total}` },
         },

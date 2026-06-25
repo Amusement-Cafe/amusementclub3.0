@@ -1,6 +1,10 @@
 const _ = require('lodash')
 
 const {
+    getDashboardURL
+} = require("../utils/misc")
+
+const {
     generateGlobalCommand
 } = require("../../../utils/commandGeneration")
 
@@ -52,11 +56,17 @@ const listCollections = async (ctx) => {
     const customButtons = []
     customButtons.push(new Button(`col_info-${buttonID}-0`).setStyle(2).setLabel('Show Info'))
 
+    const dashURL = getDashboardURL(ctx)
+    let desc = ' '
+    if (dashURL) {
+        desc = `[View collections on the dashboard!](${dashURL}/collections)\n`
+    }
+
     let message = await ctx.send(ctx, {
         pages,
         embed: {
             title: `Found ${colList.length} collections`,
-            description: ' '
+            description: desc
         },
         customPgnButtons,
         customButtons

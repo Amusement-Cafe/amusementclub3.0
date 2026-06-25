@@ -25,7 +25,8 @@ const {
 } = require("../helpers/userInventory")
 
 const {
-    formatEventName
+    formatEventName,
+    getDashboardURL
 } = require("../utils/misc")
 
 registerBotCommand('daily', async (ctx) => await daily(ctx))
@@ -132,6 +133,10 @@ const daily = async (ctx, streakSaver = false) => {
         response += formatEventName(ctx, x) || ''
         response += '\n'
     })
+    const dashURL = getDashboardURL(ctx)
+    if (dashURL) {
+        response += `\n[Access your dashboard here!](${dashURL}/)`
+    }
     await ctx.send(ctx, response)
 }
 
@@ -170,15 +175,28 @@ const cards = async (ctx, global = false) => {
     const pages = ctx.getPages(cardsChecked.map(x => ctx.formatName(ctx, x)), 15)
 
     let title = global? `Matched cards from database (${ctx.fmtNum(cardsChecked.length)} results)`: `${ctx.user.username}, your cards (${ctx.fmtNum(cardsChecked.length)} results)`
+    const dashURL = getDashboardURL(ctx)
+    let desc = undefined
+    if (dashURL && !global) {
+        desc = `[View your cards on the dashboard!](${dashURL}/cards?owner=${ctx.user.userID})`
+    }
+
     return await ctx.send(ctx, {
         embed: {
-          title: title
+          title: title,
+          description: desc
         },
         pages,
     })
 }
 
-const showProfile = async (ctx) => {}
+const showProfile = async (ctx) => {
+    const dashURL = getDashboardURL(ctx)
+    if (dashURL) {
+        return ctx.send(ctx, `[View your profile here!](${dashURL}/profile)`)
+    }
+    return ctx.send(ctx, `Profile command is under construction.`)
+}
 
 const userHas = async (ctx) => {}
 

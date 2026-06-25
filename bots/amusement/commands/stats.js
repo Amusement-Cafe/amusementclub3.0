@@ -1,6 +1,10 @@
 const _ = require('lodash')
 
 const {
+    getDashboardURL
+} = require("../utils/misc")
+
+const {
     generateGlobalCommand
 } = require("../../../utils/commandGeneration")
 
@@ -24,6 +28,15 @@ const {
 
 registerBotCommand('stats', async (ctx) => await stats(ctx))
 generateGlobalCommand('stats', 'Display your bot stats')
+
+registerBotCommand('leaderboards', async (ctx) => {
+    const dashURL = getDashboardURL(ctx)
+    if (dashURL) {
+        return ctx.send(ctx, `[View the leaderboards here!](${dashURL}/leaderboards)`)
+    }
+    return ctx.send(ctx, `Leaderboards are currently disabled.`)
+})
+generateGlobalCommand('leaderboards', 'View the leaderboards that load faster')
 
 registerReaction(['stat', 'page'], async (ctx) => await stats(ctx))
 

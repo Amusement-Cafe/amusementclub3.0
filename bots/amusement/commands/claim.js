@@ -1,5 +1,9 @@
 const _ = require("lodash")
 
+const {
+    getDashboardURL
+} = require("../utils/misc")
+
 const Claims = require("../../../db/claim")
 
 const {
@@ -148,6 +152,11 @@ const claimNormal = async (ctx) => {
     await claim.save()
     _.pull(processing, ctx.user.userID)
 
+    const dashURL = getDashboardURL(ctx)
+    if (dashURL) {
+        desc += `\n[View your claimed cards on the dashboard!](${dashURL}/cards?claimID=${claim.claimID})\n`
+    }
+
     let pages = claimed.map(x => x.card.cardURL)
     return ctx.send(ctx, {
         embed: {
@@ -248,6 +257,11 @@ const claimPromo = async (ctx) => {
     claim.promo = true
     await claim.save()
     _.pull(processing, ctx.user.userID)
+
+    const dashURL = getDashboardURL(ctx)
+    if (dashURL) {
+        desc += `\n[View your claimed cards on the dashboard!](${dashURL}/cards?claimID=${claim.claimID})\n`
+    }
 
     let pages = claimed.map(x => x.card.cardURL)
     return ctx.send(ctx, {
