@@ -9,6 +9,11 @@ const fetchOrCreateGuild = async (ctx) => {
         return 'DM'
     }
 
+    if (guild && !guild.ownerID) {
+        guild.ownerID = (await ctx.bot.rest.guilds.get(ctx.interaction.guildID)).ownerID
+        await guild.save()
+    }
+
     if (!guild) {
         guild = new Guilds()
         guild.guildID = ctx.interaction.guildID
@@ -27,11 +32,6 @@ const fetchOrCreateGuild = async (ctx) => {
                 ]
             })
         } catch (e) {}
-    }
-
-    if (!guild.ownerID) {
-        guild.ownerID = (await ctx.bot.rest.guilds.get(ctx.interaction.guildID)).ownerID
-        await guild.save()
     }
 
     return guild
