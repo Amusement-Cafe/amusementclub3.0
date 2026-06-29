@@ -72,12 +72,36 @@ const displayHelpSubMenu = async (ctx) => {
 }
 
 const displayHelpPage = async (ctx) => {
-    const split = ctx.arguments[0].split('-')
-    const display = helpMenus[split[0]][split[1]]
+    const split = ctx.arguments.length > 1? ctx.arguments: ctx.arguments[0].split('-')
+    let display = structuredClone(helpMenus[split[0]][split[1]])
+    let page = 0
+    if (!(display instanceof Array)) {
+        display = [display]
+    }
+    if (split[2] !== undefined) {
+        page = parseInt(split[2])
+    }
+    const customButtons = [startPage]
+    if (display.length > 1) {
+        let nextPage = page + 1
+        let backPage = page - 1
+        if (nextPage > display.length - 1) {
+            nextPage = 0
+        }
+        if (backPage < 0) {
+            backPage = display.length - 1
+        }
+        if (display.length > 2) {
+            customButtons.push(new Button(`helpPage-${split[0]}-${split[1]}-${backPage}`).setLabel('Back').setStyle(1))
+        }
+        customButtons.push(new Button(`helpPage-${split[0]}-${split[1]}-${nextPage}`).setLabel('Next').setStyle(1))
+    }
+    display = display[page]
+    display.color = ctx.colors.blue
     return ctx.send(ctx, {
         embed: display,
         selection: [new Selection('helpPage').setOptions(helpSelect[split[0]])],
-        customButtons: [startPage],
+        customButtons,
         parent: true
     })
 }
