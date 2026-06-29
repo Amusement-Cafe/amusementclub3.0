@@ -113,7 +113,7 @@ const auctionSell = async (ctx, many = false) => {
         }
         for (let card of auctionCards) {
             cost += Math.round(card.eval * costBasis)
-            queuePrep.push(card.cardID)
+            queuePrep.push({cardID: card.cardID, cost: cost})
         }
 
     } else {
@@ -129,7 +129,7 @@ const auctionSell = async (ctx, many = false) => {
         }
         for (let i = 0; i < limit; i++) {
             cost += Math.round(auctionCards[0].eval * costBasis)
-            queuePrep.push(auctionCards[0].cardID)
+            queuePrep.push({cardID: auctionCards[0].cardID, cost: cost})
         }
     }
     if (ctx.user.tomatoes < cost) {
@@ -137,25 +137,26 @@ const auctionSell = async (ctx, many = false) => {
     }
     let msg = await ctx.send(ctx, 'Processing...', 'yellow')
 
+    const cardIDs = queuePrep.map(x => x.cardID)
     const newAucQueue = new AuctionQueue()
     newAucQueue.userID = ctx.user.userID
     newAucQueue.guildID = ctx.guild.guildID
     newAucQueue.channelID = ctx.interaction.channel.id
     newAucQueue.messageID = msg.message.id
-    newAucQueue.cardIDs = queuePrep
+    newAucQueue.cardIDs = cardIDs
     newAucQueue.timeLength = length
     newAucQueue.listPrice = price
     newAucQueue.limit = limit
     await newAucQueue.save()
 
-    const pages = queuePrep.map(x => ctx.formatName(ctx, ctx.cards[x]))
+    const pages = queuePrep.map(x => `${ctx.formatName(ctx, ctx.cards[x.cardID])} (${ctx.fmtNum(x.cost)}${ctx.symbols.tomato})`)
     if (ctx.user.preferences.interact.alwaysForce) {
         ctx.user.tomatoes -= cost
         await ctx.updateStat(ctx, 'tomatoOut', cost)
         await ctx.user.save()
         newAucQueue.paid = true
         await newAucQueue.save()
-        await removeUserCards(ctx.user.userID, queuePrep, 1)
+        await removeUserCards(ctx.user.userID, cardIDs, 1)
         return ctx.send(ctx, {
             pages: ctx.getPages(pages),
             embed: {
@@ -654,7 +655,7 @@ const auctionDecline = async (ctx) => {
         await ctx.send(ctx, {
             embed: {
                 title: ``,
-                description: `You have cancelled listing ${ctx.boldName(ctx.fmtNum(pendingAuction.cardIDs.length))}x ${cards.length > 1? `${ctx.boldName(ctx.fmtNum(cards.length))} cards`: ctx.formatName(ctx, ctx.cards[cards[0]])} on auction. No tomatoes or cards have been removed from your account.`,
+                description: `You have cancelled listing ${ctx.boldName(ctx.fmtNum(pendingAuction.cardIDs.length))}x ${cards.length > 1? `cards`: ctx.formatName(ctx, ctx.cards[cards[0]])} on auction. No tomatoes or cards have been removed from your account.`,
                 color: ctx.colors.red
             },
             parent: true
