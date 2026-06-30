@@ -115,9 +115,7 @@ const claimNormal = async (ctx) => {
     await addUserCards(ctx.user.userID, cardIDs)
     await ctx.updateStat(ctx, 'totalRegularClaims', claims)
     await ctx.updateStat(ctx, 'claims', claims)
-    ctx.user.tomatoes -= price
-    await ctx.user.save()
-    await ctx.updateStat(ctx, 'tomatoOut', price)
+    await ctx.modTomatoes(ctx, null, -price)
 
     let fields = []
     let desc = `${ctx.boldName(ctx.user.username)}, you claimed:\n`
@@ -215,9 +213,7 @@ const claimPromo = async (ctx) => {
 
     await addUserCards(ctx.user.userID, cardIDs)
     await ctx.updateStat(ctx, 'promoClaims', claims)
-    ctx.user.promoBal -= price
-    await ctx.user.save()
-    await ctx.updateStat(ctx, 'promoOut', price)
+    await ctx.modPromo(ctx, null, -price)
 
     let fields = []
     let desc = `${ctx.boldName(ctx.user.username)}, you claimed:\n`

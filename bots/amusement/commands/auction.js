@@ -626,9 +626,7 @@ const auctionConfirm = async (ctx) => {
             parent: true
         })
     }
-    ctx.user.tomatoes -= cost
-    await ctx.updateStat(ctx, 'tomatoOut', cost)
-    await ctx.user.save()
+    await ctx.modTomatoes(ctx, null, -cost)
     pendingAuction.paid = true
     await pendingAuction.save()
     await removeUserCards(ctx.user.userID, pendingAuction.cardIDs, 1)

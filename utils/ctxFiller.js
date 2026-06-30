@@ -25,6 +25,7 @@ const {
 const {
     getUserStats,
     updateUserStats,
+    getSpecificUserStats,
 } = require("../bots/amusement/helpers/stats")
 
 const {
@@ -122,6 +123,51 @@ const getContext = async (refresh) => {
         grey: 3553598,
         deepgreen:1142316,
         default: 2067276
+    }
+
+    globalContext.modTomatoes = async (ctx, user, amount) => {
+        let userStats = user? await getSpecificUserStats(ctx, user.userID): ctx.stats
+        if (!user) {
+            user = ctx.user
+        }
+        user.tomatoes += amount
+        if (amount >= 0) {
+            userStats.tomatoIn += amount
+        } else {
+            userStats.tomatoOut -= amount
+        }
+        await userStats.save()
+        await user.save()
+    }
+
+    globalContext.modLemons = async (ctx, user, amount) => {
+        let userStats = user? await getSpecificUserStats(ctx, user.userID): ctx.stats
+        if (!user) {
+            user = ctx.user
+        }
+        user.lemons += amount
+        if (amount >= 0) {
+            userStats.lemonIn += amount
+        } else {
+            userStats.lemonOut -= amount
+        }
+        await userStats.save()
+        await user.save()
+    }
+
+    globalContext.modPromo = async (ctx, user, amount) => {
+        let userStats = user? await getSpecificUserStats(ctx, user.userID): ctx.stats
+        if (!user) {
+            user = ctx.user
+        }
+        user.promoBal += amount
+        if (amount >= 0) {
+            userStats.promoIn += amount
+        } else {
+            userStats.promoOut -= amount
+        }
+        await userStats.save()
+        await user.save()
     }
 
     globalContext.boldName = (name) => `**${name}**`

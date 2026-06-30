@@ -63,10 +63,9 @@ const finishAuction = async (ctx) => {
     }
     const bidder = await fetchUser(auctionToFinish.lastBidderID)
     const tomatoReturn = auctionToFinish.highBid - auctionToFinish.price
-    bidder.tomatoes += tomatoReturn
-    await bidder.save()
-    seller.tomatoes += auctionToFinish.price
-    await seller.save()
+    bidder.tomatoes += auctionToFinish.highBid
+    await ctx.modTomatoes(ctx, bidder, -auctionToFinish.price)
+    await ctx.modTomatoes(ctx, seller, auctionToFinish.price)
     await addUserCards(bidder.userID, [auctionToFinish.cardID])
 
     try {
