@@ -46,7 +46,13 @@ const updateGuildInvites = async (ctx) => {
         if (guilds.guildID !== '529023217491247105') {
             continue
         }
-        let invite = await ctx.bot.rest.channels.createInvite(guilds.reportChannel, {maxAge: 60 * 60 * 24 * 7, reason: 'Rotating invites for admin locked servers', temporary: false, unique: true})
+        let guild = await ctx.bot.rest.guilds.get(guilds.guildID)
+        let invite
+        if (guild.vanityURLCode) {
+            invite = {code: guild.vanityURLCode}
+        } else {
+            invite = await ctx.bot.rest.channels.createInvite(guilds.reportChannel, {maxAge: 60 * 60 * 24 * 7, reason: 'Rotating invites for admin locked servers', temporary: false, unique: true})
+        }
         guilds.invite = invite.code
         guilds.lastUpdatedInvite = now
         await guilds.save()
