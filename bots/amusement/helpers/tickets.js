@@ -124,7 +124,7 @@ const ticketSelect = async (ctx, inv) => {
         }
         return x.itemID === invItems[0].itemID && x.collectionID === invItems[0].collectionID
     })
-    console.log(sameType)
+
     let embed = {
         title: ctx.items[invItems[0].itemID].displayName,
         description: `This is a \`{itemID}\` redeemable for **{count}** \`{rarity}\` cards from {collectionText}. You have **{number}** of them`

@@ -85,11 +85,9 @@ const sell = async (ctx, many = false) => {
     if (saleCards.length === 0) {
         return ctx.send(ctx, `All cards in your query are favorited and only have one copy! Please re-run your command to include more non-favorite cards or remove the cards from your favorites first!`, 'red')
     }
-    console.log(saleCards.length)
+
     if (!ctx.args.cardQuery.locked) {
-        console.log('not locked')
         saleCards = saleCards.filter(x => !x.locked)
-        console.log(saleCards.length)
     }
 
     if (saleCards.length === 0) {
