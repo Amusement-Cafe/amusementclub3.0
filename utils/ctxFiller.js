@@ -66,6 +66,7 @@ const getContext = async (refresh) => {
     globalContext.cards = await Cards.find().lean().sort('cardID')
     globalContext.promos = await Promos.find().lean()
     globalContext.dbCards = await Cards.find().sort('cardID')
+    globalContext.items = items
 
     if (!globalContext.events) {
         globalContext.events = new Emitter()
@@ -126,7 +127,7 @@ const getContext = async (refresh) => {
     }
 
     globalContext.modTomatoes = async (ctx, user, amount) => {
-        let userStats = user? await getSpecificUserStats(ctx, user.userID): ctx.stats
+        let userStats = user? (await getSpecificUserStats(ctx, user.userID)).sort((a, b) => new Date(b.daily) - new Date(a.daily))[0]: ctx.stats
         if (!user) {
             user = ctx.user
         }
@@ -141,7 +142,7 @@ const getContext = async (refresh) => {
     }
 
     globalContext.modLemons = async (ctx, user, amount) => {
-        let userStats = user? await getSpecificUserStats(ctx, user.userID): ctx.stats
+        let userStats = user? (await getSpecificUserStats(ctx, user.userID)).sort((a, b) => new Date(b.daily) - new Date(a.daily))[0]: ctx.stats
         if (!user) {
             user = ctx.user
         }
@@ -156,7 +157,7 @@ const getContext = async (refresh) => {
     }
 
     globalContext.modPromo = async (ctx, user, amount) => {
-        let userStats = user? await getSpecificUserStats(ctx, user.userID): ctx.stats
+        let userStats = user? (await getSpecificUserStats(ctx, user.userID)).sort((a, b) => new Date(b.daily) - new Date(a.daily))[0]: ctx.stats
         if (!user) {
             user = ctx.user
         }
@@ -192,7 +193,6 @@ const ctxFiller = async (ctx, bot) => {
     let userStats = await getUserStats(ctx)
     let newCTX = Object.assign({}, ctx, {
         args,
-        items,
         stats: userStats,
         userCards: userCards,
         globalCards: globalCards,
