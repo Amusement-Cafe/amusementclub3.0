@@ -1,7 +1,7 @@
 const {model, Schema} = require('mongoose')
 
 const schema = new Schema({
-    date:       { type: Date, default: new Date() },
+    date:       { type: Date, default: Date.now },
 
     title:      { type: String, default: 'Announcement' },
     body:       { type: String, default: '' },

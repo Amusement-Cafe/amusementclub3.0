@@ -11,7 +11,7 @@ const schema = new Schema({
     accepted:       { type: Boolean, default: false },
     active:         { type: Boolean, default: false },
 
-    submitted:      { type: Date, default: new Date() },
+    submitted:      { type: Date, default: Date.now },
 
     pictures:       { type: Array, default: [] },
 })

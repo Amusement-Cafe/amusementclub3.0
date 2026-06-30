@@ -6,6 +6,6 @@ const schema = new Schema({
     command: { type: String },
     type:    { type: String, },
     options: { type: Array, default: [] },
-    timeRan: { type: Date, default: new Date() }
+    timeRan: { type: Date, default: Date.now }
 })
 module.exports = model('Commands', schema)

@@ -15,7 +15,7 @@ const schema = new Schema({
     discount:           { type: Number, default: 0 },
     heroLoyalty:        { type: Number, default: 0 },
 
-    nextCheck:          { type: Date, default: new Date() },
+    nextCheck:          { type: Date, default: Date.now },
     lastLock:           { type: Date, default: new Date(0) },
 
     adminLock:          { type: Boolean, default: false },

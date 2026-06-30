@@ -4,11 +4,11 @@ const schema = new Schema({
     guildID:            { type: String, index: true },
     userID:             { type: String },
 
-    nextCheck:          { type: Date, default: new Date() },
+    nextCheck:          { type: Date, default: Date.now },
 
     building:   {
-        installed:      { type: Date, default: new Date() },
-        lastCollected:  { type: Date, default: new Date() },
+        installed:      { type: Date, default: Date.now },
+        lastCollected:  { type: Date, default: Date.now },
 
         buildingID:     { type: String },
 
