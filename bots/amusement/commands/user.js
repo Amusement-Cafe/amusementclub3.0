@@ -98,16 +98,13 @@ const daily = async (ctx, streakSaver = false) => {
     }
     //Effect check will go here later
 
-    if (activePromo) {
-        ctx.user.promoBal += promoAward
-    }
-    ctx.user.tomatoes += award
+
     ctx.user.lastDaily = new Date()
     await ctx.user.save()
     ctx.stats = await getUserStats(ctx)
-    await ctx.updateStat(ctx, 'tomatoIn', award)
+    await ctx.modTomatoes(ctx, null, award)
     if (activePromo) {
-        await ctx.updateStat(ctx, 'promoIn', promoAward)
+        await ctx.modPromo(ctx, null, promoAward)
     }
     let response = `You have claimed daily and received ${ctx.boldName(ctx.fmtNum(award))}${ctx.symbols.tomato}${activePromo? ` and ${ctx.boldName(ctx.fmtNum(promoAward))}${ctx.symbols.promo}`:''}!${isStreak? `\nThis includes a bonus of ${ctx.boldName(ctx.fmtNum(streakAward))} from your ${ctx.boldName(ctx.fmtNum(ctx.user.streaks.daily.count))} day streak.`: ``}`
     response += `\nYou now have ${ctx.boldName(ctx.fmtNum(ctx.user.tomatoes))}${ctx.symbols.tomato}${activePromo?` and ${ctx.boldName(ctx.fmtNum(ctx.user.promoBal))}${ctx.symbols.promo}`:''}`

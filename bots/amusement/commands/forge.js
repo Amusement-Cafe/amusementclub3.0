@@ -115,9 +115,7 @@ const processForge = async (ctx) => {
 
     await ctx.updateStat(ctx, `forge`, 1)
     await ctx.updateStat(ctx, `forge${card1.rarity}`, 1)
-    await ctx.updateStat(ctx, 'tomatoOut', cost)
-    ctx.user.tomatoes -= cost
-    await ctx.user.save()
+    await ctx.modTomatoes(ctx, null, -cost)
     let alreadyOwned = ctx.userCards.find(x => x.cardID === newCard.cardID)
 
     await removeUserCards(ctx.user.userID, cardIDs)

@@ -113,11 +113,9 @@ const donateGuild = async (ctx) => {
     ctx.guild.tomatoes += amount
     await ctx.guild.save()
 
-    ctx.user.tomatoes -= amount
-    await ctx.user.save()
+    await ctx.modTomatoes(ctx, null, -amount)
     ctx.guildUser.donations += amount
     await ctx.guildUser.save()
-    await ctx.updateStat(ctx, 'tomatoOut', amount)
 
     return ctx.send(ctx, `You have successfully donated ${ctx.boldName(ctx.fmtNum(ctx.args.amount))}${ctx.symbols.tomato} to this guild. The guild now has ${ctx.boldName(ctx.fmtNum(ctx.guild.tomatoes))}${ctx.symbols.tomato}!`)
 }

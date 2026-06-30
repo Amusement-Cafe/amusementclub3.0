@@ -7,13 +7,10 @@ const fetchOrCreateUser = async (interaction) => {
         user = new User()
         user.userID = interaction.user.id
         user.username = interaction.user.globalName || interaction.user.username
-        user.tomatoes = 1
+        user.tomatoes = 5000
         user.joined = new Date()
         user.lastDaily = (new Date() - 86400001)
         await user.save()
-
-        //Todo branch off to a new user tutorial and invalidate original command
-        
     }
 
     if (user.username !== (interaction.user.globalName || interaction.user.username)) {

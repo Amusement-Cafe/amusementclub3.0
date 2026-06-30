@@ -113,11 +113,10 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
     if (toUser) {
         let toStats = await getSpecificUserStats(ctx, toUser.userID)
         toStats = toStats.sort((a, b) => new Date(b.daily) - new Date(a.daily))[0]
-        await updateUserStats(ctx, 'tomatoOut', transaction.cost, toStats)
         await updateUserStats(ctx, 'userBuy', 1, toStats)
 
         await updateUserStats(ctx, 'userSell', 1, fromStats)
-        toUser.tomatoes -= transaction.cost
+        await ctx.modTomatoes(ctx, toUser, -transaction.cost)
         await addUserCards(toUser.userID, transaction.cardIDs)
         await toUser.save()
         toName = toUser.username
@@ -125,11 +124,8 @@ const completeTransaction = async (ctx, decline = false, parent = true, extra = 
     } else {
         await updateUserStats(ctx, 'botSell', 1, fromStats)
     }
-    await updateUserStats(ctx, 'tomatoIn', transaction.cost, fromStats)
 
-    fromUser.tomatoes += transaction.cost
-    await fromUser.save()
-
+    await ctx.modTomatoes(ctx, fromUser, transaction.cost)
     transaction.status = 'confirmed'
     await transaction.save()
 

@@ -127,7 +127,7 @@ const purchaseTicket = async (ctx, item) => {
     await ctx.interaction.channel.createMessage({
         embeds: [
             {
-                description: `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(item.itemID)} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.lemon} (actually 0 for testing)!`,
+                description: `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(item.itemID)} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.lemon}!`,
                 color: ctx.colors.deepgreen
             }
         ],
@@ -136,6 +136,7 @@ const purchaseTicket = async (ctx, item) => {
     ctx.arguments = [ctx.arguments.join('-')]
     await ctx.updateStat(ctx, 'store', 1)
     await ctx.updateStat(ctx, 'storeTicket', 1)
+    await ctx.modLemons(ctx, null, -item.cost)
     await displayItem(ctx, false)
 }
 
@@ -150,9 +151,9 @@ const purchaseRecipe = async (ctx, item) => {
     await addItem(ctx, item)
     await ctx.updateStat(ctx, 'store', 1)
     await ctx.updateStat(ctx, 'storeRecipe', 1)
-    await ctx.updateStat(ctx, 'tomatoOut', item.cost)
+    await ctx.modTomatoes(ctx, null, -item.cost)
 
-    return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.tomato} (actually 0 for testing)!`, 'deepgreen')
+    return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.tomato}!`, 'deepgreen')
 }
 
 const purchaseBonus = async (ctx, item) => {
@@ -162,9 +163,9 @@ const purchaseBonus = async (ctx, item) => {
     await addItem(ctx, item)
     await ctx.updateStat(ctx, 'store', 1)
     await ctx.updateStat(ctx, 'storeBonus', 1)
-    await ctx.updateStat(ctx, 'lemonOut', item.cost)
+    await ctx.modLemons(ctx, null, -item.cost)
 
-    return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.tomato} (actually 0 for testing)!`, 'deepgreen')
+    return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.tomato}!`, 'deepgreen')
 }
 
 const purchasePlotBuilding = async (ctx, item) => {
@@ -175,7 +176,7 @@ const purchasePlotBuilding = async (ctx, item) => {
     await addItem(ctx, item)
     await ctx.updateStat(ctx, 'store', 1)
     await ctx.updateStat(ctx, 'storePlot', 1)
-    await ctx.updateStat(ctx, 'lemonOut', cost)
+    await ctx.modLemons(ctx, null, -item.cost)
 
-    return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(ctx.fmtNum(cost))}${ctx.symbols.lemon} (actually 0 for testing)!`, 'deepgreen')
+    return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(ctx.fmtNum(cost))}${ctx.symbols.lemon}!`, 'deepgreen')
 }
