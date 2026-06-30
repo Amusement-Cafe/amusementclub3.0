@@ -1,6 +1,9 @@
 const express = require('express')
 const Card = require("../db/card")
 const Collection = require("../db/collection")
+const {
+    fetchUser
+} = require("../bots/amusement/helpers/user")
 
 
 let listener
@@ -47,9 +50,37 @@ const listen = async (ctx) => {
         return res.status(200).send(ctx.collections).end()
     })
 
-    app.get('/test', async (req, res) => {
+    app.get('/items', async (req, res) => {
+        if (req.headers.authorization !== ctx.config.webhooks.auth) {
+            return res.status(403).send('Forbidden\r\n').end()
+        }
+        return res.status(200).send(ctx.items).end()
+    })
 
-        return res.send(`${Math.floor(process.uptime())}`).end()
+    app.get('/health', async (req, res) => {
+        return res.status(200).end()
+    })
+
+    app.get('/preferences', async (req, res) => {
+        if (req.headers.authorization !== ctx.config.webhooks.auth) {
+            return res.status(403).send('Forbidden\r\n').end()
+        }
+        const user = await fetchUser(req.query.user)
+        if (!user) {
+            return res.status(404).send('User not found').end()
+        }
+        return res.status(200).send(user.preferences).end()
+    })
+
+    app.patch('/preferences', async (req, res) => {
+        if (req.headers.authorization !== ctx.config.webhooks.auth) {
+            return res.status(403).send('Forbidden\r\n').end()
+        }
+        const user = await fetchUser(req.headers.user)
+        if (!user) {
+            return res.status(404).send('User not found').end()
+        }
+
     })
 
     listener = app.listen(9898, () => console.log(`Listening on port 9898`))
