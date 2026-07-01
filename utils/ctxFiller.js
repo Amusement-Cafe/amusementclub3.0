@@ -52,7 +52,30 @@ const {
 } = require('../bots/amusement/static/items')
 
 
-let globalContext = {}
+let globalContext = {
+    symbols: {
+        tomato: '`🍅`',
+        lemon: '`🍋`',
+        auctionNoBid: '`🔹`',
+        auctionHasBid: '`🔷`',
+        auctionOwn: '`🔸`',
+        auctionIcon: '`▫️`',
+        auctionTrans: '`🔨`',
+        accept: '`✅`',
+        pending: '`❗`',
+        decline: '`❌`',
+        promo: '`✨`'
+    },
+    colors: {
+        red: 14356753,
+        yellow: 16756480,
+        green: 1030733,
+        blue: 1420012,
+        grey: 3553598,
+        deepgreen:1142316,
+        default: 2067276
+    }
+}
 
 
 const getContext = async (refresh) => {
@@ -100,30 +123,6 @@ const getContext = async (refresh) => {
         const locked = card.locked? ' `🔒`': ''
         const fav = card.fav? ' `❤`' : ''
         return `[${rarity}]${ctx.args?.fmtOptions?.locked? locked: ''}${ctx.args?.fmtOptions?.fav? fav: ''} [${card.displayName}](${card.cardURL}) \`[${card.collectionID}]\`${ctx.args?.fmtOptions?.amount? amount: ''}${ctx.args?.fmtOptions?.eval? ` ${eval}${ctx.symbols.tomato}`: ''}`
-    }
-
-    globalContext.symbols = {
-        tomato: '`🍅`',
-        lemon: '`🍋`',
-        auctionNoBid: '`🔹`',
-        auctionHasBid: '`🔷`',
-        auctionOwn: '`🔸`',
-        auctionIcon: '`▫️`',
-        auctionTrans: '`🔨`',
-        accept: '`✅`',
-        pending: '`❗`',
-        decline: '`❌`',
-        promo: '`✨`'
-    }
-
-    globalContext.colors = {
-        red: 14356753,
-        yellow: 16756480,
-        green: 1030733,
-        blue: 1420012,
-        grey: 3553598,
-        deepgreen:1142316,
-        default: 2067276
     }
 
     globalContext.modTomatoes = async (ctx, user, amount) => {
