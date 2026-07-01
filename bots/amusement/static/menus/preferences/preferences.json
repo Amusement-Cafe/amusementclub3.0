@@ -137,6 +137,11 @@
       "label": "Set a custom table display style",
       "value": "display_tables",
       "premium": true
+    },
+    {
+      "description": "This option changes whether help displays or hides images",
+      "label": "Toggle Help Display Images",
+      "value": "display_helpImages"
     }
   ],
   "tables": [

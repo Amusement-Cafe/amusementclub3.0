@@ -58,6 +58,11 @@
       "value": "subAuction-selling"
     },
     {
+      "description": "Viewing auctions",
+      "label": "Listing",
+      "value": "subAuction-listing"
+    },
+    {
       "description": "Bidding on auctions",
       "label": "Bidding",
       "value": "subAuction-bidding"
@@ -66,60 +71,77 @@
       "description": "Cancelling an auction",
       "label": "Cancelling",
       "value": "subAuction-cancelling"
-    },
-    {
-      "description": "This is probably needed, I just don't know why",
-      "label": "Auctions3",
-      "value": "subAuction-auction3"
     }
   ],
   "subCards" : [
     {
-      "description": "Display the help menu for auctions",
-      "label": "Auctions",
-      "value": "auction"
+      "description": "Get information on card rarities",
+      "label": "Cards - Rarities",
+      "value": "subCards-rarities"
+    },
+    {
+      "description": "How to create cards yourself",
+      "label": "Cards - Creation",
+      "value": "subCards-creation"
     }
   ],
   "subCollections" : [
     {
-      "description": "Display the help menu for auctions",
-      "label": "Auctions",
-      "value": "auction"
+      "description": "General information on Collections",
+      "label": "Collections",
+      "value": "subCollections-general"
     }
   ],
-  "currencies" : [
+  "subCurrencies" : [
+    {
+      "description": "Display the help menu for tomatoes",
+      "label": "Tomatoes",
+      "value": "subCurrencies-tomatoes"
+    },
+    {
+      "description": "Display the help menu for lemons",
+      "label": "Lemons",
+      "value": "subCurrencies-lemons"
+    },
+    {
+      "description": "Display the help menu for promo balance",
+      "label": "Promo",
+      "value": "subCurrencies-promo"
+    }
+  ],
+  "subForge" : [
+    {
+      "description": "Special Forge Functions",
+      "label": "Special Forges",
+      "value": "subForge-special"
+    }
+  ],
+  "subGuilds" : [
+    {
+      "description": "Display more information about guilds",
+      "label": "Guilds - General",
+      "value": "subGuilds-guilds"
+    }
+  ],
+  "subItems" : [
+    {
+      "description": "Display the help menu for Tickets",
+      "label": "Tickets",
+      "value": "subItems-tickets"
+    }
+  ],
+  "subPlots" : [
     {
       "description": "Display the help menu for auctions",
       "label": "Auctions",
-      "value": "auction"
+      "value": "subPlots-auction"
     }
   ],
-  "forge" : [
+  "subStore" : [
     {
-      "description": "Display the help menu for auctions",
-      "label": "Auctions",
-      "value": "auction"
-    }
-  ],
-  "guilds" : [
-    {
-      "description": "Display the help menu for auctions",
-      "label": "Auctions",
-      "value": "auction"
-    }
-  ],
-  "items" : [
-    {
-      "description": "Display the help menu for auctions",
-      "label": "Auctions",
-      "value": "auction"
-    }
-  ],
-  "plots" : [
-    {
-      "description": "Display the help menu for auctions",
-      "label": "Auctions",
-      "value": "auction"
+      "description": "Display the help menu for the ticket store",
+      "label": "Tickets",
+      "value": "subStore-tickets"
     }
   ]
 }

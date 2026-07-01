@@ -87,6 +87,10 @@
     "title": "Table Display Setting",
     "description": "Use the select menu below to change your table display style\nA display of your currently selected option is below"
   },
+  "helpImages": {
+    "title": "Help Images Setting",
+    "description": "Enable or disable the display of images in the help menu."
+  },
   "notify": {
     "title": "Notification Options",
     "description": "Use the select menu below to navigate to a Notification option.\nNotification options manage when the bot will DM you."

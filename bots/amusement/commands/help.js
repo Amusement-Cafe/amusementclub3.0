@@ -31,24 +31,27 @@ registerReaction('helpPage', async (ctx) => await displayHelpPage(ctx))
 
 
 const helpStart = async (ctx, back = false) => {
-    const senko = 'No help for you\n```⠀⠀⠀⠀⠀⠀⠀⠀⣾⢆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⢧⠀⠀⠀⠀⠀⠀⠀\n' +
-        '⠀⠀⠀⠀⠀⠀⠀⢰⣿⠈⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⡿⢸⠀⠀⠀⠀⠀⠀⠀\n' +
-        '⠀⠀⠀⠀⠀⠀⢠⣿⡿⠀⢸⢀⡀⠀⠀⠀⠀⠀⠀⣰⣿⠃⢸⠀⠀⠀⠀⠀⠀⠀\n' +
-        '⠀⠀⠀⠀⠀⠀⣾⣿⠟⠛⠞⢹⣁⣀⣀⣀⣀⣤⣾⣿⡿⠴⢾⢤⠄⠀⠀⠀⠀⠀\n' +
-        '⠀⠀⠀⠀⠀⣼⣿⣿⣀⣀⣜⣯⠁⠀⠈⠉⠉⠉⠛⠻⠦⣄⠀⣚⠦⠀⠀⠀⠀⠀\n' +
-        '⠀⠀⠀⢀⣼⠿⠿⠏⠈⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠲⠤⣀⣀⡀⠀⠀\n' +
-        '⠀⠀⢀⡜⠁⠀⠀⣠⡄⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⣦⠀⢀⣀⠀⠲⢍⣀⣀⠀\n' +
-        '⠀⠀⡞⠀⠀⠀⢀⣿⠁⠀⠀⢀⣀⡸⣇⡀⠸⡇⠀⠀⡿⣆⣀⠹⣆⠀⣀⠴⠋⠀\n' +
-        '⠀⢸⣷⣦⣤⣀⣾⠃⠀⠀⠀⣼⣏⣉⣉⡛⣾⠿⠇⢰⡭⢽⣧⠀⣿⡋⠁⠀⠀⠀\n' +
-        '⢀⣾⣿⣿⣿⣿⠃⠀⠀⠀⢀⣾⠋⣤⣶⣐⠋⠀⣴⠃⣶⣶⡘⢷⣿⣷⡄⠀⠀⠀\n' +
-        '⣿⣿⣿⣿⡿⠁⠀⣠⣶⢀⣼⡻⠴⠿⠛⠛⠀⠀⠀⠀⠙⠛⠓⠚⠻⣿⣿⣶⣤⣀\n' +
-        '⣿⣿⣿⣯⣥⣴⣾⢻⣿⠞⢺⢷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⡏⠁⠀\n' +
-        '⠿⠿⠿⣿⣿⣿⣿⣧⣀⠀⠀⢃⠀⠀⠀⠀⠈⠉⠉⠁⠀⠀⠀⢀⣼⣿⣿⣷⠀⠀\n' +
-        '⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣶⣼⣦⠀⠀⠀⠀⠀⠀⠀⢀⣀⣴⣿⣿⢻⣿⡟⠀⠀```'
     const display = {...main}
-    display.color = ctx.colors.blue
-    display.description += `\n${senko}\n`
+    if (ctx.user.roles.some(x => (x === 'admin' || x === 'mod'))) {
+        display.description += '\nNo help for you\n```⠀⠀⠀⠀⠀⠀⠀⠀⣾⢆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⢧⠀⠀⠀⠀⠀⠀⠀\n' +
+            '⠀⠀⠀⠀⠀⠀⠀⢰⣿⠈⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⡿⢸⠀⠀⠀⠀⠀⠀⠀\n' +
+            '⠀⠀⠀⠀⠀⠀⢠⣿⡿⠀⢸⢀⡀⠀⠀⠀⠀⠀⠀⣰⣿⠃⢸⠀⠀⠀⠀⠀⠀⠀\n' +
+            '⠀⠀⠀⠀⠀⠀⣾⣿⠟⠛⠞⢹⣁⣀⣀⣀⣀⣤⣾⣿⡿⠴⢾⢤⠄⠀⠀⠀⠀⠀\n' +
+            '⠀⠀⠀⠀⠀⣼⣿⣿⣀⣀⣜⣯⠁⠀⠈⠉⠉⠉⠛⠻⠦⣄⠀⣚⠦⠀⠀⠀⠀⠀\n' +
+            '⠀⠀⠀⢀⣼⠿⠿⠏⠈⠛⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠲⠤⣀⣀⡀⠀⠀\n' +
+            '⠀⠀⢀⡜⠁⠀⠀⣠⡄⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⣦⠀⢀⣀⠀⠲⢍⣀⣀⠀\n' +
+            '⠀⠀⡞⠀⠀⠀⢀⣿⠁⠀⠀⢀⣀⡸⣇⡀⠸⡇⠀⠀⡿⣆⣀⠹⣆⠀⣀⠴⠋⠀\n' +
+            '⠀⢸⣷⣦⣤⣀⣾⠃⠀⠀⠀⣼⣏⣉⣉⡛⣾⠿⠇⢰⡭⢽⣧⠀⣿⡋⠁⠀⠀⠀\n' +
+            '⢀⣾⣿⣿⣿⣿⠃⠀⠀⠀⢀⣾⠋⣤⣶⣐⠋⠀⣴⠃⣶⣶⡘⢷⣿⣷⡄⠀⠀⠀\n' +
+            '⣿⣿⣿⣿⡿⠁⠀⣠⣶⢀⣼⡻⠴⠿⠛⠛⠀⠀⠀⠀⠙⠛⠓⠚⠻⣿⣿⣶⣤⣀\n' +
+            '⣿⣿⣿⣯⣥⣴⣾⢻⣿⠞⢺⢷⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⡏⠁⠀\n' +
+            '⠿⠿⠿⣿⣿⣿⣿⣧⣀⠀⠀⢃⠀⠀⠀⠀⠈⠉⠉⠁⠀⠀⠀⢀⣼⣿⣿⣷⠀⠀\n' +
+            '⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣶⣼⣦⠀⠀⠀⠀⠀⠀⠀⢀⣀⣴⣿⣿⢻⣿⡟⠀⠀\n```'
+    }
     const select = new Selection('help').setOptions(helpSelect.all)
+    if (!ctx.user.preferences.display.helpImages && display.image) {
+        display.image = undefined
+    }
     return ctx.send(ctx, {
         embed: display,
         selection: [select],
@@ -58,10 +61,13 @@ const helpStart = async (ctx, back = false) => {
 }
 
 const displayHelpSubMenu = async (ctx) => {
-    const display = subMenus[ctx.arguments[0]]
+    const display = {...subMenus[ctx.arguments[0]]}
     const selection = []
     if (helpSelect[ctx.arguments[0]]?.length > 0) {
         selection.push(new Selection('helpPage').setOptions(helpSelect[ctx.arguments[0]]))
+    }
+    if (!ctx.user.preferences.display.helpImages && display.image) {
+        display.image = undefined
     }
     return ctx.send(ctx, {
         embed: display,
@@ -97,7 +103,12 @@ const displayHelpPage = async (ctx) => {
         customButtons.push(new Button(`helpPage-${split[0]}-${split[1]}-${nextPage}`).setLabel('Next').setStyle(1))
     }
     display = display[page]
-    display.color = ctx.colors.blue
+    if (!display.color) {
+        display.color = ctx.colors.blue
+    }
+    if (!ctx.user.preferences.display.helpImages && display.image) {
+        display.image = undefined
+    }
     return ctx.send(ctx, {
         embed: display,
         selection: [new Selection('helpPage').setOptions(helpSelect[split[0]])],

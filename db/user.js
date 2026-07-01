@@ -93,7 +93,8 @@ const schema = new Schema({
             favClout:   { type: String, default: '' },
         },
         display:    {
-            tables:     { type: String, default: 'round' },
+            tables:     { type: String,  default: 'round' },
+            helpImages: { type: Boolean, default: true },
         }
     },
 
