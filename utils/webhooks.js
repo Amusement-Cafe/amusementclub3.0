@@ -54,15 +54,15 @@ const listen = async (ctx) => {
         await next()
     })
 
-    app.get('/cards', async (req, res) => {
+    app.get('/global/cards', async (req, res) => {
         return res.status(200).send(ctx.cards).end()
     })
 
-    app.get('/collections', async (req, res) => {
+    app.get('/global/collections', async (req, res) => {
         return res.status(200).send(ctx.collections).end()
     })
 
-    app.get('/items', async (req, res) => {
+    app.get('/global/items', async (req, res) => {
         return res.status(200).send(ctx.items).end()
     })
 
@@ -81,11 +81,11 @@ const listen = async (ctx) => {
 
     app.use(express.json())
 
-    app.get('/preferences', async (req, res) => {
+    app.get('/user/preferences', async (req, res) => {
         return res.status(200).send(req.user.preferences).end()
     })
 
-    app.patch('/preferences', async (req, res) => {
+    app.patch('/user/preferences', async (req, res) => {
         const {preferences} = req.body
         if (!preferences) {
             return res.status(400).send('Bad Request - preferences').end()
@@ -95,12 +95,12 @@ const listen = async (ctx) => {
         return res.status(200).end()
     })
 
-    app.get('/inventory', async (req, res) => {
+    app.get('/user/inventory', async (req, res) => {
         const inventory = await getUserInventory(req)
         return res.status(200).send(inventory).end()
     })
 
-    app.delete('/inventory', async (req, res) => {
+    app.delete('/user/inventory', async (req, res) => {
         req.webhook = true
         if (!req.query.id) {
             return res.status(400).send('Bad Request - id').end()
@@ -110,6 +110,17 @@ const listen = async (ctx) => {
             return res.status(404).send('Item not found').end()
         }
         return res.status(200).end()
+    })
+
+    app.get('/user/cards', async (req, res) => {
+
+    })
+
+    app.put('/user/cards', async (req, res) => {
+        if (!req.body.cards) {
+            return res.status(400).send('Bad Request - cards').end()
+        }
+
     })
 
     listener = app.listen(9898, () => console.log(`Listening on port 9898`))
