@@ -47,7 +47,10 @@ const preferencesStart = async (ctx, back = false) => {
 const preferencesCategory = async (ctx) => {
     const option = ctx.arguments[0]
     const embed = embeds[option]
-    const select = new Selection('preference_preference').setOptions(menus[option])
+    const menu = menus[option].filter(x => {
+        return !(x.premium && !ctx.user.premium.active)
+    })
+    const select = new Selection('preference_preference').setOptions(menu)
     return ctx.send(ctx, {
         parent: true,
         embed,
