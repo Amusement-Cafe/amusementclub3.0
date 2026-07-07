@@ -1,54 +1,186 @@
 {
   "all" : [
     {
-      "description": "Display the help menu for auctions",
-      "label": "Auctions",
-      "value": "subAuction"
+      "description": "Display the bot rules",
+      "label": "Bot Rules",
+      "value": "subRules"
     },
     {
-      "description": "Display the help menu for cards",
+      "description": "Display help categories related to cards",
       "label": "Cards",
       "value": "subCards"
     },
     {
-      "description": "Display the help menu for collections",
+      "description": "Display help categories related to collections",
       "label": "Collections",
       "value": "subCollections"
     },
     {
-      "description": "Display the help menu for currencies",
-      "label": "Currencies",
-      "value": "subCurrencies"
-    },
-    {
-      "description": "Display the help menu for forge",
-      "label": "Forge",
-      "value": "subForge"
-    },
-    {
-      "description": "Display the help menu for guilds",
+      "description": "Display help categories related to guilds",
       "label": "Guilds",
       "value": "subGuilds"
     },
     {
-      "description": "Display the help menu for items",
-      "label": "Items",
-      "value": "subItems"
+      "description": "Display help categories related to transactions",
+      "label": "Transactions",
+      "value": "subTransactions"
     },
     {
-      "description": "Display the help menu for plots",
+      "description": "Display help categories related to you, the user",
+      "label": "User",
+      "value": "subUser"
+    },
+    {
+      "description": "Display help categories that don't fit in the above categories",
+      "label": "Other",
+      "value": "subOther"
+    }
+  ],
+  "subCards": [
+    {
+      "description": "",
+      "label": "Claims",
+      "value": "subCards-claims"
+    },
+    {
+      "description": "",
+      "label": "Evals",
+      "value": "subCards-eval"
+    },
+    {
+      "description": "",
+      "label": "Favoriting/Locking",
+      "value": "subCards-favlock"
+    },
+    {
+      "description": "",
+      "label": "Card Queries",
+      "value": "subCards-query"
+    },
+    {
+      "description": "",
+      "label": "Rating",
+      "value": "subCards-rating"
+    },
+    {
+      "description": "",
+      "label": "Tags",
+      "value": "subCards-tags"
+    },
+    {
+      "description": "",
+      "label": "Card Infos",
+      "value": "subCards-info"
+    }
+  ],
+  "subCollections": [
+    {
+      "description": "",
+      "label": "Clout/Reset",
+      "value": "subCollections-clout"
+    }
+  ],
+  "subGuilds": [
+    {
+      "description": "",
+      "label": "Buildings",
+      "value": "subGuilds-buildings"
+    },
+    {
+      "description": "",
+      "label": "Ranks",
+      "value": "subGuilds-ranks"
+    },
+    {
+      "description": "",
+      "label": "Collection Locking",
+      "value": "subGuilds-lock"
+    }
+  ],
+  "subTransactions": [
+    {
+      "description": "",
+      "label": "Sales",
+      "value": "subTransactions-sales"
+    },
+    {
+      "description": "",
+      "label": "Forging",
+      "value": "subTransactions-forge"
+    },
+    {
+      "description": "",
+      "label": "Auctions",
+      "value": "subTransactions-auction"
+    }
+  ],
+  "subUser": [
+    {
+      "description": "",
+      "label": "Daily",
+      "value": "subUser-daily"
+    },
+    {
+      "description": "",
+      "label": "Quests",
+      "value": "subUser-quests"
+    },
+    {
+      "description": "",
+      "label": "Inventory",
+      "value": "subUser-inventory"
+    },
+    {
+      "description": "",
+      "label": "Diff",
+      "value": "subUser-diff"
+    },
+    {
+      "description": "",
+      "label": "Has",
+      "value": "subUser-has"
+    },
+    {
+      "description": "",
+      "label": "Currencies/Balance",
+      "value": "subUser-currencies"
+    },
+    {
+      "description": "",
       "label": "Plots",
-      "value": "subPlots"
+      "value": "subUser-plots"
     },
     {
-      "description": "Display the help menu for the store",
+      "description": "",
+      "label": "Preferences",
+      "value": "subUser-preferences"
+    },
+    {
+      "description": "",
+      "label": "Profile",
+      "value": "subUser-profile"
+    },
+    {
+      "description": "",
+      "label": "Wish",
+      "value": "subUser-wish"
+    }
+  ],
+  "subOther": [
+    {
+      "description": "",
       "label": "Store",
-      "value": "subStore"
+      "value": "subOther-store"
     },
     {
-      "description": "Display the help menu for extra",
-      "label": "Extra",
-      "value": "subExtra"
+      "description": "",
+      "label": "Events/Promos",
+      "value": "subOther-events"
+    },
+    {
+      "description": "",
+      "label": "Items",
+      "value": "subOther-items"
     }
   ],
   "subAuction" : [
@@ -73,7 +205,7 @@
       "value": "subAuction-cancelling"
     }
   ],
-  "subCards" : [
+  "subCardss" : [
     {
       "description": "Get information on card rarities",
       "label": "Cards - Rarities",
@@ -85,7 +217,7 @@
       "value": "subCards-creation"
     }
   ],
-  "subCollections" : [
+  "subCollectionss" : [
     {
       "description": "General information on Collections",
       "label": "Collections",
@@ -116,7 +248,7 @@
       "value": "subForge-special"
     }
   ],
-  "subGuilds" : [
+  "subGuildss" : [
     {
       "description": "Display more information about guilds",
       "label": "Guilds - General",

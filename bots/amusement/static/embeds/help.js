@@ -6,19 +6,10 @@ const main = {
         "Welcome to the Amusement Club help menu!\n" +
         "Below you should see a selection box with the broad help categories available. " +
         "Once you select a category, you will either be presented with a sub help menu with another selection box, or a main help embed based on the category you selected.\n" +
-        "By default, images are displayed to show examples of things being talked about in the help menu. If you would rather not have the images, you can disable them in /preferences",
-    color: ctx.colors.green,
-    image: {url: 'https://t.amu.cards/cards/astley.jpg'}
-}
-
-const subCommands = {
-    title: "Help - Commands",
-    description: "Commands help",
-}
-
-const subAuction = {
-    title: "Help - Auctions",
-    description: "Auctions help",
+        "The current selection categories are:\n" +
+        ">>> By default, images are displayed to show examples of things being talked about in the help menu. If you would rather not have the images, you can disable them in /preferences\n" +
+        "-# If something is missing from the help menu, or something needs expanded on please report it in our discord server!",
+    color: ctx.colors.green
 }
 
 const subCards = {
@@ -31,127 +22,176 @@ const subCollections = {
     description: "Collections help",
 }
 
-const subCurrencies = {
-    title: "Help - Currencies",
-    description: "Currencies help",
-}
-
-const subForge = {
-    title: "Help - Forge",
-    description: "Forge help",
-}
-
 const subGuilds = {
     title: "Help - Guilds",
     description: "Guilds help",
 }
 
-const subItems = {
-    title: "Help - Items",
-    description: "Items help",
+const subTransactions = {
+    title: "Help - Transactions",
+    description: "Transactions help",
 }
 
-const subPlots = {
-    title: "Help - Plots",
-    description: "Plots help",
+const subUser = {
+    title: "Help - User",
+    description: "User help",
 }
 
-const subStore = {
-    title: "Help - Store",
-    description: "Store help",
+const subOther = {
+    title: "Help - Other",
+    description: "Other help",
+}
+
+const subRules = {
+    title: "Bot Rules",
+    description: "Rules go here",
 }
 
 module.exports = {
     main,
     subMenus: {
-        subAuction,
         subCards,
         subCollections,
-        subCommands,
-        subCurrencies,
-        subForge,
         subGuilds,
-        subItems,
-        subPlots,
-        subStore,
+        subUser,
+        subTransactions,
+        subOther,
+        subRules,
     },
     helpMenus: {
-        subAuction: {
-            selling: {
-                title: "Selling",
-                description: "WEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
-            },
-            listing: {
-                title: "listing",
-                description: "WEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
-            },
-            bidding: {
-                title: "bidding",
-                description: "WEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
-            },
-            cancelling: {
-                title: "cancelling",
-                description: "WEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
-            }
-        },
-        subCommands: {
-            cardQuery: {}
-        },
         subCards: {
-
+            claims: {
+                title: 'About claiming cards',
+                description: 'Tomatoes'
+            },
+            eval: {
+                title: 'a',
+                description: 'a'
+            },
+            favlock: {
+                title: 'a',
+                description: 'a'
+            },
+            query: {
+                title: 'a',
+                description: 'a'
+            },
+            rating: {
+                title: 'a',
+                description: 'a'
+            },
+            tags: {
+                title: 'a',
+                description: 'a'
+            },
+            info: {
+                title: 'a',
+                description: 'a'
+            },
         },
         subCollections: {
-
-        },
-        subCurrencies: {
-            tomatoes: [
-                {
-                    title: "Tomatoes",
-                    description: "WEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
-                    color: ctx.colors.green,
-                },
-                {
-                    title: "Tomatoes2",
-                    description: "WEEEEEEEEEEEEEEEEEEEEEEEEEEEE2",
-                    color: ctx.colors.yellow,
-                },
-                {
-                    title: "Tomatoes3",
-                    description: "WEEEEEEEEEEEEEEEEEEEEEEEEEEEE3",
-                    color: ctx.colors.red,
-                },
-                {
-                    title: "Tomatoes4",
-                    description: "WEEEEEEEEEEEEEEEEEEEEEEEEEEEE4",
-                    color: ctx.colors.blue,
-                }
-            ],
-            lemons: {
-                title: "Lemons",
-                description: "WEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
-                color: ctx.colors.green,
-
+            clout: {
+                title: 'a',
+                description: 'a'
             },
-            promo: {
-                title: "Promo",
-                description: "WEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
-                color: ctx.colors.green,
-            }
-        },
-        subForge: {
-
         },
         subGuilds: {
-
+            buildings: [
+                {
+                    title: 'a',
+                    description: 'a'
+                }
+            ],
+            ranks: {
+                title: 'a',
+                description: 'a'
+            },
+            lock: {
+                title: 'a',
+                description: 'a'
+            },
         },
-        subItems: {
-
+        subTransactions: {
+            sales: {
+                title: 'a',
+                description: 'a'
+            },
+            forge: {
+                title: 'a',
+                description: 'a'
+            },
+            auction: [
+                {
+                    title: 'a',
+                    description: 'a'
+                }
+            ],
         },
-        subPlots: {
-
+        subUser: {
+            daily: [
+                {
+                    title: 'a',
+                    description: 'a'
+                }
+            ],
+            quests: [
+                {
+                    title: 'a',
+                    description: 'a'
+                }
+            ],
+            inventory: [
+                {
+                    title: 'a',
+                    description: 'a'
+                }
+            ],
+            diff: {
+                title: 'a',
+                description: 'a'
+            },
+            has: {
+                title: 'a',
+                description: 'a'
+            },
+            currencies: {
+                title: 'a',
+                description: 'a'
+            },
+            plots: {
+                title: 'a',
+                description: 'a'
+            },
+            preferences: {
+                title: 'a',
+                description: 'a'
+            },
+            profile: {
+                title: 'a',
+                description: 'a'
+            },
+            wish: {
+                title: 'a',
+                description: 'a'
+            },
         },
-        subStore: {
-
-        },
+        subOther: {
+            store: [
+                {
+                    title: 'a',
+                    description: 'a'
+                }
+            ],
+            items: [
+                {
+                    title: 'a',
+                    description: 'a'
+                }
+            ],
+            events: {
+                title: 'a',
+                description: 'a'
+            },
+        }
     }
 }

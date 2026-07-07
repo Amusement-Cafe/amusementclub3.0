@@ -52,10 +52,11 @@ const helpStart = async (ctx, back = false) => {
     if (!ctx.user.preferences.display.helpImages && display.image) {
         display.image = undefined
     }
+    const discordLinkButton = new Button('').setStyle(5).setURL(ctx.config.links.discord).setLabel('Join our Discord')
     return ctx.send(ctx, {
         embed: display,
         selection: [select],
-        customButtons: [startPage],
+        customButtons: [startPage, discordLinkButton],
         parent: back
     })
 }
