@@ -1,9 +1,14 @@
 const express = require('express')
+const _ = require('lodash')
 const Card = require("../db/card")
 const Collection = require("../db/collection")
 const {
     fetchUser
 } = require("../bots/amusement/helpers/user")
+const {
+    getUserInventory,
+    removeItem
+} = require("../bots/amusement/helpers/userInventory")
 
 
 let listener
@@ -14,6 +19,7 @@ const listen = async (ctx) => {
     }
 
     const app = express()
+    // Public routes go here
     app.get('/id/*', async (req, res) => {
         const date = new Date()
         let cardID = req.url.split('/')[2]
@@ -36,51 +42,74 @@ const listen = async (ctx) => {
         return res.status(200).end()
     })
 
-    app.get('/cards', async (req, res) => {
-        if (req.headers.authorization !== ctx.config.webhooks.auth) {
-            return res.status(403).send('Forbidden\r\n').end()
-        }
-        return res.status(200).send(ctx.cards).end()
-    })
-
-    app.get('/collections', async (req, res) => {
-        if (req.headers.authorization !== ctx.config.webhooks.auth) {
-            return res.status(403).send('Forbidden\r\n').end()
-        }
-        return res.status(200).send(ctx.collections).end()
-    })
-
-    app.get('/items', async (req, res) => {
-        if (req.headers.authorization !== ctx.config.webhooks.auth) {
-            return res.status(403).send('Forbidden\r\n').end()
-        }
-        return res.status(200).send(ctx.items).end()
-    })
-
     app.get('/health', async (req, res) => {
         return res.status(200).end()
     })
 
-    app.get('/preferences', async (req, res) => {
+    //Routes that require auth go below this function
+    app.use(async function (req, res, next) {
         if (req.headers.authorization !== ctx.config.webhooks.auth) {
             return res.status(403).send('Forbidden\r\n').end()
+        }
+        await next()
+    })
+
+    app.get('/cards', async (req, res) => {
+        return res.status(200).send(ctx.cards).end()
+    })
+
+    app.get('/collections', async (req, res) => {
+        return res.status(200).send(ctx.collections).end()
+    })
+
+    app.get('/items', async (req, res) => {
+        return res.status(200).send(ctx.items).end()
+    })
+
+    //Routes requiring a user go below here
+    app.use(async function (req, res, next) {
+        if (!req.query.user) {
+            return res.status(400).send('Bad Request - user').end()
         }
         const user = await fetchUser(req.query.user)
         if (!user) {
             return res.status(404).send('User not found').end()
         }
-        return res.status(200).send(user.preferences).end()
+        req.user = user
+        await next()
+    })
+
+    app.use(express.json())
+
+    app.get('/preferences', async (req, res) => {
+        return res.status(200).send(req.user.preferences).end()
     })
 
     app.patch('/preferences', async (req, res) => {
-        if (req.headers.authorization !== ctx.config.webhooks.auth) {
-            return res.status(403).send('Forbidden\r\n').end()
+        const {preferences} = req.body
+        if (!preferences) {
+            return res.status(400).send('Bad Request - preferences').end()
         }
-        const user = await fetchUser(req.headers.user)
-        if (!user) {
-            return res.status(404).send('User not found').end()
-        }
+        req.user.preferences = _.merge(req.user.preferences, preferences)
+        await req.user.save()
+        return res.status(200).end()
+    })
 
+    app.get('/inventory', async (req, res) => {
+        const inventory = await getUserInventory(req)
+        return res.status(200).send(inventory).end()
+    })
+
+    app.delete('/inventory', async (req, res) => {
+        req.webhook = true
+        if (!req.query.id) {
+            return res.status(400).send('Bad Request - id').end()
+        }
+        let removal = await removeItem(req, req.query)
+        if (!removal) {
+            return res.status(404).send('Item not found').end()
+        }
+        return res.status(200).end()
     })
 
     listener = app.listen(9898, () => console.log(`Listening on port 9898`))
