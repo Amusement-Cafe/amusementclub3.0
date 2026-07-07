@@ -38,5 +38,9 @@ module.exports = {
             this.disabled = off
             return this
         }
+        setURL(url) {
+            this.url = url
+            return this
+        }
     }
 }
