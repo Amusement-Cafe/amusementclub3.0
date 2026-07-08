@@ -13,6 +13,11 @@ const {
     refreshAmusementContext
 } = require("./amusement")
 
+const {
+    restartAPI,
+    refreshAPIContext
+} = require("./api")
+
 let bot
 const createAyano = async () => {
     const config = getConfig()
@@ -28,10 +33,15 @@ const createAyano = async () => {
             console.log('Restarting Amusement')
             await restartAmusement()
         }
+        if (message.restartapi) {
+            console.log('Restarting API')
+            await restartAPI()
+        }
         if (message.refreshCTX) {
             console.log('Refreshing global context for Amusement and Ayano')
             await refreshContext()
             await refreshAmusementContext()
+            await refreshAPIContext()
         }
     })
     // bot.on('exit', () => stopAyano())

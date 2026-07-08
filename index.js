@@ -13,6 +13,11 @@ const {
     stopAmusement,
 } = require("./managers/amusement")
 
+const {
+    startAPI,
+    stopAPI
+} = require("./managers/api")
+
 require('./managers')
 
 let prompt
@@ -26,11 +31,13 @@ prompt.on('line', async line => {
     if (line === "quit" || line === "q") {
         await stopAyano()
         await stopAmusement()
+        await stopAPI()
         return prompt.close()
     }
     if (line === "start") {
         await startAyano()
         await startAmusement()
+        await startAPI()
         return prompt.prompt()
     }
     await handleCLICommand(line, {roles: ['cliAdmin']})
@@ -44,3 +51,4 @@ prompt.on('close', async () => {
 
 startAyano()
 startAmusement()
+startAPI()

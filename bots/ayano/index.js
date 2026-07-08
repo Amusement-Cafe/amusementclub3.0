@@ -13,10 +13,6 @@ const {
 } = require("../../utils/commandGeneration")
 
 const {
-    listen
-} = require("../../utils/webhooks")
-
-const {
     getContext,
     globalContext
 } = require("../../utils/ctxFiller")
@@ -42,14 +38,13 @@ process.on('message', async (msg) => {
 let ready = false
 
 bot.once('ready', async () => {
-    ctx = await getContext('ayano')
+    ctx = await getContext()
     let commands = getGlobalCommands()
     const serverCommands = await bot.application.getGuildCommands(ctx.config.ayano.adminGuildID)
     if (serverCommands.length !== commands.length) {
         console.log('Updating server commands as a mis-match was found')
         await bot.application.bulkEditGuildCommands(ctx.config.ayano.adminGuildID, commands)
     }
-    await listen(ctx)
     ready = true
 })
 
@@ -118,8 +113,14 @@ registerBotCommand(['restart', 'amusement'], async (ctx) => {
     await ctx.interaction.reply({content: 'restarting'})
     process.send({restartac: true})
 })
+registerBotCommand(['restart', 'api'], async (ctx) => {
+    await ctx.interaction.reply({content: 'restarting'})
+    process.send({restartapi: true})
+})
 generateGlobalCommand('restart', 'Top Level Restart')
     .subCommand('ayano', 'Restart Ayano')
     .close()
     .subCommand('amusement', 'Restart Amusement Club')
+    .close()
+    .subCommand('api', `Restart the API`)
     .close()
