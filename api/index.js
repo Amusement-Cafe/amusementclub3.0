@@ -2,16 +2,6 @@ const express = require('express')
 const _ = require('lodash')
 
 const {
-    getUserInventory,
-    removeItem
-} = require("../bots/amusement/helpers/userInventory")
-
-const {
-    getUserCardsLean,
-    addUserCards
-} = require("../bots/amusement/helpers/userCard")
-
-const {
     getContext
 } = require("../utils/ctxFiller")
 
@@ -59,28 +49,6 @@ const setup = async () => {
     app.use(await user)
 
     app.use('/user', userRoutes)
-}
-
-
-
-const listen = async (ctx) => {
-    if (listener) {
-        return
-    }
-
-    const app = express()
-
-
-    app.delete('/user/cards', async (req, res) => {
-        if (!req.body.cards || !_.isArray(req.body.cards)) {
-            return res.status(400).send('Bad Request - cards').end()
-        }
-        console.log(req.body)
-        // await addUserCards(req.user.userID, req.body.cards)
-        return res.status(200).end()
-    })
-
-    listener = app.listen(9898, () => console.log(`Listening on port 9898`))
 }
 
 setup()
