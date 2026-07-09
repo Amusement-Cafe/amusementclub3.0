@@ -348,7 +348,21 @@ DELETE /user/inventory?user=<USER_ID>
 GET /user/cards?user=<USER_ID>
 ```
 
-Returns every card owned by the user.
+### Body (Optional)
+```json
+{
+    "cards": [
+        1,
+        2,
+        3,
+        3
+    ]
+}
+```
+
+Returns every card owned by the user. If a body containing an array of cardIDs is provided, the returned user cards will only match the provided cardIDs if they own them.
+
+Yes, this isn't exactly kosher. No, I don't plan to change it to params because we have 30k+ cards now. ElasticSearch does it and it works for them. If needed I will add a POST request for the same thing to support a backend not allowing bodies on GET
 
 ---
 
@@ -358,6 +372,7 @@ Returns every card owned by the user.
 PUT /user/cards?user=<USER_ID>
 ```
 
+Add cards by card ID, if attempting to add multiple of the same card, send multiple of the same ID in the array
 ### Body
 
 ```json
@@ -365,6 +380,7 @@ PUT /user/cards?user=<USER_ID>
     "cards": [
         1,
         2,
+        3,
         3
     ]
 }
