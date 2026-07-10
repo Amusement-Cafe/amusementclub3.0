@@ -403,25 +403,64 @@ Add cards by card ID, if attempting to add multiple of the same card, send multi
 ```http
 DELETE /user/cards?user=<USER_ID>
 ```
-
+Remove cards by card ID, if attempting to remove multiple of the same card, send multiple of the same ID in the array
 ### Body
 
 ```json
 {
     "cards": [
-        {
-            "...": "..."
-        }
+        1,
+        2,
+        3,
+        3
     ]
 }
 ```
+### Responses
 
-> **Note**
->
-> This endpoint is currently a placeholder. It validates the request body and returns `200 OK`, but card removal has not yet been implemented.
+```
+200 OK
+```
 
+```
+400 Bad Request - cards
+```
 ---
 
+# User Balances
+
+## Add/Subtract Tomatoes
+```http
+POST /user/tomatoes?user=<USER_ID>
+```
+---
+## Add/Subtract Lemons
+```http
+POST /user/lemons?user=<USER_ID>
+```
+---
+## Add/Subtract PromoBal
+```http
+POST /user/promo?user=<USER_ID>
+```
+---
+
+All 3 of the above take the same body. If removing from a balance, make the amount negative. Otherwise, keep it positive to add.
+### Body
+```json
+{
+    "amount": -1000
+}
+```
+### Responses
+```
+200 OK
+```
+
+```
+400 Bad Request - amount
+```
+---
 # Error Codes
 
 | Status | Meaning |
