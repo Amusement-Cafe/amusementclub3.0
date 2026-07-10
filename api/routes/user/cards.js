@@ -23,7 +23,7 @@ router.put('/cards', async (req, res) => {
     return res.sendStatus(200).end()
 })
 
-router.delete('/user/cards', async (req, res) => {
+router.delete('/cards', async (req, res) => {
     if (!req.body.cards || !_.isArray(req.body.cards)) {
         return res.status(400).send('Bad Request - cards').end()
     }
