@@ -26,6 +26,9 @@ const schema = new Schema({
             lastCount: { type: Number, default: 0 },
             lastReset: { type: Date, default: Date.now }
         },
+        web: {
+            count:     { type: Number, default: 0 },
+        },
         donations: {
             kofi: {
                 last: { type: Date },
@@ -49,6 +52,7 @@ const schema = new Schema({
     cloutedCols:        { type: Array, default: [] },
     achievements:       { type: Array, default: [] },
 
+    lastWebLogin:       { type: Date, default: Date.now },
     lastDaily:          { type: Date, default: Date.now },
     lastAnnounce:       { type: Date, default: Date.now },
     lastMsg:            { type: String },
