@@ -6,15 +6,60 @@ const main = {
         "Welcome to the Amusement Club help menu!\n" +
         "Below you should see a selection box with the broad help categories available. " +
         "Once you select a category, you will either be presented with a sub help menu with another selection box, or a main help embed based on the category you selected.\n" +
-        "The current selection categories are:\n" +
-        ">>> By default, images are displayed to show examples of things being talked about in the help menu. If you would rather not have the images, you can disable them in /preferences\n" +
-        "-# If something is missing from the help menu, or something needs expanded on please report it in our discord server!",
+        "> By default, images are displayed to show examples of things being talked about in the help menu. If you would rather not have the images, you can disable them in /preferences\n" +
+        "-# If something is missing from the help menu, or something needs expanded on please report it in our discord server!\n" +
+        "The current selection categories are:\n",
+    fields: [
+        {
+            name: 'Rules',
+            value: 'Selecting this category will display the bot rules. By using the bot you agree to abide by these rules.',
+            inline: false
+        },
+        {
+            name: 'Cards',
+            value: 'Providing extra details on many commands related to cards.',
+            inline: true
+        },
+        {
+            name: 'Collections',
+            value: 'Providing extra details on collections.',
+            inline: true
+        },
+        {
+            name: 'Guilds',
+            value: 'Providing extra details on guilds.',
+            inline: true
+        },
+        {
+            name: 'Transactions',
+            value: 'Providing extra details on transactions such as auctions, sales, and forging.',
+            inline: true
+        },
+        {
+            name: 'User',
+            value: 'Providing extra details on user commands such as daily, quests, inventory, and preferences.',
+            inline: true
+        },
+        {
+            name: 'Other',
+            value: 'Selecting this category will display the "other" help menu. A collection of commands or features that don\'t directly relate to a category above',
+            inline: true
+        },
+        {
+            name: 'Links',
+            value: `[Source Code](https://github.com/Amusement-Cafe/amusementclub3.0) | [Support Development & Hosting](https://ko-fi.com/amusement)`,
+            inline: false
+        }
+    ],
+    footer: {
+        text: `Amusement Club 3.0 | developed by @demonic.moo @noxc`
+    },
     color: ctx.colors.green
 }
 
 const subCards = {
     title: "Help - Cards",
-    description: "Cards help",
+    description: "Cards are the baseline of the game and everything revolves around them.",
 }
 
 const subCollections = {
