@@ -59,10 +59,12 @@ const claimNormal = async (ctx) => {
     let claimed = []
     let collectionPool = [...ctx.collections.filter(x => x.inClaimPool && (!x.rarity || x.rarity > 0))]
     let lockCol, legClaim = false
-    if (ctx.guild.lockCol && !ctx.args.any) {
-        lockCol = ctx.collections.filter(x => x.collectionID === ctx.guild.lockCol)
+    let lock = ctx.guild.lockChannels.find(x => x.channelID === ctx.interaction.channel.id)?.lockCol ?? ctx.guild.lockCol
+    if (lock && !ctx.args.any) {
+        lockCol = ctx.collections.filter(x => x.collectionID === lock)
         lockCol = lockCol.length > 0? lockCol[0]: false
     }
+
     for (let i = 0; i < claims; i++) {
         let claimRNG = Math.random()
         let legRNG = Math.random() < ctx.config.amusement.legendaryDrop

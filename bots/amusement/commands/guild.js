@@ -33,8 +33,10 @@ generateGlobalCommand('guild', 'Top Level Guild')
     .subCommand('lock', 'Lock the current guild to a specific collection')
     .string('collection', 'The collection you want to lock the server to')
     .required()
+    .boolean('channel', 'Whether or not to only lock the current channel full cost and maintenance per channel. Default false')
     .close()
     .subCommand('unlock', 'Unlock the guild and allow all in claim pool')
+    .boolean('channel', 'Whether or not to only unlock only the current channel. Default is false')
     .close()
     .subCommand('donate', 'Donate tomatoes to the guild balance')
     .integer('amount', 'The amount of tomatoes you want to donate')
@@ -186,15 +188,29 @@ const setGuildLock = async (ctx, unlock = false) => {
     }
     let lockCost = 1000000000
 
-    if (ctx.guild.tomatoes < lockCost) {
-        return ctx.send(ctx, `The guild doesn't have enough tomatoes to lock to a collection! Guild lock takes ${ctx.boldName(ctx.fmtNum(lockCost))}${ctx.symbols.tomato}, the guild only has ${ctx.boldName(ctx.fmtNum(ctx.guild.tomatoes))}${ctx.symbols.tomato}`, 'red')
-    }
     if (unlock) {
+        if (ctx.args.channel) {
+            if (!ctx.guild.lockChannels.some(x => x.channelID === ctx.interaction.channelID)) {
+                return ctx.send(ctx, `This channel is not currently locked to a collection!`, 'red')
+            }
+            ctx.guild.lockChannels = ctx.guild.lockChannels.filter(x => x.channelID !== ctx.interaction.channelID)
+            await ctx.guild.save()
+            return ctx.send(ctx, `Successfully unlocked the current channel!`)
+        }
+        if (!ctx.guild.lockCol) {
+            return ctx.send(ctx, `The guild is not currently locked to a collection!`, 'red')
+        }
+
         let lastLock = ctx.guild.lockCol
         ctx.guild.lockCol = ''
         await ctx.guild.save()
         return ctx.send(ctx, `Successfully unlocked the guild from ${lastLock}!`)
     }
+
+    if (ctx.guild.tomatoes < lockCost) {
+        return ctx.send(ctx, `The guild doesn't have enough tomatoes to lock to a collection! Guild lock takes ${ctx.boldName(ctx.fmtNum(lockCost))}${ctx.symbols.tomato}, the guild only has ${ctx.boldName(ctx.fmtNum(ctx.guild.tomatoes))}${ctx.symbols.tomato}`, 'red')
+    }
+
     if (!ctx.args.cols[0]) {
         return ctx.send(ctx, `There was an error finding a collection for \`${ctx.args.colQuery}\`. Please try your search again!`, 'red')
     }
@@ -203,6 +219,12 @@ const setGuildLock = async (ctx, unlock = false) => {
 
     if ((col.promo || !col.inClaimPool || col.rarity) && !ctx.user.roles.some(x=> x === 'admin')) {
         return ctx.send(ctx, `You cannot lock guilds to limited collections!`, 'red')
+    }
+
+    if (ctx.args.channel) {
+        ctx.guild.lockChannels.push({channelID: ctx.interaction.channelID, lockCol: col.collectionID})
+        await ctx.guild.save()
+        return ctx.send(ctx, `Successfully locked the current channel to \`${col.name}\`!`)
     }
 
     ctx.guild.lockCol = col.collectionID

@@ -18,6 +18,13 @@ const schema = new Schema({
     nextCheck:          { type: Date, default: Date.now },
     lastLock:           { type: Date, default: new Date(0) },
 
+    lockChannels:       [
+        {
+            channelID: { type: String },
+            lockCol:   { type: String },
+        }
+    ],
+
     adminLock:          { type: Boolean, default: false },
     lockActive:         { type: Boolean, default: false },
     processing:         { type: Boolean, default: false },

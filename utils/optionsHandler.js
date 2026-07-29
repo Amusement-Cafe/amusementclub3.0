@@ -90,6 +90,7 @@ const getCommandOptions = async (ctx) => {
                     args.colQuery = value;
                     break;
                 case 'count': args.count = value; break;
+                case 'channel': args.channel = value; break;
                 case 'drop_rate': args.dropRate = value; break;
                 case 'end_time': args.end = value; break;
                 case 'id': args.id = value; break;
