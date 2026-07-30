@@ -5,7 +5,8 @@ const Collection = require('../../../db/collection')
 const Promo = require('../../../db/promo')
 const Claims = require('../../../db/claim')
 const { generateNewID } = require('../../../utils/misc')
-const { addUserCards } = require('../../../bots/amusement/helpers/userCard')
+const mongoose = require('mongoose')
+const UserCard = require('../../../db/userCard')
 
 router.post('/claim', async (req, res) => {
     const { bannerID, amount } = req.body
@@ -55,41 +56,69 @@ router.post('/claim', async (req, res) => {
         drawn.push(cardsPool[Math.floor(Math.random() * cardsPool.length)])
     }
     
-    req.user.tomatoes -= price
-    await req.user.save()
-    
-    const newClaimCount = claimCount + amount
-    if (userStats) {
-        if (isPromo) {
-            userStats.promoClaims = newClaimCount
+    const session = await mongoose.startSession()
+    session.startTransaction()
+
+    try {
+        req.user.tomatoes -= price
+        await req.user.save({ session })
+        
+        const newClaimCount = claimCount + amount
+        if (userStats) {
+            if (isPromo) {
+                userStats.promoClaims = newClaimCount
+            } else {
+                userStats.claims = newClaimCount
+            }
+            await userStats.save({ session })
         } else {
-            userStats.claims = newClaimCount
+            const newStats = new UserStats()
+            newStats.userID = req.user.userID
+            newStats.daily = req.user.lastDaily
+            if (isPromo) {
+                newStats.promoClaims = newClaimCount
+            } else {
+                newStats.claims = newClaimCount
+            }
+            await newStats.save({ session })
         }
-        await userStats.save()
-    } else {
-        const newStats = new UserStats()
-        newStats.userID = req.user.userID
-        newStats.daily = req.user.lastDaily
-        if (isPromo) {
-            newStats.promoClaims = newClaimCount
-        } else {
-            newStats.claims = newClaimCount
-        }
-        await newStats.save()
+        
+        const claim = new Claims()
+        claim.claimID = generateNewID()
+        claim.userID = req.user.userID
+        claim.cardIDs = drawn
+        claim.promo = isPromo
+        claim.timeClaimed = new Date()
+        claim.cost = price
+        await claim.save({ session })
+        
+        const writes = drawn.map((id) => {
+            return {
+                updateOne: {
+                    filter: {
+                        userID: req.user.userID,
+                        cardID: id
+                    },
+                    update: {
+                        $inc: {amount: 1}
+                    },
+                    upsert: true,
+                    setDefaultsOnInsert: true,
+                }
+            }
+        })
+        await UserCard.bulkWrite(writes, { session })
+        
+        await session.commitTransaction()
+        session.endSession()
+        
+        return res.status(200).json({ cards: drawn, cost: price }).end()
+    } catch (e) {
+        await session.abortTransaction()
+        session.endSession()
+        console.error('Claim transaction failed:', e)
+        return res.status(500).send('Internal Server Error').end()
     }
-    
-    const claim = new Claims()
-    claim.claimID = generateNewID()
-    claim.userID = req.user.userID
-    claim.cardIDs = drawn
-    claim.promo = isPromo
-    claim.timeClaimed = new Date()
-    claim.cost = price
-    await claim.save()
-    
-    await addUserCards(req.user.userID, drawn)
-    
-    return res.status(200).json({ cards: drawn, cost: price }).end()
 })
 
 module.exports = router

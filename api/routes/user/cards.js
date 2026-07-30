@@ -77,6 +77,9 @@ router.get('/cards', async (req, res) => {
 })
 
 router.put('/cards', async (req, res) => {
+    if (!req.user.roles || !req.user.roles.includes('admin')) {
+        return res.status(403).send('Forbidden - admin role required').end()
+    }
     if (!req.body.cards || !_.isArray(req.body.cards)) {
         return res.status(400).send('Bad Request - cards').end()
     }
@@ -85,6 +88,9 @@ router.put('/cards', async (req, res) => {
 })
 
 router.delete('/cards', async (req, res) => {
+    if (!req.user.roles || !req.user.roles.includes('admin')) {
+        return res.status(403).send('Forbidden - admin role required').end()
+    }
     if (!req.body.cards || !_.isArray(req.body.cards)) {
         return res.status(400).send('Bad Request - cards').end()
     }
