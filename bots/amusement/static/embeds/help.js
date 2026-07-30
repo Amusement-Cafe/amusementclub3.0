@@ -59,37 +59,37 @@ const main = {
 
 const subCards = {
     title: "Help - Cards",
-    description: "Cards are the baseline of the game and everything revolves around them.",
+    description: "Everything related to interacting with your cards.",
 }
 
 const subCollections = {
     title: "Help - Collections",
-    description: "Collections help",
+    description: "Thematic collections of cards.",
 }
 
 const subGuilds = {
     title: "Help - Guilds",
-    description: "Guilds help",
+    description: "Discord servers act as guilds with their own land plots.",
 }
 
 const subTransactions = {
     title: "Help - Transactions",
-    description: "Transactions help",
+    description: "Learn how to trade, sell, auction, and forge cards.",
 }
 
 const subUser = {
     title: "Help - User",
-    description: "User help",
+    description: "Information about your progression, balance, inventory, and profile settings.",
 }
 
 const subOther = {
     title: "Help - Other",
-    description: "Other help",
+    description: "Other game concepts like the store, items, effects, and heroes.",
 }
 
 const subRules = {
     title: "Bot Rules",
-    description: "Rules go here",
+    description: "1. No alternative accounts for farming.\n2. No exploiting bugs or glitches; report them immediately.\n3. Respect the Terms of Service.\n4. No macroing or auto-typing tools for commands.\nFailure to abide by these rules may result in an embargo or permanent ban.",
 }
 
 module.exports = {
@@ -106,136 +106,144 @@ module.exports = {
     helpMenus: {
         subCards: {
             claims: {
-                title: 'About claiming cards',
-                description: 'Tomatoes'
+                title: 'Claiming Cards',
+                description: 'Use `/claim` to draw 1–20 random cards. Each claim costs tomatoes (🍅), with the price scaling up based on how many claims you have made today (resets with `/daily`). You can also specify options like `count`, `any`, and `promo`.'
             },
             eval: {
-                title: 'a',
-                description: 'a'
+                title: 'Card Valuation (Eval)',
+                description: 'The `/eval` command calculates a card\'s dynamic market value in 🍅. The value fluctuates based on factors like age decay, hoarding ratio, supply dilution, auction history, and wishlist demand.'
             },
             favlock: {
-                title: 'a',
-                description: 'a'
+                title: 'Favorites & Locks',
+                description: '**Favorites:** Mark cards as favorites with `/fav`. Favorited cards cannot be sold and are hidden from `/diff` unless the `-fav` query is used.\n**Locks:** Use `/lock` on cards to completely prevent forging, selling, and trading.'
             },
             query: {
-                title: 'a',
-                description: 'a'
+                title: 'Card Queries (Summon & Search)',
+                description: 'Use `/summon` to display a random owned card matching your query. You can filter by collection, rarity, name, and other properties.'
             },
             rating: {
-                title: 'a',
-                description: 'a'
+                title: 'Card Ratings',
+                description: 'Community rating system. You can rate cards out of 10. The overall average rating is displayed on the card info.'
             },
             tags: {
-                title: 'a',
-                description: 'a'
+                title: 'Tagging Cards',
+                description: 'Use `/tag` to create and apply custom descriptive tags to cards. Tags can be upvoted or downvoted and allow you to filter cards by specific content descriptors. Creating a tag that exists, will instead upvote it.'
             },
             info: {
-                title: 'a',
-                description: 'a'
+                title: 'Card Information',
+                description: 'Use `/info` to display detailed stats about a card. This includes its rarity, collection, current market value (eval), rating, ownership count, and metadata like its artist or source.'
             },
         },
         subCollections: {
             clout: {
-                title: 'a',
-                description: 'a'
+                title: 'Collection Clout & Completion',
+                description: 'Browse collections using `/collections`.\n**Completion:** Own at least one copy of every card in a collection.\n**Clouted:** Awarded if you reset the collection after completing it.'
             },
         },
         subGuilds: {
             buildings: [
                 {
-                    title: 'a',
-                    description: 'a'
+                    title: 'Land Plots & Buildings',
+                    description: 'Use `/plot list` and `/plot buy` to purchase land plots in your guild. You can construct buildings that passively generate lemons (🍋) over time. Buildings can be upgraded with blueprints or demolished.'
+                },
+                {
+                    title: 'Lemons 🍋',
+                    description: 'Lemons are the primary guild currency. Collect them with `/plot collect`. They are used to buy blueprints and upgrade guild buildings.'
                 }
             ],
             ranks: {
-                title: 'a',
-                description: 'a'
+                title: 'Guild Treasury & Roles',
+                description: 'Use `/guild` to view the guild\'s treasury (🍅 and 🍋). Server admins can assign Managers to administer guild settings.'
             },
             lock: {
-                title: 'a',
-                description: 'a'
+                title: 'Guild Taxes & Locks',
+                description: 'Managers can set a **Guild Tax** (adds a percentage to claim costs that goes to the treasury) and **Collection Lock** (restricts claims in the server to a specific collection).'
             },
         },
         subTransactions: {
             sales: {
-                title: 'a',
-                description: 'a'
+                title: 'Selling Cards',
+                description: 'Use `/sell one` or `/sell many` to exchange cards for 🍅. You can sell cards directly to other players, or to the bot for their current Eval price.'
             },
             forge: {
-                title: 'a',
-                description: 'a'
+                title: 'Forging',
+                description: 'Use `/forge` to combine two cards of the SAME rarity to produce a new random card of equal rarity. Forging costs 🍅.'
             },
             auction: [
                 {
-                    title: 'a',
-                    description: 'a'
+                    title: 'Auctions',
+                    description: 'Use `/auction sell` to list a card on the global market for up to 6 hours. Listing a card requires a fee equal to 10% of your starting price.'
+                },
+                {
+                    title: 'Bidding (Vickrey)',
+                    description: 'Auctions are Vickrey-style (blind). You place hidden bids using 🍅, and when the auction ends, the highest bidder wins but only pays the amount of the second-highest bid.'
                 }
             ],
         },
         subUser: {
             daily: [
                 {
-                    title: 'a',
-                    description: 'a'
+                    title: 'Daily Rewards',
+                    description: 'Use `/daily` every 20 hours to claim 750🍅, receive 2 new quests, and reset your daily claim cost multiplier back to 50🍅. Consecutive claims build a streak for better rewards, but missing a day resets it.'
                 }
             ],
             quests: [
                 {
-                    title: 'a',
-                    description: 'a'
+                    title: 'Quests & Achievements',
+                    description: 'Use `/quests` to view active objectives. Quest difficulty depends on your level. **Note:** Uncompleted quests are overwritten when you claim your next `/daily`.\nUse `/achievements` to view unlocked milestones, which can be used as profile titles.'
                 }
             ],
             inventory: [
                 {
-                    title: 'a',
-                    description: 'a'
+                    title: 'Inventory',
+                    description: 'Use `/inventory` to check your stored items such as Tickets (redeemable for cards), Recipes, Blueprints, and gameplay Bonuses.'
                 }
             ],
             diff: {
-                title: 'a',
-                description: 'a'
+                title: 'Diff & Miss',
+                description: 'Use `/diff` to compare your collection with another user to find missing cards for trading. Use `/miss` to see which cards you are missing from specific collections.'
             },
             has: {
-                title: 'a',
-                description: 'a'
+                title: 'Check Ownership',
+                description: 'Use `/has` to quickly check if a specific user owns a certain card.'
             },
             currencies: {
-                title: 'a',
-                description: 'a'
+                title: 'Currencies & Balance',
+                description: 'Use `/balance` to check your current wealth:\n🍅 **Tomatoes**: Primary currency for claims, forging, store, and auctions.\n🧪 **Vials**: Obtained from liquefying cards, used for /draw.\n🍋 **Lemons**: Guild currency for plots.\n✨ **Promo**: Event-only currency.'
             },
             plots: {
-                title: 'a',
-                description: 'a'
+                title: 'Plots',
+                description: 'See the Guilds > Buildings category for more information on managing your land plots.'
             },
             preferences: {
-                title: 'a',
-                description: 'a'
+                title: 'User Preferences',
+                description: 'Use `/preferences` to manage notification settings, set your profile color and bio, and toggle display options like showing images in help menus.'
             },
             profile: {
-                title: 'a',
-                description: 'a'
+                title: 'Profile & Stats',
+                description: 'Use `/profile` to show off your level, bio, stats, and favorite cards.\nUse `/stats` to view detailed metrics broken down by daily, weekly, monthly, and all-time.'
             },
             wish: {
-                title: 'a',
-                description: 'a'
+                title: 'Wishlist',
+                description: 'Add cards to your wishlist. A higher global wishlist count for a card increases its market demand and Eval price.'
             },
         },
         subOther: {
             store: [
                 {
-                    title: 'a',
-                    description: 'a'
+                    title: 'The Store',
+                    description: 'Use `/store` to interactively purchase tickets, bonuses, recipes, and building blueprints (unlocked at level 20) using 🍅.'
                 }
             ],
             items: [
                 {
-                    title: 'a',
-                    description: 'a'
+                    title: 'Tickets & Recipes',
+                    description: 'Tickets can be redeemed for cards (random or targeted by rarity). Recipes are crafting ingredients for special operations.'
                 }
             ],
             events: {
-                title: 'a',
-                description: 'a'
+                title: 'Effects & Heroes',
+                description: '**Effects:** Use `/effect` to list and apply time-limited buffs (recipes). Passive effects attach to your Hero.\n**Heroes:** Community-submitted characters you can follow. You can submit your own Hero at level 10. Set your active Hero in `/profile`.'
             },
         }
     }
