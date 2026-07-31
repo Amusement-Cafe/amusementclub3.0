@@ -8,6 +8,7 @@ const {
 const publicRoutes = require('./routes/public')
 const globalRoutes = require('./routes/global')
 const userRoutes = require('./routes/user')
+const cardRoutes = require('./routes/card')
 
 const auth = require('./middleware/auth')
 const user = require('./middleware/user')
@@ -45,6 +46,7 @@ const setup = async () => {
     app.use(await auth)
 
     app.use('/global', globalRoutes)
+    app.use('/card', cardRoutes)
 
     app.use(await user)
 
