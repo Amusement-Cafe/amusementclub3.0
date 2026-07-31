@@ -150,6 +150,38 @@ Returns:
 ```
 
 ---
+# Card Endpoints
+All card endpoints require a query parameter
+```http
+?cardID=CARDID
+```
+
+Example:
+```
+GET /card/eval?cardID=123456
+```
+
+If omitted:
+```
+400 Bad Request - card ID
+```
+
+If the card doesn't exist:
+```
+404 - Card Not Found
+```
+---
+## Get Eval
+```
+GET /card/eval?cardID=<CARD_ID>
+```
+
+Returns:
+```
+"100"
+```
+
+---
 
 # User Endpoints
 
