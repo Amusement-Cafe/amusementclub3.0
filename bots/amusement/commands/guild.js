@@ -38,10 +38,10 @@ generateGlobalCommand('guild', 'Top Level Guild')
     .subCommand('unlock', 'Unlock the guild and allow all in claim pool')
     .boolean('channel', 'Whether or not to only unlock only the current channel. Default is false')
     .close()
-    .subCommand('donate', 'Donate tomatoes to the guild balance')
-    .integer('amount', 'The amount of tomatoes you want to donate')
-    .minValue(1)
-    .close()
+    // .subCommand('donate', 'Donate tomatoes to the guild balance')
+    // .integer('amount', 'The amount of tomatoes you want to donate')
+    // .minValue(1)
+    // .close()
     .subCommand('convert', 'Convert guild lemons to tomatoes')
     .integer('amount', 'The amount of lemons you want to convert')
     .required()
@@ -186,7 +186,7 @@ const setGuildLock = async (ctx, unlock = false) => {
     if (authCheck(ctx)) {
         return ctx.send(ctx, `Only guild managers can set guild lock! The guild owner or other managers can add managers with the \`/guild managers add\` command.`, 'red')
     }
-    let lockCost = 1000000000
+    let lockCost = 0
 
     if (unlock) {
         if (ctx.args.channel) {
