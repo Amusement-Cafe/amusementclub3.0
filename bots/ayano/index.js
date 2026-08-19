@@ -17,10 +17,15 @@ const {
     globalContext
 } = require("../../utils/ctxFiller")
 
+const {
+    updateMemberCache,
+    updateServerBoosters
+} = require('./helpers/serverBoosts')
+
 require('./commands')
 require('../../utils/cfmHandler')
 
-const bot = new Oceanic.Client({ auth: 'Bot ' + process.env.token, gateway: { intents: ["MESSAGE_CONTENT", "GUILD_MESSAGES", "DIRECT_MESSAGES"]}})
+const bot = new Oceanic.Client({ auth: 'Bot ' + process.env.token, gateway: { intents: ["MESSAGE_CONTENT", "GUILD_MESSAGES", "DIRECT_MESSAGES", "GUILD_MEMBERS"]}, disableCache: false})
 
 let ctx = {}
 
@@ -45,6 +50,7 @@ bot.once('ready', async () => {
         console.log('Updating server commands as a mis-match was found')
         await bot.application.bulkEditGuildCommands(ctx.config.ayano.adminGuildID, commands)
     }
+    await updateMemberCache(bot, ctx)
     ready = true
 })
 
@@ -100,6 +106,10 @@ bot.on('interactionCreate', async (interaction) => {
             return false
     }
 
+})
+
+bot.on('guildMemberUpdate', async (member) => {
+    await updateServerBoosters(ctx, member)
 })
 
 bot.on('error', (err) => console.log(err))

@@ -30,15 +30,29 @@ const schema = new Schema({
             count:     { type: Number, default: 0 },
         },
         donations: {
+            total: { type: Number, default: 0 },
             kofi: {
                 last: { type: Date },
-                streak: { type: Number, default: 0 }
+                streak: { type: Number, default: 0 },
+                isActive: { type: Boolean, default: false },
+                reward: { type: Number, default: 0 },
+                lastReward: { type: Date, default: new Date(0) }
             },
             patreon: {
                 last: { type: Date },
-                streak: { type: Number, default: 0 }
+                streak: { type: Number, default: 0 },
+                isActive: { type: Boolean, default: false },
+                reward: { type: Number, default: 0 },
+                lastReward: { type: Date, default: new Date(0) }
             }
         }
+    },
+
+    boost: {
+        isServerBooster: { type: Boolean, default: false },
+        boostStart:      { type: Date, default: new Date(0) },
+        lastReward:      { type: Date, default: new Date(0) },
+        boostReward:     { type: Number, default: 0 },
     },
 
     ban: {

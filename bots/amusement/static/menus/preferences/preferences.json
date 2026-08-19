@@ -19,6 +19,12 @@
       "description": "Display All Display Preferences",
       "label": "Display Preferences",
       "value": "display"
+    },
+    {
+      "description": "Display Reward Preferences",
+      "label": "Reward Preferences",
+      "value": "reward",
+      "premium": true
     }
   ],
   "interact": [
@@ -164,6 +170,25 @@
       "description": "",
       "label": "Set your table displays to round borders",
       "value": "display_tables_round"
+    }
+  ],
+  "reward": [
+    {
+      "description": "",
+      "label": "Boosting Reward",
+      "value": "reward_boost"
+    },
+    {
+      "description": "",
+      "label": "Kofi reward (recurring support only)",
+      "value": "reward_kofi",
+      "premium": true
+    },
+    {
+      "description": "",
+      "label": "Patreon reward (recurring support only)",
+      "value": "reward_patreon",
+      "premium": true
     }
   ]
 }

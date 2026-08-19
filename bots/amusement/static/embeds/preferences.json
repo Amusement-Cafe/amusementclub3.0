@@ -106,5 +106,21 @@
   "display": {
     "title": "Display Settings",
     "description": "Use the select menu below to navigate to a Display option"
+  },
+  "reward": {
+    "title": "Reward Settings",
+    "description": "Use the select menu below to navigate to a reward option."
+  },
+  "boost": {
+    "title": "Server Booster Reward",
+    "description": "Use the button below to enter the card query for the 4 star card* you would like to receive monthly for being a server booster. Automatically granted, you can change this at any time. \n-# *Special Collection Only"
+  },
+  "kofi": {
+    "title": "Kofi Supporter Reward",
+    "description": "Use the button below to enter the card query for the 4 star card* you would like to receive monthly for being a kofi supporter. Automatically granted, you can change this at any time. \n-# *Limited Craft collection not included"
+  },
+  "patreon": {
+    "title": "Patreon Reward",
+    "description": "Use the button below to enter the card query for the 4 star card* you would like to receive monthly for being a patreon member. Automatically granted, you can change this at any time. \n-# *Limited Craft collection not included"
   }
 }

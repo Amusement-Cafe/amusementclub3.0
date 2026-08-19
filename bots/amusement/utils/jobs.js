@@ -8,6 +8,10 @@ const {
     updateGuildInvites
 } = require("../helpers/guild")
 
+const {
+    checkServerBoosters
+} = require("../../ayano/helpers/serverBoosts")
+
 let tickArray = []
 
 const evalQueue = (ctx) => {
@@ -21,6 +25,7 @@ const auctionQueue = (ctx) => {
 
 const guildQueue = (ctx) => {
     updateGuildInvites(ctx)
+    checkServerBoosters(ctx)
 }
 
 const startTicks = (ctx) => {
