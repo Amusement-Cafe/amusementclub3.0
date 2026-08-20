@@ -17,12 +17,9 @@ router.post('/store/purchase', async (req, res) => {
         return res.status(402).send('Insufficient tomatoes').end()
     }
     
-    const session = await mongoose.startSession()
-    session.startTransaction()
-    
     try {
         req.user.tomatoes -= cost
-        await req.user.save({ session })
+        await req.user.save()
         
         const inv = new UserInventory()
         inv.id = generateNewID()
@@ -30,7 +27,7 @@ router.post('/store/purchase', async (req, res) => {
         inv.itemID = itemID
         inv.type = item.type
         inv.acquired = new Date()
-        await inv.save({ session })
+        await inv.save()
         
         const updateObj = { store: 1 }
         updateObj[`store${item.type.charAt(0).toUpperCase() + item.type.slice(1)}`] = 1
@@ -38,17 +35,12 @@ router.post('/store/purchase', async (req, res) => {
         await UserStats.updateOne(
             { userID: req.user.userID },
             { $inc: updateObj },
-            { upsert: true, session }
+            { upsert: true }
         )
-        
-        await session.commitTransaction()
-        session.endSession()
         
         return res.sendStatus(200).end()
     } catch (e) {
-        await session.abortTransaction()
-        session.endSession()
-        console.error('Store transaction failed:', e)
+        console.error('Store failed:', e)
         return res.status(500).send('Internal Server Error').end()
     }
 })

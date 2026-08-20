@@ -56,12 +56,9 @@ router.post('/claim', async (req, res) => {
         drawn.push(cardsPool[Math.floor(Math.random() * cardsPool.length)])
     }
     
-    const session = await mongoose.startSession()
-    session.startTransaction()
-
     try {
         req.user.tomatoes -= price
-        await req.user.save({ session })
+        await req.user.save()
         
         const newClaimCount = claimCount + amount
         if (userStats) {
@@ -70,7 +67,7 @@ router.post('/claim', async (req, res) => {
             } else {
                 userStats.claims = newClaimCount
             }
-            await userStats.save({ session })
+            await userStats.save()
         } else {
             const newStats = new UserStats()
             newStats.userID = req.user.userID
@@ -80,7 +77,7 @@ router.post('/claim', async (req, res) => {
             } else {
                 newStats.claims = newClaimCount
             }
-            await newStats.save({ session })
+            await newStats.save()
         }
         
         const claim = new Claims()
@@ -90,7 +87,7 @@ router.post('/claim', async (req, res) => {
         claim.promo = isPromo
         claim.timeClaimed = new Date()
         claim.cost = price
-        await claim.save({ session })
+        await claim.save()
         
         const writes = drawn.map((id) => {
             return {
@@ -107,16 +104,11 @@ router.post('/claim', async (req, res) => {
                 }
             }
         })
-        await UserCard.bulkWrite(writes, { session })
-        
-        await session.commitTransaction()
-        session.endSession()
+        await UserCard.bulkWrite(writes)
         
         return res.status(200).json({ cards: drawn, cost: price }).end()
     } catch (e) {
-        await session.abortTransaction()
-        session.endSession()
-        console.error('Claim transaction failed:', e)
+        console.error('Claim failed:', e)
         return res.status(500).send('Internal Server Error').end()
     }
 })

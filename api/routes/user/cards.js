@@ -15,9 +15,9 @@ router.patch('/cards/fav', async (req, res) => {
     const userCard = await UserCards.findOne({ userID: req.user.userID, cardID: Number(cardID) })
     if (!userCard) return res.status(404).send('Card not found in collection').end()
     
-    userCard.fav = !userCard.fav
-    await userCard.save()
-    return res.status(200).json({ fav: userCard.fav }).end()
+    const newFav = !userCard.fav
+    await UserCards.updateOne({ userID: req.user.userID, cardID: Number(cardID) }, { $set: { fav: newFav } })
+    return res.status(200).json({ fav: newFav }).end()
 })
 
 router.patch('/cards/edit', async (req, res) => {
