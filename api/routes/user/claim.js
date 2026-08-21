@@ -106,7 +106,7 @@ router.post('/claim', async (req, res) => {
         })
         await UserCard.bulkWrite(writes)
         
-        return res.status(200).json({ cards: drawn, cost: price }).end()
+        return res.status(200).json({ cards: drawn, cost: price, claimID: claim.claimID }).end()
     } catch (e) {
         console.error('Claim failed:', e)
         return res.status(500).send('Internal Server Error').end()
