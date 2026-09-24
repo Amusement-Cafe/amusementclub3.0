@@ -22,7 +22,7 @@ process.on('message', async (msg) => {
         while (!app) {
             await sleep(100)
         }
-        listener = app.listen(9898, () => console.log(`Listening on port 9898`))
+        listener = app.listen(ctx.config.webhooks.port, () => console.log(`Listening on port ${ctx.config.webhooks.port}`))
     }
     if (msg.quit) {
         listener.close()
