@@ -33,7 +33,7 @@ const {
 const main = async () => {
     const start = new Date()
     console.log('Connecting Mongoose')
-    const mcn = await mongoose.connect('mongodb://192.168.1.247:27017/amuse3')
+    const mcn = await mongoose.connect('mongodb://192.168.1.247:27017/amu3')
     console.log('Mongoose Connected')
     const dbc = await MongoClient.connect('mongodb://192.168.1.247:27017/')
     console.log('MongoDB Connected')
@@ -362,7 +362,7 @@ const transferPlots = async (db) => {
     for (let p = await oldPlots.next(); p != null; p = await oldPlots.next()) {
         console.log(`Processing Plot ${count}`)
         const plot = await new Plots()
-        plot.guildID = p.guild_id
+        plot.guildID = p.guild_id === '669895631757639682'? '1553808100144717966': p.guild_id
         plot.userID = p.user_id
         plot.nextCheck = p.next_check
         if (p.building) {
