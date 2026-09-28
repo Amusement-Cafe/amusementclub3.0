@@ -44,6 +44,7 @@ let ready = false
 
 bot.once('ready', async () => {
     ctx = await getContext()
+    ctx.bot = bot
     let commands = getGlobalCommands()
     const serverCommands = await bot.application.getGuildCommands(ctx.config.ayano.adminGuildID)
     if (serverCommands.length !== commands.length) {
