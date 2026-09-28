@@ -45,7 +45,7 @@ const ticketPage = async (ctx) => {
     let filteredItem = invItems[page]
     let sameType = inv.filter(x => x.collectionID && x.collectionID === filteredItem.collectionID)
 
-    let pages = invItems.map(x => x.collectionID || 'random')
+    let pages = invItems.map(x => x.collectionID || '')
     let index = pages.findIndex(item => filteredItem.collectionID === item)
     if (index !== -1) {
         const [removedItem] = pages.splice(index, 1)
@@ -59,13 +59,13 @@ const ticketPage = async (ctx) => {
     }
     pages = pages.map(x => {
         let itemEmbed = embed
-        let count = inv.filter(y => x !== 'random'? y.collectionID === x: !y.collectionID).length
+        let count = inv.filter(y => !x? y.collectionID === x: !y.collectionID).length
         let idSplit = itemID.substring(6).split('x')
         itemEmbed.title = ctx.items[itemID].displayName
         itemEmbed.description = itemEmbed.description.replace('{itemID}', itemID)
         itemEmbed.description = itemEmbed.description.replace('{count}', ctx.fmtNum(Number(idSplit[0])))
         itemEmbed.description = itemEmbed.description.replace('{rarity}', `${new Array(Number(idSplit[1].substring(0, 1)) + 1).join('★')}`)
-        itemEmbed.description = itemEmbed.description.replace('{collectionText}', x === 'random'? 'randomly chosen collections': `\`${x}\``)
+        itemEmbed.description = itemEmbed.description.replace('{collectionText}', !x ? 'randomly chosen collections': `\`${x}\``)
         itemEmbed.description = itemEmbed.description.replace('{number}', ctx.fmtNum(count))
         return itemEmbed
     })
@@ -137,7 +137,7 @@ const ticketSelect = async (ctx, inv) => {
         itemEmbed.description = itemEmbed.description.replace('{itemID}', x.itemID)
         itemEmbed.description = itemEmbed.description.replace('{count}', ctx.fmtNum(Number(idSplit[0])))
         itemEmbed.description = itemEmbed.description.replace('{rarity}', `${new Array(Number(idSplit[1].substring(0, 1)) + 1).join('★')}`)
-        itemEmbed.description = itemEmbed.description.replace('{collectionText}', !x.collectionID || x.collectionID === 'random'? 'randomly chosen collections': `\`${x.collectionID}\``)
+        itemEmbed.description = itemEmbed.description.replace('{collectionText}', !x.collectionID? 'randomly chosen collections': `\`${x.collectionID}\``)
         itemEmbed.description = itemEmbed.description.replace('{number}', ctx.fmtNum(count))
         return itemEmbed
     })
@@ -171,7 +171,7 @@ const ticketRedemption = async (ctx) => {
     }
     item = item.shift()
     ctx.arguments = [ctx.arguments[0], item.itemID, item.type]
-    let collection = item.collectionID? ctx.collections.filter(x => x.collectionID === item.collectionID)[0]: 'random'
+    let collection = item.collectionID !== '' ? ctx.collections.filter(x => x.collectionID === item.collectionID)[0]: ''
     let itemIDSplit = item.itemID.substring(6).split('x')
     itemIDSplit[1] = itemIDSplit[1].substring(0, 1)
     let count = Number(itemIDSplit[0])
@@ -179,7 +179,7 @@ const ticketRedemption = async (ctx) => {
     let addedCards = []
     let newCollection
     while (addedCards.length < count) {
-        if (collection === 'random') {
+        if (!collection) {
             newCollection = _.sample(ctx.collections.filter(x => x.inClaimPool))
         } else {
             newCollection = collection
