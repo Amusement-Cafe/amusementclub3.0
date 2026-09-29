@@ -4,6 +4,9 @@ const UserInventory = require('../../../db/userInventory')
 const UserStats = require('../../../db/userStats')
 const mongoose = require('mongoose')
 
+// Keep in sync with the /store command (bots/amusement/commands/store.js)
+const ticketLimit = 3
+
 router.post('/store/purchase', async (req, res) => {
     const { itemID } = req.body
     if (!itemID) return res.status(400).send('Bad Request - itemID').end()
@@ -13,12 +16,30 @@ router.post('/store/purchase', async (req, res) => {
     if (!item) return res.status(404).send('Item not found').end()
     
     const cost = item.cost > 1 ? item.cost : 1000
-    if (req.user.tomatoes < cost) {
-        return res.status(402).send('Insufficient tomatoes').end()
+    const currency = item.type === 'recipe' ? 'tomatoes' : 'lemons'
+    if (req.user[currency] < cost) {
+        return res.status(402).send(`Insufficient ${currency}`).end()
     }
-    
+
+    const statsFilter = { userID: req.user.userID, daily: req.user.lastDaily }
+    const typeStat = `store${item.type.charAt(0).toUpperCase() + item.type.slice(1)}`
+
     try {
-        req.user.tomatoes -= cost
+        // Make sure today's stats document exists, then reserve a ticket slot
+        // with a conditional increment so parallel requests cannot exceed the limit
+        await UserStats.updateOne(statsFilter, { $setOnInsert: statsFilter }, { upsert: true })
+
+        if (item.type === 'ticket') {
+            const reserved = await UserStats.updateOne(
+                { ...statsFilter, storeTicket: { $not: { $gte: ticketLimit } } },
+                { $inc: { store: 1, storeTicket: 1 } }
+            )
+            if (reserved.modifiedCount === 0) {
+                return res.status(429).send(`Daily ticket purchase limit reached (${ticketLimit})`).end()
+            }
+        }
+
+        req.user[currency] -= cost
         await req.user.save()
         
         const inv = new UserInventory()
@@ -28,15 +49,10 @@ router.post('/store/purchase', async (req, res) => {
         inv.type = item.type
         inv.acquired = new Date()
         await inv.save()
-        
-        const updateObj = { store: 1 }
-        updateObj[`store${item.type.charAt(0).toUpperCase() + item.type.slice(1)}`] = 1
-        
-        await UserStats.updateOne(
-            { userID: req.user.userID },
-            { $inc: updateObj },
-            { upsert: true }
-        )
+
+        if (item.type !== 'ticket') {
+            await UserStats.updateOne(statsFilter, { $inc: { store: 1, [typeStat]: 1 } })
+        }
         
         return res.sendStatus(200).end()
     } catch (e) {
