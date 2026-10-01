@@ -142,7 +142,7 @@ const sell = async (ctx, many = false) => {
     let cost = saleCards.reduce((a, b) => a + (b.eval), 0)
 
     if (!toUser) {
-        cost = Math.round(cost * .75)
+        cost = Math.round(cost * .50)
     }
 
     const transaction = await createTransaction(ctx, saleCards.map(x => x.cardID), toUser, cost)
