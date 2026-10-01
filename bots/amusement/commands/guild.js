@@ -186,7 +186,7 @@ const setGuildLock = async (ctx, unlock = false) => {
     if (authCheck(ctx)) {
         return ctx.send(ctx, `Only guild managers can set guild lock! The guild owner or other managers can add managers with the \`/guild managers add\` command.`, 'red')
     }
-    let lockCost = 0
+    let lockCost = 100000
 
     if (unlock) {
         if (ctx.args.channel) {
@@ -223,14 +223,16 @@ const setGuildLock = async (ctx, unlock = false) => {
 
     if (ctx.args.channel) {
         ctx.guild.lockChannels.push({channelID: ctx.interaction.channelID, lockCol: col.collectionID})
+        ctx.guild.tomatoes -= lockCost
         await ctx.guild.save()
-        return ctx.send(ctx, `Successfully locked the current channel to \`${col.name}\`!`)
+        return ctx.send(ctx, `Successfully locked the current channel to \`${col.name}\`! This has reduced tha guild's balance by ${ctx.boldName(ctx.fmtNum(lockCost))}${ctx.symbols.tomato}! It is now ${ctx.boldName(ctx.fmtNum(ctx.guild.tomatoes))}${ctx.symbols.tomato}`)
     }
 
     ctx.guild.lockCol = col.collectionID
+    ctx.guild.tomatoes -= lockCost
     await ctx.guild.save()
 
-    return ctx.send(ctx, `Successfully locked the guild to \`${col.name}\`!`)
+    return ctx.send(ctx, `Successfully locked the guild to \`${col.name}\`! This has reduced tha guild's balance by ${ctx.boldName(ctx.fmtNum(lockCost))}${ctx.symbols.tomato}! It is now ${ctx.boldName(ctx.fmtNum(ctx.guild.tomatoes))}${ctx.symbols.tomato}`)
 }
 
 const convertGuildLemons = async (ctx) => {
