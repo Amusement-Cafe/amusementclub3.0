@@ -77,7 +77,7 @@ const daily = async (ctx, streakSaver = false) => {
     let award = 750
     let streakAward = ctx.user.streaks.daily.count >= 100? award: Math.floor(award * (ctx.user.streaks.daily.count / 100))
     let failedStreak = false
-    let isStreak = ctx.user.lastDaily.getTime() + ctx.hourToMS(72) >= new Date().getTime()
+    let isStreak = true || ctx.user.lastDaily.getTime() + ctx.hourToMS(72) >= new Date().getTime()
 
     if (isStreak) {
         ctx.user.streaks.daily.count++
