@@ -3,6 +3,7 @@ const { generateNewID } = require('../../../utils/misc')
 const UserInventory = require('../../../db/userInventory')
 const UserStats = require('../../../db/userStats')
 const mongoose = require('mongoose')
+const _ = require('lodash')
 
 // Keep in sync with the /store command (bots/amusement/commands/store.js)
 const ticketLimit = 3
@@ -16,17 +17,23 @@ router.post('/store/purchase', async (req, res) => {
     if (!item) return res.status(404).send('Item not found').end()
     
     const cost = item.cost > 1 ? item.cost : 1000
-    const currency = item.type === 'recipe' ? 'tomatoes' : 'lemons'
+    const currency = ['recipe', 'blueprint'].includes(item.type) ? 'tomatoes' : 'lemons'
     if (req.user[currency] < cost) {
         return res.status(402).send(`Insufficient ${currency}`).end()
+    }
+
+    let collectionID
+    if (item.single) {
+        // TODO: thi might select a collection that doesn't have a fitting rarity. Needs a fix
+        const col = _.sample(ctx.collections.filter(x => x.inClaimPool))
+        if (!col) return res.status(500).send('No collection available for this item').end()
+        collectionID = col.collectionID
     }
 
     const statsFilter = { userID: req.user.userID, daily: req.user.lastDaily }
     const typeStat = `store${item.type.charAt(0).toUpperCase() + item.type.slice(1)}`
 
     try {
-        // Make sure today's stats document exists, then reserve a ticket slot
-        // with a conditional increment so parallel requests cannot exceed the limit
         await UserStats.updateOne(statsFilter, { $setOnInsert: statsFilter }, { upsert: true })
 
         if (item.type === 'ticket') {
@@ -48,6 +55,7 @@ router.post('/store/purchase', async (req, res) => {
         inv.itemID = itemID
         inv.type = item.type
         inv.acquired = new Date()
+        if (collectionID) inv.collectionID = collectionID
         await inv.save()
 
         if (item.type !== 'ticket') {

@@ -65,9 +65,9 @@ const displayItem = async (ctx, disable = false) => {
             wallet = 0
             break;
         case 'recipe':
+        case 'blueprint':
             wallet = ctx.user.tomatoes
             break;
-        case 'blueprint':
         case 'bonus':
         case 'ticket':
             wallet = ctx.user.lemons
