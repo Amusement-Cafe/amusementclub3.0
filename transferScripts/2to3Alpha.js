@@ -656,7 +656,8 @@ const transferUserInventories = async (db) => {
         userInventory.id = newID
         userInventory.userID = ui.userid
         userInventory.itemID = newItemID[ui.id]
-        userInventory.collectionID = type === 'ticket'? ui.col? ui.col: '': ui.col
+        if (ui.col || (ui.col && type === 'ticket'))
+            userInventory.collectionID = ui.col
         userInventory.acquired = ui.acquired
         userInventory.cards = ui.cards
         userInventory.type = type
