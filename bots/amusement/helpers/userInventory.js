@@ -22,7 +22,7 @@ const addItem = async (ctx, item, collection) => {
     newItem.type = item.type
     newItem.acquired = new Date()
     if (item.single) {
-        let col = _.sample(ctx.collections.filter(x => x.collectionID === collection || x.inClaimPool))
+        let col = _.sample(ctx.collections.filter(x => x.collectionID === collection || (x.inClaimPool && !x.rarity)))
         if (!col)
             return ctx.send(ctx, `Something has gone wrong adding your item, please try again!`, 'red')
         newItem.collectionID = col.collectionID
