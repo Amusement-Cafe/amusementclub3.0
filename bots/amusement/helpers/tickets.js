@@ -31,7 +31,7 @@ const ticketPage = async (ctx) => {
     let inv = await getUserInventory(ctx, type)
     inv = inv.filter(x => x.itemID === itemID)
 
-    let invItems = ctx.deDuplicate(inv, 'collectionID').sort((a, b) => a.collectionID.localeCompare(b.collectionID))
+    let invItems = ctx.deDuplicate(inv, 'collectionID').sort((a, b) => a.collectionID?.localeCompare(b.collectionID))
     if (page === 'first' || page === 'last') {
         page = page === 'first'? 0: invItems.length - 1
     }
@@ -59,7 +59,7 @@ const ticketPage = async (ctx) => {
     }
     pages = pages.map(x => {
         let itemEmbed = embed
-        let count = inv.filter(y => !x? y.collectionID === x: !y.collectionID).length
+        let count = inv.filter(y => x? y.collectionID === x: !y.collectionID).length
         let idSplit = itemID.substring(6).split('x')
         itemEmbed.title = ctx.items[itemID].displayName
         itemEmbed.description = itemEmbed.description.replace('{itemID}', itemID)
@@ -104,7 +104,7 @@ const ticketPage = async (ctx) => {
 
 const ticketSelect = async (ctx, inv) => {
     const item = ctx.items[ctx.arguments[0].split('-')[0]]
-    let invItems = ctx.deDuplicate(inv, 'collectionID').sort((a, b) => a.collectionID.localeCompare(b.collectionID))
+    let invItems = ctx.deDuplicate(inv, 'collectionID').sort((a, b) => a.collectionID?.localeCompare(b.collectionID))
     let buttons = [homeButton]
     let pgnButtons = []
 
