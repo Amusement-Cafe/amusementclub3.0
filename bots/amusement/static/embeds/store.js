@@ -1,0 +1,206 @@
+const { items } = require('../items')
+
+module.exports = {
+    mainMenu: {
+        title: "Main Menu",
+        description: "Select an item category from the selection menu below!"
+    },
+    bonus: {
+        title: "Bonus Items",
+        description: "Select an item from the selection menu below!"
+    },
+    effects: {
+        title: "Effect Recipes",
+        description: "Select an item from the selection menu below!"
+    },
+    guild: {
+        title: "Guild Buildings",
+        description: "Select an item from the selection menu below!"
+    },
+    tickets: {
+        title: "Claim Tickets",
+        description: "Select an item from the selection menu below!"
+    },
+    plots: {
+        title: "Plot Buildings",
+        description: "Select an item from the selection menu below!"
+    },
+    slotUpgrade: {
+        title: "Slot Upgrade",
+        description: "Slot upgrade thing, might get removed?"
+    },
+    legendSwapper: {
+        title: "Legendary Swapper",
+        description: "The legendary card swapper"
+    },
+    effectIncrease: {
+        title: "Effect Increase",
+        description: "Effect Increase thing"
+    },
+    tohruGift: {
+        title: "Gift from Tohru",
+        description: "Gift from Tohru"
+    },
+    cakeDay: {
+        title: "Cake Day",
+        description: "Cake Day"
+    },
+    holyGrail: {
+        title: "Holy Grail",
+        description: "Holy Grail"
+    },
+    skyFriend: {
+        title: "Skies of Friendship",
+        description: "Skies of Friendship"
+    },
+    cherryBlossom: {
+        title: "Cherry Blossoms",
+        description: "Cherry Blossoms"
+    },
+    onVictory: {
+        title: "Onwards to Victory",
+        description: "Onwards to Victory"
+    },
+    rulerJeanne: {
+        title: "The Ruler Jeanne",
+        description: "The Ruler Jeanne"
+    },
+    spellCard: {
+        title: "Impossible Spell Card",
+        description: "Impossible Spell Card"
+    },
+    enAyano: {
+        title: "Enlightened Ayano",
+        description: "Enlightened Ayano"
+    },
+    pBocchi: {
+        title: "Powerful Bocchi",
+        description: "Powerful Bocchi"
+    },
+    spaceUnity: {
+        title: "Space Unity",
+        description: "Space Unity"
+    },
+    judgeDay: {
+        title: "Judgment Day",
+        description: "Judgment Day"
+    },
+    claimRecall: {
+        title: "Claim Recall",
+        description: "Claim Recall"
+    },
+    memoryXmas: {
+        title: "Memories of Christmas Cheer",
+        description: "Memories of Christmas Cheer"
+    },
+    memoryHall: {
+        title: "Memories of Halloween Frights",
+        description: "Memories of Halloween Frights"
+    },
+    memoryBday: {
+        title: "Memories of Birthdays Past",
+        description: "Memories of Birthdays Past"
+    },
+    memoryVal: {
+        title: "Memories of Valentines Day",
+        description: "Memories of Valentines Day"
+    },
+    lemonadeStand: {
+        title: "Lemonade Stand",
+        description: "Lemonade Stand"
+    },
+    processingPlant: {
+        title: "Processing Plant",
+        description: "Processing Plant"
+    },
+    pachinkoHall: {
+        title: "Pachinko Hall",
+        description: "Pachinko Hall"
+    },
+    arcadeCenter: {
+        title: "Arcade Center",
+        description: "Arcade Center"
+    },
+    pamperCentral: {
+        title: "Pamper Central",
+        description: "Pamper Central"
+    },
+    discountCenter: {
+        title: "Discount Center",
+        description: "Discount Center"
+    },
+    ticket1x1: {
+        title: `1x \`★\` Claim Ticket - ${items.ticket1x1.cost}🍋`,
+        description: "Redeems for **1** `★` card drawn from a randomly chosen collection.\n" +
+            "Duplicates are possible, so this can give you a card you already own.\n" +
+            "Redeem it from `/inventory`."
+    },
+    ticket1x2: {
+        title: `1x \`★★\` Claim Ticket - ${items.ticket1x2.cost}🍋`,
+        description: "Redeems for **1** `★★` card drawn from a randomly chosen collection.\n" +
+            "Duplicates are possible, so this can give you a card you already own.\n" +
+            "Redeem it from `/inventory`."
+    },
+    ticket1x3: {
+        title: `1x \`★★★\` Claim Ticket - ${items.ticket1x3.cost}🍋`,
+        description: "Redeems for **1** `★★★` card drawn from a randomly chosen collection.\n" +
+            "Duplicates are possible, so this can hand you a card you already own.\n" +
+            "Redeem it from `/inventory`."
+    },
+    ticket3x1s: {
+        title: `3x \`★\` Claim Ticket - ${items.ticket3x1s.cost}🍋`,
+        description: "Redeems for **3** `★` cards, all from **one collection randomly chosen when you buy this ticket**.\n" +
+            "Which collection is shown in `/inventory` before you redeem, so you'll know what you're\n" +
+            "pulling from. Duplicates are possible."
+    },
+    ticket3x2s: {
+        title: `3x \`★★\` Claim Ticket - ${items.ticket3x2s.cost}🍋`,
+        description: "Redeems for **3** `★★` cards, all from **one collection chosen when you buy this ticket**.\n" +
+            "Which collection is shown in `/inventory` before you redeem, so you'll know what you're\n" +
+            "pulling from. Duplicates are possible."
+    },
+    ticket3x3s: {
+        title: `3x \`★★★\` Claim Ticket - ${items.ticket3x3s.cost}🍋`,
+        description: "Redeems for **3** `★★★` cards, all from **one collection chosen when you buy this ticket**.\n" +
+            "Which collection is shown in `/inventory` before you redeem, so you'll know what you're\n" +
+            "pulling from. Duplicates are possible."
+    },
+    ticket3x1r: {
+        title: `3x Random \`★\` Claim Ticket - ${items.ticket3x1r.cost}🍋`,
+        description: "Redeems for **3** `★★` cards, each drawn from a **separately random collection** — they won't all\n" +
+            "come from the same one. Worth it if you're after breadth across the bot rather than finishing one\n" +
+            "collection. Duplicates are possible."
+    },
+    ticket3x2r: {
+        title: `3x Random \`★★\` Claim Ticket - ${items.ticket3x2r.cost}🍋`,
+        description: "Redeems for **3** `★★` cards, each drawn from a **separately random collection** — they won't all\n" +
+            "come from the same one. Worth it if you're after breadth across the bot rather than finishing one\n" +
+            "collection. Duplicates are possible."
+    },
+    ticket3x3r: {
+        title: `3x Random \`★★★\` Claim Ticket - ${items.ticket3x3r.cost}🍋`,
+        description: "Redeems for **3** `★★` cards, each drawn from a **separately random collection** — they won't all\n" +
+            "come from the same one. Worth it if you're after breadth across the bot rather than finishing one\n" +
+            "collection. Duplicates are possible."
+    },
+    castle: {
+        title: "Main Menu Title",
+        description: ""
+    },
+    gachaBank: {
+        title: "Main Menu Title",
+        description: ""
+    },
+    tavern: {
+        title: "Main Menu Title",
+        description: ""
+    },
+    smithHub: {
+        title: "Main Menu Title",
+        description: ""
+    },
+    auctionHouse: {
+        title: "Main Menu Title",
+        description: ""
+    }
+}

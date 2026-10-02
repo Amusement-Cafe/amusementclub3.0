@@ -17,7 +17,7 @@ const {
 } = require('../helpers/componentBuilders')
 
 const menus = require('../static/menus/store/store.json')
-const embeds = require('../static/embeds/store.json')
+const embeds = require('../static/embeds/store')
 
 const homeButton = new Button('store_all').setLabel('Main Menu').setStyle(2)
 
@@ -118,7 +118,7 @@ const buyItem = async (ctx) => {
 
 const purchaseTicket = async (ctx, item) => {
     if (ctx.user.lemons < item.cost) {
-        return ctx.send(ctx, `You have insufficient lemons to purchase ${ctx.boldName(ctx.arguments[0])}`, 'red')
+        return ctx.send(ctx, `You have insufficient lemons to purchase ${ctx.boldName(item.displayName)}`, 'red')
     }
     if (ctx.stats.storeTicket >= limit) {
         return await displayItem(ctx, false)
@@ -127,7 +127,7 @@ const purchaseTicket = async (ctx, item) => {
     await ctx.interaction.channel.createMessage({
         embeds: [
             {
-                description: `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(item.itemID)} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.lemon}!`,
+                description: `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(item.displayName)} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.lemon}!`,
                 color: ctx.colors.deepgreen
             }
         ],
