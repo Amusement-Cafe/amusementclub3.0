@@ -45,6 +45,9 @@ prompt.on('line', async line => {
 })
 
 prompt.on('close', async () => {
+    await stopAyano()
+    await stopAmusement()
+    await stopAPI()
     console.log('Bye')
     process.exit(0)
 })
