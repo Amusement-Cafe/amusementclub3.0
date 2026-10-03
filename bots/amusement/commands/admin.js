@@ -66,6 +66,7 @@ generateGuildCommand('sudo', 'Top Level Sudo')
     .subCommand('guild', `Refresh the bot's guild commands`)
     .close()
     .close()
+    .subCommand('wip', `Toggle WIP mode`)
 
 const summon = async (ctx) => {}
 
@@ -97,7 +98,10 @@ const transferUserAccount = async (ctx) => {}
 
 const userEmbargo = async (ctx) => {}
 
-const wipMode = async (ctx) => {}
+const wipMode = async (ctx) => {
+    ctx.global.wip = !ctx.global.wip
+    await ctx.send(ctx, `Set WIP mode to ${ctx.global.wip}`)
+}
 
 const modifyAuctionLock = async (ctx) => {}
 
