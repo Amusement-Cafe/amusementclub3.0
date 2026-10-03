@@ -11,10 +11,6 @@ const {
     addUserCards
 } = require("../../../bots/amusement/helpers/userCard")
 
-const {
-    drawTicketCards,
-} = require("../../../bots/amusement/helpers/tickets")
-
 router.get('/inventory', async (req, res) => {
     const inventory = await getUserInventory(req)
     return res.status(200).send(inventory).end()
