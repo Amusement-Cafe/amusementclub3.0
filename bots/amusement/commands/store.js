@@ -165,7 +165,7 @@ const purchaseBonus = async (ctx, item) => {
     await ctx.updateStat(ctx, 'storeBonus', 1)
     await ctx.modLemons(ctx, null, -item.cost)
 
-    return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.tomato}!`, 'deepgreen')
+    return ctx.send(ctx, `${ctx.boldName(ctx.user.username)}, you purchased ${ctx.boldName(ctx.arguments[0])} for ${ctx.boldName(ctx.fmtNum(item.cost))}${ctx.symbols.lemon}!`, 'deepgreen')
 }
 
 const purchasePlotBuilding = async (ctx, item) => {
