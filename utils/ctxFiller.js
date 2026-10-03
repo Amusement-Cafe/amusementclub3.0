@@ -74,7 +74,8 @@ let globalContext = {
         grey: 3553598,
         deepgreen:1142316,
         default: 2067276
-    }
+    },
+    auctionLock: false
 }
 
 

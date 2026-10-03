@@ -67,6 +67,11 @@ generateGuildCommand('sudo', 'Top Level Sudo')
     .close()
     .close()
     .subCommand('wip', `Toggle WIP mode`)
+    .close()
+    .subCommandGroup('auction', 'Auction Lock')
+    .subCommand('lock', `Toggle auction lock`)
+    .close()
+    .close()
 
 const summon = async (ctx) => {}
 
@@ -103,7 +108,10 @@ const wipMode = async (ctx) => {
     await ctx.send(ctx, `Set WIP mode to ${ctx.global.wip}`)
 }
 
-const modifyAuctionLock = async (ctx) => {}
+const modifyAuctionLock = async (ctx) => {
+    ctx.global.auctionLock = !ctx.global.auctionLock
+    await ctx.send(ctx, `Set auction lock to ${ctx.global.auctionLock}`)
+}
 
 const createAnnouncement = async (ctx, important = false) => {}
 

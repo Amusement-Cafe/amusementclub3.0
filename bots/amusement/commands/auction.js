@@ -81,6 +81,10 @@ generateGlobalCommand('auction', 'Top Level Auction')
     .close()
 
 const auctionSell = async (ctx, many = false) => {
+    if (ctx.global.auctionLock && !ctx.user.roles.some(x => x === 'admin')){
+        return ctx.send(ctx, `Auctions are currently blocked from being created. This can be due to an upcoming update, or bugfixing by the admins. Please try your auction sale again later.`, 'red')
+    }
+
     if (!ctx.userCards.length) {
         return ctx.send(ctx, `No cards found for card query \`${ctx.args.cardQuery.keywords.join(' ')}\`. Please check your cards and try again!`, 'red')
     }
