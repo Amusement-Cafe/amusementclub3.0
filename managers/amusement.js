@@ -47,6 +47,7 @@ const refreshAmusementContext = async () => {
 registerCLICommand('acstart', () => startAmusement())
 registerCLICommand('acstop', () => stopAmusement())
 registerCLICommand('acrestart', () => restartAmusement())
+registerCLICommand('acwip', () => bot.send({wip: true}))
 
 module.exports = {
     refreshAmusementContext,

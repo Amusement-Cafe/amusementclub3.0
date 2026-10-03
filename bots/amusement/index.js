@@ -68,14 +68,13 @@ process.on('message', async (msg) => {
         ctx = await getContext(true)
         wip = false
     }
+    if (msg.wip) {
+        wip = !wip
+    }
 })
 
 
 bot.on('interactionCreate', async (interaction) => {
-    if (wip || ctx.wip) {
-        return interaction.reply({content: `Amusement club is currently in WIP mode, meaning updates are either ongoing or it is just starting up. Please try your command again later!`})
-    }
-
     let base = [interaction.data.name || interaction.data.customID]
     let options = []
     let cursor = interaction.data
@@ -114,6 +113,10 @@ bot.on('interactionCreate', async (interaction) => {
         global: globalContext
     })
     isolatedCtx.user = await fetchOrCreateUser(interaction)
+    if ((wip || ctx.wip) && !isolatedCtx.user.roles.some(x => x === 'admin')) {
+        await interaction.defer(64)
+        return interaction.reply({content: `Amusement club is currently in WIP mode, meaning updates are either ongoing or it is just starting up. Please try your command again later!`})
+    }
     switch (interaction.constructor) {
         case Oceanic.CommandInteraction:
             return await handleBotCommand(base, isolatedCtx)
