@@ -43,6 +43,7 @@ const createAuction = async (ctx) => {
         await newAuction.save()
     }
     const user = await fetchUser(auctionToList.userID)
+    await ctx.updateStat(ctx, 'aucSell', auctionToList.cardIDs.length)
     if (user.preferences.notify.aucCreated) {
         await ctx.sendDM(ctx, user, `The auctions you have queued for listing [here](https://discord.com/channels/${auctionToList.guildID}/${auctionToList.channelID}/${auctionToList.messageID}) have now all been listed successfully.`, 1142316)
     }

@@ -117,7 +117,7 @@ const auctionSell = async (ctx, many = false) => {
         }
         for (let card of auctionCards) {
             cost += Math.round(card.eval * costBasis)
-            queuePrep.push({cardID: card.cardID, cost: cost})
+            queuePrep.push({cardID: card.cardID, cost: cost, eval: card.eval})
         }
 
     } else {
@@ -133,7 +133,7 @@ const auctionSell = async (ctx, many = false) => {
         }
         for (let i = 0; i < limit; i++) {
             cost += Math.round(auctionCards[0].eval * costBasis)
-            queuePrep.push({cardID: auctionCards[0].cardID, cost: cost})
+            queuePrep.push({cardID: auctionCards[0].cardID, cost: cost, eval: auctionCards[0].eval})
         }
     }
     if (ctx.user.tomatoes < cost) {
@@ -153,7 +153,7 @@ const auctionSell = async (ctx, many = false) => {
     newAucQueue.limit = limit
     await newAucQueue.save()
 
-    const pages = queuePrep.map(x => `${ctx.formatName(ctx, ctx.cards[x.cardID])} (${ctx.fmtNum(x.cost)}${ctx.symbols.tomato})`)
+    const pages = queuePrep.map(x => `${ctx.formatName(ctx, ctx.cards[x.cardID])} ${ctx.fmtNum(x.eval)}${ctx.symbols.tomato} (${ctx.fmtNum(x.cost)}${ctx.symbols.tomato})`)
     if (ctx.user.preferences.interact.alwaysForce) {
         ctx.user.tomatoes -= cost
         await ctx.updateStat(ctx, 'tomatoOut', cost)
@@ -174,7 +174,7 @@ const auctionSell = async (ctx, many = false) => {
     return ctx.send(ctx, {
         pages: ctx.getPages(pages),
         embed: {
-            title: `You are about to auction ${many? `${auctionCards.length} cards`: `${limit > 1? `${limit} copies of `: ``}1 card`}\nThis will cost you ${cost}${ctx.symbols.tomato} to list`,
+            title: `You are about to auction ${many? `${auctionCards.length} cards`: `${limit > 1? `${limit} copies of `: ``}1 card`}\nThis will cost you ${cost}${ctx.symbols.tomato} to list. List fee in ()`,
         },
         customButtons: [cfmButton, dclButton],
         edit: true
@@ -473,6 +473,7 @@ const auctionBid = async (ctx) => {
         await ctx.interaction.defer(64)
         return ctx.send(ctx, error, 'red')
     }
+    await ctx.interaction.defer(64)
 
     if (auction.lastBidderID === ctx.user.userID) {
         let priceDifference = bidAmount - auction.highBid
@@ -503,6 +504,7 @@ const auctionBid = async (ctx) => {
         await auction.save()
         ctx.user.tomatoes -= bidAmount
         await ctx.user.save()
+        await ctx.updateStat(ctx, 'aucBid', 1)
         await listAuctionInfo(ctx, entry.lastInfoIndex)
         return await ctx.send(ctx, `You have successfully bid on this auction! Use the \`View My Bid\` button to see your bid!`, 'green')
     }
