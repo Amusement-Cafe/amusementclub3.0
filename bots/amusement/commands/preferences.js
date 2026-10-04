@@ -227,9 +227,7 @@ const preferenceProfile = async (ctx) => {
 }
 
 const preferenceReward = async (ctx) => {
-    console.log(ctx.arguments)
     const [category, preference] = ctx.arguments[0].split('_')
-    console.log(preference)
     let eligibleCards = ctx.globalCards.filter(x => {
         if (preference === 'boost') {
             return x.rarity === 4 && x.collectionID === 'special'
@@ -238,7 +236,7 @@ const preferenceReward = async (ctx) => {
     })
     if (eligibleCards.length === 0) {
         let currentEmbed = ctx.interaction.message.embeds[0]
-        if (currentEmbed.fields.length > 0) {
+        if (currentEmbed.fields?.length > 0) {
             currentEmbed.fields.push({
                 name: `Invalid Card Query:`,
                 value: `There were no cards found for your query! Please try again with a different query. The card query must return a 4 star card not in the limited craft collection.`,
