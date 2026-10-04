@@ -75,7 +75,9 @@ let globalContext = {
         deepgreen:1142316,
         default: 2067276
     },
-    auctionLock: false
+    auctionLock: false,
+    lockedGuilds: []
+
 }
 
 

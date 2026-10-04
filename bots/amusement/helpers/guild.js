@@ -43,20 +43,25 @@ const updateGuildInvites = async (ctx) => {
     let now = new Date()
     let guildToUpdate = await Guilds.find({adminLock: true, $or: [{lastUpdatedInvite: {$lt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 7)}}, {invite: ''}]})
     for (let guilds of guildToUpdate) {
-        if (guilds.guildID !== '529023217491247105') {
+        try {
+            let guild = await ctx.bot.rest.guilds.get(guilds.guildID)
+            let invite
+            if (guild.vanityURLCode) {
+                invite = {code: guild.vanityURLCode}
+            } else {
+                invite = await ctx.bot.rest.channels.createInvite(guilds.reportChannel, {maxAge: 60 * 60 * 24 * 7, reason: 'Rotating invites for admin locked servers', temporary: false, unique: true})
+            }
+        } catch (e) {
+            console.log(`Guild ${guilds.guildID} failed to update invite: ${e}`)
             continue
         }
-        let guild = await ctx.bot.rest.guilds.get(guilds.guildID)
-        let invite
-        if (guild.vanityURLCode) {
-            invite = {code: guild.vanityURLCode}
-        } else {
-            invite = await ctx.bot.rest.channels.createInvite(guilds.reportChannel, {maxAge: 60 * 60 * 24 * 7, reason: 'Rotating invites for admin locked servers', temporary: false, unique: true})
-        }
+
         guilds.invite = invite.code
         guilds.lastUpdatedInvite = now
         await guilds.save()
+
     }
+    ctx.lockedGuilds = guildToUpdate
 }
 
 module.exports = {
