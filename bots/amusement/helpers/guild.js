@@ -41,7 +41,7 @@ const fetchGuildByID = async (ctx, guildID) => Guilds.findOne({guildID: guildID}
 
 const updateGuildInvites = async (ctx) => {
     let now = new Date()
-    let guildToUpdate = await Guilds.find({adminLock: true, $or: [{lastUpdatedInvite: {$lt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 7)}}, {invite: ''}]})
+    let guildToUpdate = await Guilds.find({adminLock: true, $or: [{lastUpdatedInvite: {$lt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 7)}}, {invite: ''}], inviteErrored: false})
     for (let guilds of guildToUpdate) {
         let invite
         try {
@@ -53,10 +53,16 @@ const updateGuildInvites = async (ctx) => {
             }
         } catch (e) {
             console.log(`Guild ${guilds.guildID} failed to update invite: ${e}`)
+            guilds.inviteErrored = true
+            guilds.inviteError = e
+            await guilds.save()
             continue
         }
 
         if (!invite) {
+            guilds.inviteErrored = true
+            guilds.inviteError = `No invite was created and catch didn't catch this`
+            await guilds.save()
             continue
         }
         guilds.invite = invite.code

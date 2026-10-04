@@ -31,6 +31,8 @@ const schema = new Schema({
 
     invite:             { type: String, default: '' },
     lastUpdatedInvite:  { type: Date, default: new Date(0) },
+    inviteErrored:      { type: Boolean, default: false },
+    inviteError:        { type: String, default: '' },
 
 })
 module.exports = model('Guild', schema)
