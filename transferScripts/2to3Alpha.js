@@ -280,7 +280,7 @@ const transferGuilds = async (db) => {
         newGuild.xp = g.xp
         newGuild.tax = g.tax
         newGuild.tomatoes = g.balance
-        newGuild.tomatoes += newGuild.lemons * 5
+        newGuild.tomatoes += g.lemons * 5
         newGuild.lemons = 0
         newGuild.buildPerms = g.buildperm
         newGuild.discount = g.discount
