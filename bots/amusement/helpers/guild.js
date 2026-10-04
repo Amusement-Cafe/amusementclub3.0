@@ -43,9 +43,9 @@ const updateGuildInvites = async (ctx) => {
     let now = new Date()
     let guildToUpdate = await Guilds.find({adminLock: true, $or: [{lastUpdatedInvite: {$lt: new Date(now.getTime() - 1000 * 60 * 60 * 24 * 7)}}, {invite: ''}]})
     for (let guilds of guildToUpdate) {
+        let invite
         try {
             let guild = await ctx.bot.rest.guilds.get(guilds.guildID)
-            let invite
             if (guild.vanityURLCode) {
                 invite = {code: guild.vanityURLCode}
             } else {
@@ -56,6 +56,9 @@ const updateGuildInvites = async (ctx) => {
             continue
         }
 
+        if (!invite) {
+            continue
+        }
         guilds.invite = invite.code
         guilds.lastUpdatedInvite = now
         await guilds.save()
