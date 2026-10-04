@@ -119,6 +119,7 @@ bot.on('interactionCreate', async (interaction) => {
     }
     switch (interaction.constructor) {
         case Oceanic.CommandInteraction:
+            console.log(`${new Date().toLocaleTimeString()} ${isolatedCtx.user.username} ran ${base.join(' ')}`)
             return await handleBotCommand(base, isolatedCtx)
         case Oceanic.ComponentInteraction:
             return await handleReaction(base, isolatedCtx)
