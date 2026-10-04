@@ -148,7 +148,9 @@ const claimNormal = async (ctx) => {
     await claim.save()
     _.pull(processing, ctx.user.userID)
 
-    let pages = claimed.map(x => x.card.cardURL)
+    let pages = []
+    newCards.forEach(x => pages.push(x.card.cardURL))
+    ownedCards.forEach(x => pages.push(x.card.cardURL))
     return ctx.send(ctx, {
         embed: {
             image: {
