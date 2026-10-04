@@ -19,6 +19,10 @@ router.post('/auction/bid', async (req, res) => {
             return res.status(409).send('Auction ended or cancelled').end()
         }
         
+        if (auction.userID === req.user.userID) {
+            return res.status(403).send('You cannot bid on your own auction').end()
+        }
+        
         if (amount <= auction.highBid) {
             return res.status(400).send('Bid too low').end()
         }
