@@ -100,6 +100,7 @@ const daily = async (ctx, streakSaver = false) => {
 
 
     ctx.user.lastDaily = new Date()
+    ctx.user.dailyNotified = false
     await ctx.user.save()
     ctx.stats = await getUserStats(ctx)
     await ctx.modTomatoes(ctx, null, award)
