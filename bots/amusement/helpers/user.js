@@ -32,7 +32,32 @@ const fetchUser = async (userID) => {
 
 }
 
+
+const dailyReminder = async (ctx) => {
+    //Add extra checks for effects here once they are re-added
+    const timeForDaily = new Date(new Date().getTime() - 1000*60*60*20)
+    const userToRemind = await User.findOneAndUpdate({
+        'preferences.notify.daily': true,
+        'lastDaily': {$lt: timeForDaily},
+        'dailyNotified': false}, {dailyNotified: true}, {returnDocument: "after"})
+
+    if (!userToRemind) {
+        return
+    }
+    try {
+        await ctx.sendDM(ctx, userToRemind, {
+            title: 'Daily Ready!',
+            description: `you can claim your daily bonus now with \`/daily\`!`,
+            color: ctx.colors.blue
+        }, ctx.colors.blue)
+    } catch (e) {
+        console.log(`Unable to send daily reminder to ${userToRemind.username}: ${e}`)
+    }
+
+}
+
 module.exports = {
+    dailyReminder,
     fetchOrCreateUser,
     fetchUser
 }
